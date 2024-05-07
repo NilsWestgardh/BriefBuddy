@@ -1,6 +1,7 @@
 import React from "react";
 // Custom Components
 import ProjectHeader from "@/app/components/ProjectHeader";
+import BriefForm from "@/app/components/BriefForm";
 // Components
 import Box from "@mui/material/Box";
 
@@ -18,7 +19,7 @@ export default function NewBriefPage() {
       "
     >
       <ProjectHeader />
-      New Brief Page
+      <BriefForm />
     </Box>
   );
 }
