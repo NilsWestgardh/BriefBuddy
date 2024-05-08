@@ -63,8 +63,7 @@ export default function RootLayout(
                 flex
                 flex-col
                 items-center
-                bg-neutral-900
-                text-neutral-300
+                text-neutral-700
               "
             >
               {children}

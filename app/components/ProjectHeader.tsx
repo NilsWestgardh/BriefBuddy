@@ -23,9 +23,9 @@ export default function ProjectHeader() {
         w-full
         px-4
         py-2
-        bg-neutral-800
+        bg-neutral-50
         border-b
-        border-neutral-700
+        border-neutral-100
         z-12
       "
     >
@@ -55,8 +55,8 @@ export default function ProjectHeader() {
             variant="body2"
             sx={{ fontSize: 12 }}
             className="
-              text-neutral-400
-              hover:text-neutral-300
+              text-neutral-500
+              hover:text-neutral-700
               hover:cursor-pointer
               hover:opacity-90
               align-center
@@ -71,8 +71,8 @@ export default function ProjectHeader() {
             variant="body2"
             sx={{ fontSize: 12 }}
             className="
-              text-neutral-400
-              hover:text-neutral-300
+            text-neutral-500
+            hover:text-neutral-700
               hover:cursor-pointer
               hover:opacity-90
               align-center
@@ -87,8 +87,8 @@ export default function ProjectHeader() {
             variant="body2"
             sx={{ fontSize: 12 }}
             className="
-              text-neutral-300
-              hover:text-white
+            text-neutral-700
+            hover:text-black
               hover:cursor-pointer
               hover:opacity-90
               align-center
@@ -113,14 +113,14 @@ export default function ProjectHeader() {
         >
           <Typography
             variant="subtitle2"
-            className="text-white"
+            className="text-black"
           >
             Project name
           </Typography>
           <EditIcon
             sx={{ fontSize: 16 }}
             className="
-              hover:text-white
+              hover:text-black
               hover:cursor-pointer
               hover:opacity-90
             "

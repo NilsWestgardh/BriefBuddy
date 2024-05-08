@@ -52,7 +52,7 @@ export default function SidebarHeader({
               variant="subtitle1"
               className="
                 font-semibold
-                text-white
+                text-black
               "
             >
               BriefBuddy
@@ -60,7 +60,7 @@ export default function SidebarHeader({
             <Typography
               variant="caption"
               className="
-                text-neutral-500
+                text-neutral-400
               "
             >
               {version}

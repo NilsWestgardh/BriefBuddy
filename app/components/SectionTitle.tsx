@@ -26,7 +26,7 @@ export default function SectionTitle({
       <Typography
         variant="h6"
         className="
-          text-white
+        text-black
           font-medium
         "
       >

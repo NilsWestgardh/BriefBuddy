@@ -4,9 +4,9 @@ import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
-    mode: "dark",
+    mode: "light",
     primary: {
-      main: "#14b8a6", // Emerald 500
+      main: "#3b82f6", // Emerald 500
       // main: "#818cf8",
     },
     secondary: {
@@ -14,13 +14,13 @@ const theme = createTheme({
       // main: "#f472b6",
     },
     background: {
-      default: "#020617",
-      paper: "#020617",
+      default: "#ffffff",
+      paper: "#fafafa",
     },
     text: {
-      primary: "#f9fafb",
-      secondary: "#e5e7eb",
-      disabled: "#9ca3af",
+      primary: "#000000",
+      secondary: "#262626",
+      disabled: "#e5e5e5",
     },
     error: {
       main: "#ef4444", // Red 600

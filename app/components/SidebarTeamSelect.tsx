@@ -30,9 +30,9 @@ export default function SidebarTeamSelect({
         px-2
         rounded-md
         border
-        border-neutral-600
-        bg-neutral-700
-        hover:border-neutral-500
+        border-neutral-200
+        bg-neutral-100
+        hover:border-neutral-300
         hover:cursor-pointer
         hover:opacity-90
       "
@@ -57,7 +57,7 @@ export default function SidebarTeamSelect({
           variant="subtitle2"
           className="
             font-semibold 
-            text-white
+            text-black
           "
         >
           {team}

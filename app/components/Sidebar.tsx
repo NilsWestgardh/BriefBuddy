@@ -20,9 +20,9 @@ export default function Sidebar() {
         sticky
         h-[100vh]
         w-[240px]
-        bg-neutral-800
+        bg-neutral-50
         border-r
-        border-neutral-700
+        border-neutral-100
         p-3
       "
     >
