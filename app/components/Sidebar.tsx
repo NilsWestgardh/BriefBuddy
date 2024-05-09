@@ -54,7 +54,6 @@ export default function Sidebar() {
             gap-1
           "
         >
-          <NavButton route="home" />
           <NavButton route="new-brief" />
           <NavButton route="my-briefs" />
           <NavButton route="settings" />

@@ -1,7 +1,7 @@
 import React from "react";
 // Custom components
-import SectionTitle from "@/app/components/SectionTitle";
-import InputField from "@/app/components/InputField";
+import SectionTitle from "@/app/components/brief-form/SectionTitle";
+import CustomInputField from "@/app/components/CustomInputField";
 // Components
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -42,14 +42,14 @@ export default function BriefForm() {
           title="Basics"
           subtitle="Lorem ipsum dolor sit amet"
         />
-        <InputField
+        <CustomInputField
           label="Company name"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
           required={true}
           error={false}
         />
-        <InputField
+        <CustomInputField
           label="Company details"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
@@ -58,7 +58,7 @@ export default function BriefForm() {
           required={false}
           error={false}
         />
-        <InputField
+        <CustomInputField
           label="Brief details"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
@@ -83,7 +83,7 @@ export default function BriefForm() {
           title="Product"
           subtitle="Lorem ipsum dolor sit amet"
         />
-        <InputField
+        <CustomInputField
           label="Product details"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
@@ -92,7 +92,7 @@ export default function BriefForm() {
           required={false}
           error={false}
         />
-        <InputField
+        <CustomInputField
           label="Unique selling point"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
@@ -116,7 +116,7 @@ export default function BriefForm() {
           subtitle="Lorem ipsum dolor sit amet"
         />
         {/* Select */}
-        <InputField
+        <CustomInputField
           label="Goals details"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
@@ -158,21 +158,21 @@ export default function BriefForm() {
           title="Strategy"
           subtitle="Lorem ipsum dolor sit amet"
         />
-        <InputField
+        <CustomInputField
           label="Strategy"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
           required={true}
           error={false}
         />
-        <InputField
+        <CustomInputField
           label="Message"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
           required={false}
           error={false}
         />
-        <InputField
+        <CustomInputField
           label="Tone of voice"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
@@ -287,7 +287,7 @@ export default function BriefForm() {
             ))};
           </Select>
         </FormControl>
-        <InputField
+        <CustomInputField
           label="Description"
           placeholder="e.g. Increase sales by 20%"
           helperText=""

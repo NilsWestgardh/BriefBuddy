@@ -2,7 +2,7 @@ import React from "react";
 // Custom components
 import TextField from "@mui/material/TextField";
 
-type InputFieldProps = {
+type CustomInputFieldProps = {
   label: string;
   placeholder?: string;
   helperText?: string;
@@ -12,7 +12,7 @@ type InputFieldProps = {
   error: boolean;
 };
 
-export default function InputField({
+export default function CustomInputField({
   label,
   placeholder,
   helperText,
@@ -20,7 +20,7 @@ export default function InputField({
   rows,
   required,
   error,
-}: InputFieldProps) {
+}: CustomInputFieldProps) {
   return (
     <TextField
       required={required}

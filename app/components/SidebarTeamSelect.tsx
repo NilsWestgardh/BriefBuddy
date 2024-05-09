@@ -32,6 +32,8 @@ export default function SidebarTeamSelect({
         border
         border-neutral-200
         bg-neutral-100
+        hover:shadow-md
+        hover:shadow-neutral-100
         hover:border-neutral-300
         hover:cursor-pointer
         hover:opacity-90

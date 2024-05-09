@@ -13,60 +13,60 @@ export default function SidebarHeader({
 }) {
   return (
     <Link
-        href="/dashboard"
-        className="w-full"
+      href="/home"
+      className="w-full"
+    >
+      <Box
+        id="sidebar-header"
+        className="
+          flex
+          flex-row
+          justify-between
+          items-center
+          w-full
+          gap-2
+          hover:cursor-pointer
+          hover:opacity-90
+        "
       >
+        <Image
+          src="/briefbuddy-logo.png"
+          alt="BriefBuddy logo"
+          width={48}
+          height={48}
+          className="
+            rounded-md
+          "
+        />
         <Box
-          id="sidebar-header"
+          id="sidebar-header-title"
           className="
             flex
-            flex-row
-            justify-between
-            items-center
+            flex-col
+            justify-start
+            items-start
             w-full
-            gap-2
-            hover:cursor-pointer
-            hover:opacity-90
           "
         >
-          <Image
-            src="/briefbuddy-logo.png"
-            alt="BriefBuddy logo"
-            width={48}
-            height={48}
+          <Typography
+            variant="subtitle1"
             className="
-              rounded-md
-            "
-          />
-          <Box
-            id="sidebar-header-title"
-            className="
-              flex
-              flex-col
-              justify-start
-              items-start
-              w-full
+              font-semibold
+              text-black
             "
           >
-            <Typography
-              variant="subtitle1"
-              className="
-                font-semibold
-                text-black
-              "
-            >
-              BriefBuddy
-            </Typography>
-            <Typography
-              variant="caption"
-              className="
-                text-neutral-400
-              "
-            >
-              {version}
-            </Typography>
-          </Box>
+            BriefBuddy
+          </Typography>
+          <Typography
+            variant="caption"
+            className="
+              text-neutral-400
+            "
+          >
+            {version}
+          </Typography>
         </Box>
-      </Link>
-  )
-}
+      </Box>
+    </Link>
+  );
+};
