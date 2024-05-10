@@ -16,6 +16,7 @@ export default function NewBriefPage() {
         items-center
         w-full
         h-full
+        mb-8
       "
     >
       <ProjectHeader />
