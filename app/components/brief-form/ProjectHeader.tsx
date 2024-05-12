@@ -22,10 +22,10 @@ export default function ProjectHeader() {
         items-center
         w-full
         px-4
-        py-2
-        bg-neutral-50
+        py-1
+        bg-neutral-100
         border-b
-        border-neutral-100
+        border-neutral-300
         z-12
       "
     >
@@ -60,6 +60,7 @@ export default function ProjectHeader() {
               hover:cursor-pointer
               hover:opacity-90
               align-center
+              font-semibold
             "
           >
             Team
@@ -76,6 +77,7 @@ export default function ProjectHeader() {
               hover:cursor-pointer
               hover:opacity-90
               align-center
+              font-semibold
             "
           >
             Company
@@ -92,6 +94,7 @@ export default function ProjectHeader() {
               hover:cursor-pointer
               hover:opacity-90
               align-center
+              font-semibold
             "
           >
             Brief
@@ -112,8 +115,11 @@ export default function ProjectHeader() {
           "
         >
           <Typography
-            variant="subtitle2"
-            className="text-black"
+            variant="subtitle1"
+            className="
+              text-black
+              font-semibold
+            "
           >
             Project name
           </Typography>

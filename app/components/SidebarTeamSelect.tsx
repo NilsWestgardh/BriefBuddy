@@ -30,11 +30,9 @@ export default function SidebarTeamSelect({
         px-2
         rounded-md
         border
-        border-neutral-200
-        bg-neutral-100
-        hover:shadow-md
-        hover:shadow-neutral-100
-        hover:border-neutral-300
+        border-neutral-700
+        bg-white
+        hover:border-neutral-500
         hover:cursor-pointer
         hover:opacity-90
       "
@@ -65,8 +63,8 @@ export default function SidebarTeamSelect({
           {team}
         </Typography>
       </Box>
-      {isExpanded && (<ExpandLessIcon />)}
-      {!isExpanded && (<ExpandMoreIcon />)}
+      {isExpanded && (<ExpandLessIcon className="text-neutral-700" />)}
+      {!isExpanded && (<ExpandMoreIcon className="text-neutral-700" />)}
     </Box>
   );
 };

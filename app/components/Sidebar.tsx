@@ -20,9 +20,9 @@ export default function Sidebar() {
         sticky
         h-[100vh]
         w-[240px]
-        bg-neutral-50
+        bg-neutral-100
         border-r
-        border-neutral-100
+        border-neutral-300
         p-3
       "
     >
@@ -51,7 +51,6 @@ export default function Sidebar() {
             justify-start
             items-start
             w-full
-            gap-1
           "
         >
           <NavButton route="new-brief" />

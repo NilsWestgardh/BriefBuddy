@@ -29,12 +29,8 @@ export default function MarketingFeature({
         gap-4
         rounded-lg
         border
-        border-neutral-200
-        bg-neutral-50
-        hover:border-neutral-300
-        hover:shadow-md
-        hover:shadow-neutral-50
-        transition-all
+        border-black
+        bg-white
       "
     >
       {icon}

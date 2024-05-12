@@ -41,10 +41,8 @@ export default function ResponsiveAppBar() {
     <AppBar
       position="static"
       className="
-        bg-neutral-50
+        bg-white
         shadow-none
-        border-b
-        border-neutral-200
         z-10
         fixed
         top-0
@@ -54,24 +52,19 @@ export default function ResponsiveAppBar() {
         maxWidth="xl"
       >
         <Toolbar disableGutters>
-          <Link href="/">
-            <Button
-              className="
-                flex
-                flex-col
-                justify-center
-                items-center
-                hover:cursor-pointer
-                hover:opacity-90
-              "
-            >
-              <Image
-                src={BriefBuddyLogoBlack}
-                alt="BriefBuddy logo"
-                width={126}
-                height={24}
-              />
-            </Button>
+          <Link
+            href="/"
+            className="
+              hover:opacity-90
+              hover:cursor-pointer
+            "
+          >
+            <Image
+              src={BriefBuddyLogoBlack}
+              alt="BriefBuddy logo"
+              width={126}
+              height={24}
+            />
           </Link>
 
           <Box
@@ -131,8 +124,7 @@ export default function ResponsiveAppBar() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                color="secondary"
-                className="text-black"
+                color="primary"
               >
                 {page}
               </Button>

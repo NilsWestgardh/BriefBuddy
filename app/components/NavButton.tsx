@@ -1,8 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+// Hooks
+import React, {
+  useState,
+  useEffect 
+} from "react";
+import { usePathname } from 'next/navigation';
 // Utils
 import Link from "next/link";
+import clsx from "clsx";
 // Components
 import Button from "@mui/material/Button";
 // Icons
@@ -20,6 +26,9 @@ export default function NavButton({
   const [icon, setIcon] = useState<React.ReactNode>(null);
   const [title, setTitle] = useState<string>("");
 
+  const currentPathname = usePathname();
+
+  // setButton
   useEffect (() => {
     function setButton() {
       switch (route.toLowerCase()) {
@@ -64,19 +73,14 @@ export default function NavButton({
     >
       <Button
         id={`${route.toLowerCase()}-button`}
-        variant="outlined"
         color="primary"
         startIcon={icon}
-        className="
-          flex
-          flex-row
-          justify-start
-          items-center
-          w-full
-          rounded-md
-          hover:cursor-pointer
-          hover:opacity-90
-        "
+        className={clsx("flex flex-row justify-start items-center w-full hover:cursor-pointer",
+          {
+            "hover:opacity-80": currentPathname.includes(route.toLowerCase()),
+            "opacity-60 hover:opacity-100": !currentPathname.includes(route.toLowerCase()),
+          }
+        )}
       >
         {title}
       </Button>
@@ -88,18 +92,16 @@ export default function NavButton({
     >
       <Button
         id={`${route.toLowerCase()}-button`}
-        variant="outlined"
-        startIcon={<LogoutIcon />}
+        startIcon={<LogoutIcon className="hover:text-red-500" />}
+        color={"secondary"}
         className="
           flex
           flex-row
           justify-start
           items-center
           w-full
-          rounded-md
-          bg-red-200
-          border-none
-          text-red-500
+          hover:bg-red-100
+          hover:text-red-500
           hover:cursor-pointer
           hover:opacity-90
         "

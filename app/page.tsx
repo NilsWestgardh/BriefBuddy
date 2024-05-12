@@ -17,17 +17,17 @@ const MarketingFeaturesData = {
   time: {
     title: "Save time",
     copy: "Get to the first advertising campaign ideas faster than ever.",
-    icon: <AccessTimeIcon />,
+    icon: <AccessTimeIcon className="text-black" />,
   },
   money: {
     title: "Save money",
     copy: "Help your team work on big ideas, not thought starters.",
-    icon: <AttachMoneyIcon />,
+    icon: <AttachMoneyIcon className="text-black" />,
   },
   progress: {
     title: "Save progress",
     copy: "Keep all of your teams campaign ideas in one place.",
-    icon: <ArticleIcon />,
+    icon: <ArticleIcon className="text-black" />,
   },
 };
 

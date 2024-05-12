@@ -78,7 +78,6 @@ export default function MarketingHero() {
         >
           <Button
             variant="outlined"
-            color="primary"
             endIcon={<ArrowForwardIcon />}
             size="large"
             className="
@@ -90,7 +89,7 @@ export default function MarketingHero() {
               max-w-sm
               border-2
               hover:border-2
-              rounded-full
+              rounded-md
               py-2
               px-6
             "
