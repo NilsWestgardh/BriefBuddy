@@ -14,7 +14,7 @@ import BriefFormSchema from "@/app/utils/schemas/BriefFormSchema";
 // import PostHogClient from "@/app/utils/posthog/posthog";
 // Custom components
 import SectionTitle from "@/app/components/brief-form/SectionTitle";
-import CustomInputField from "@/app/components/CustomInputField";
+import CustomTextInput from "@/app/components/CustomTextInput";
 // Components
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -34,11 +34,11 @@ export default function BriefForm() {
       updated_at: "",
       title: "",
       brief_details: "",
-      company: "",
+      company_name: "",
       company_details: "",
       company_avatar: "",
       product_details: "",
-      usp: "",
+      product_usp: "",
       goals: [],
     },
     resolver: zodResolver(BriefFormSchema),
@@ -98,30 +98,30 @@ export default function BriefForm() {
             title="Basics"
             subtitle="Lorem ipsum dolor sit amet"
           />
-          <CustomInputField
+          <CustomTextInput
+            fieldName="company_name"
             label="Company name"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             required={true}
-            error={false}
           />
-          <CustomInputField
+          <CustomTextInput
+            fieldName="company_details"
             label="Company details"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             rows={2}
             multiline={true}
             required={false}
-            error={false}
           />
-          <CustomInputField
+          <CustomTextInput
+            fieldName="brief_details"
             label="Brief details"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             rows={2}
             multiline={true}
             required={false}
-            error={false}
           />
         </Box>
         <Box
@@ -139,21 +139,21 @@ export default function BriefForm() {
             title="Product"
             subtitle="Lorem ipsum dolor sit amet"
           />
-          <CustomInputField
+          <CustomTextInput
+            fieldName="product_details"
             label="Product details"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             rows={2}
             multiline={true}
             required={false}
-            error={false}
           />
-          <CustomInputField
+          <CustomTextInput
+            fieldName="product_usp"
             label="Unique selling point"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             required={false}
-            error={false}
           />
         </Box>
         <Box
@@ -172,12 +172,12 @@ export default function BriefForm() {
             subtitle="Lorem ipsum dolor sit amet"
           />
           {/* Select */}
-          <CustomInputField
+          <CustomTextInput
+            fieldName="goals_details"
             label="Goals details"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             required={false}
-            error={false}
           />
           <FormControl fullWidth>
             <InputLabel
@@ -214,26 +214,26 @@ export default function BriefForm() {
             title="Strategy"
             subtitle="Lorem ipsum dolor sit amet"
           />
-          <CustomInputField
+          <CustomTextInput
+            fieldName="strategy"
             label="Strategy"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             required={true}
-            error={false}
           />
-          <CustomInputField
+          <CustomTextInput
+            fieldName="message"
             label="Message"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             required={false}
-            error={false}
           />
-          <CustomInputField
+          <CustomTextInput
+            fieldName="tone_of_voice"
             label="Tone of voice"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             required={false}
-            error={false}
           />
         </Box>
         <Box
@@ -343,14 +343,14 @@ export default function BriefForm() {
               ))};
             </Select>
           </FormControl>
-          <CustomInputField
+          <CustomTextInput
+            fieldName="description"
             label="Description"
             placeholder="e.g. Increase sales by 20%"
             helperText=""
             rows={4}
             multiline={true}
             required={false}
-            error={false}
           />
         </Box>
         {/* Medium */}
