@@ -79,6 +79,8 @@ export default function CustomGridItem({
               variant="subtitle2"
               className="
                 font-semibold
+                hover:underline
+                text-black
               "
             >
               {title}

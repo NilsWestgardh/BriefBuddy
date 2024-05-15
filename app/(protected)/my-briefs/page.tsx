@@ -77,12 +77,11 @@ export default function MyBriefs() {
           md={6}
           lg={4}
           className="
-            bg-neutral-50
+
+            bg-white
             border
-            border-neutral-100
-            hover:border-neutral-200
-            hover:shadow-md
-            hover:shadow-neutral-100
+            border-black
+            hover:border-neutral-700
             hover:cursor-pointer
             rounded-md
             p-4

@@ -96,20 +96,20 @@ export default function BriefForm() {
         >
           <SectionTitle
             title="Basics"
-            subtitle="Lorem ipsum dolor sit amet"
+            subtitle="Information about the brief."
           />
           <CustomTextInput
             fieldName="company_name"
             label="Company name"
-            placeholder="e.g. Increase sales by 20%"
-            helperText=""
+            placeholder="ACME Inc."
+            helperText="The name of the company the brief is for."
             required={true}
           />
           <CustomTextInput
             fieldName="company_details"
             label="Company details"
-            placeholder="e.g. Increase sales by 20%"
-            helperText=""
+            placeholder="ACME Inc. makes.."
+            helperText="A short description of the company. (Optional)"
             rows={2}
             multiline={true}
             required={false}
@@ -117,8 +117,8 @@ export default function BriefForm() {
           <CustomTextInput
             fieldName="brief_details"
             label="Brief details"
-            placeholder="e.g. Increase sales by 20%"
-            helperText=""
+            placeholder="A campaign to.."
+            helperText="A short description of the brief. (Optional)"
             rows={2}
             multiline={true}
             required={false}
@@ -137,13 +137,13 @@ export default function BriefForm() {
         >
           <SectionTitle
             title="Product"
-            subtitle="Lorem ipsum dolor sit amet"
+            subtitle="Information about the product."
           />
           <CustomTextInput
             fieldName="product_details"
             label="Product details"
-            placeholder="e.g. Increase sales by 20%"
-            helperText=""
+            placeholder="Product name, features, etc."
+            helperText="A short description of the product. (Optional)"
             rows={2}
             multiline={true}
             required={false}
@@ -151,8 +151,8 @@ export default function BriefForm() {
           <CustomTextInput
             fieldName="product_usp"
             label="Unique selling point"
-            placeholder="e.g. Increase sales by 20%"
-            helperText=""
+            placeholder="What makes the product unique?"
+            helperText="The product's unique selling point. (Optional)"
             required={false}
           />
         </Box>
@@ -175,8 +175,8 @@ export default function BriefForm() {
           <CustomTextInput
             fieldName="goals_details"
             label="Goals details"
-            placeholder="e.g. Increase sales by 20%"
-            helperText=""
+            placeholder="Increase sales by 20%.."
+            helperText="A short description of the goals. (Optional)"
             required={false}
           />
           <FormControl fullWidth>
@@ -189,13 +189,13 @@ export default function BriefForm() {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               size="small"
-              value={10}
+              value={"Brand Awareness"}
               label="Objectives"
               // onChange={handleChange}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={"Brand Awareness"}>Brand Awareness</MenuItem>
+              <MenuItem value={"Increase Sales"}>Increase Sales</MenuItem>
+              <MenuItem value={"Increase Conversion"}>Increase Conversion</MenuItem>
             </Select>
           </FormControl>
         </Box>

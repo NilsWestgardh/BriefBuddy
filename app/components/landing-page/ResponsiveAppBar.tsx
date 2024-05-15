@@ -119,7 +119,16 @@ export default function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box 
+            sx={{ 
+              flexGrow: 1, 
+              display: { 
+                xs: 'none', 
+                md: 'flex' 
+              } 
+            }}
+            className="ml-2"
+          >
             {pages.map((page) => (
               <Button
                 key={page}
@@ -131,7 +140,7 @@ export default function ResponsiveAppBar() {
             ))}
           </Box>
           <Link
-            href="/login"
+            href="/login" 
           >
             <Button
               color="secondary"
