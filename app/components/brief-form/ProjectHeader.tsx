@@ -4,31 +4,25 @@
 import React from "react";
 import { 
   useFormContext, 
-  Controller 
 } from "react-hook-form";
 // Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
 // Custom components
-import DynamicAvatarGroup from "@/app/components/DynamicAvatarGroup";
+// import DynamicAvatarGroup from "@/app/components/DynamicAvatarGroup";
 // Components
 import Box from "@mui/material/Box";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
+// import Button from "@mui/material/Button";
 // Icons
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
+// import SaveIcon from "@mui/icons-material/Save";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 export default function ProjectHeader() {
   const {
-    control,
-    formState: { 
-      isSubmitting, 
-      isSubmitted,
-  },
+    watch,
   } = useFormContext<BriefFormType>();
+  const form = watch();
 
   return (
     <Box
@@ -117,96 +111,25 @@ export default function ProjectHeader() {
               font-semibold
             "
           >
-            Brief
+            Project
             <ExpandMore
               sx={{ fontSize: 16 }}
             />
           </Typography>
         </Breadcrumbs>
         </Box>
-        <Box
-          id="name-container"
+        {/* TODO: Make dynamic */}
+        <Typography
+          variant="subtitle1"
           className="
-            flex
-            flex-row
-            justify-start
-            items-center
-            gap-1
-            border
-            border-red-500
+            text-black
+            font-semibold
           "
         >
-          {/* <Typography
-            variant="subtitle1"
-            className="
-              text-black
-              font-semibold
-            "
-          >
-            Project name
-          </Typography> */}
-          <Controller
-            name="project_name"
-            control={control}
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                required
-                id="project-name-input-field"
-                label="Project name"
-                placeholder="Project name"
-                size="small"
-                error={!!fieldState.error}
-                color="primary"
-                inputProps={{
-                  maxLength: 50,
-                  style: {
-                    paddingLeft: "0",
-                    textAlign: "left",
-                  },
-                }}
-                InputLabelProps={{
-                  shrink: true,
-                  style: {
-                    textAlign: "left",
-                    transformOrigin: "top left",
-                    left: "0", // Align the label text to the left
-                  },
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    display: "flex",
-                    alignItems: "center",
-                    paddingLeft: "0",
-                  },
-                  '& .MuiOutlinedInput-input': {
-                    paddingLeft: "0", // Ensure the input text has no left padding
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    border: "none",
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    border: "none",
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    border: "none",
-                  },
-                }}
-              />
-            )}
-            disabled={isSubmitting || isSubmitted}
-        />
-          <EditIcon
-            sx={{ fontSize: 16 }}
-            className="
-              hover:text-black
-              hover:cursor-pointer
-              hover:opacity-90
-            "
-          />
-        </Box>
+          {form.project_name ? form.project_name : "Project name"}
+        </Typography>
       </Box>
-      <Box
+      {/* <Box
         id="avatars-buttons-container"
         className="
           flex
@@ -239,7 +162,7 @@ export default function ProjectHeader() {
         >
           Save
         </Button>
-      </Box>
+      </Box> */}
     </Box>
   )
 }

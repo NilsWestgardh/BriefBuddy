@@ -4,7 +4,7 @@
 import React from "react";
 import { 
   useFormContext, 
-  // Controller 
+  Controller, 
 } from "react-hook-form";
 // Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
@@ -13,6 +13,7 @@ import { BriefFormType } from "@/app/utils/types/BriefFormType";
 // Custom components
 import SectionTitle from "@/app/components/brief-form/SectionTitle";
 import CustomTextInput from "@/app/components/CustomTextInput";
+import MultipleSelectChip from "@/app/components/brief-form/MultipleSelectChip";
 // Components
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -25,6 +26,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function BriefForm() {
   const {
+    control,
     formState: { 
       isSubmitting, 
       isSubmitted,
@@ -59,6 +61,13 @@ export default function BriefForm() {
         <SectionTitle
           title="Basics"
           subtitle="Information about the brief."
+        />
+        <CustomTextInput
+          fieldName="project_name"
+          label="Project name"
+          placeholder="My new campaign"
+          helperText="The name of the brief."
+          required={true}
         />
         <CustomTextInput
           fieldName="company_name"
@@ -258,65 +267,56 @@ export default function BriefForm() {
         </FormControl>
         <FormControl fullWidth>
           <InputLabel
-            id="demo-simple-select-label"
+            id="target-genders-select-label"
           >
             Genders
           </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            size="small"
-            value="All" // TODO: Dynamic
-            label="Genders"
-            // onChange={handleChange}
-          >
-            {[
-              "All", 
-              "Unisex", 
-              "Men", 
-              "Women", 
-              "Non-binary"
-            ].map((gender, index) => (
-              <MenuItem
-                key={index}
-                value={gender}
+          <Controller
+            name="target_ages"
+            control={control}
+            defaultValue={["All ages"]}
+            render={({ field }) => (
+              <Select
+                labelId="target-genders-select-label"
+                id="target-genders-select"
+                size="small"
+                multiple
+                {...field}
+                label="All"
+                value={Array.isArray(field.value) ? field.value : []}
               >
-                {gender}
-              </MenuItem>
-            ))};
-          </Select>
+                {[
+                  "All", 
+                  "Unisex", 
+                  "Men", 
+                  "Women", 
+                  "Non-binary"
+                ].map((gender, index) => (
+                  <MenuItem
+                    key={index}
+                    value={gender}
+                  >
+                    {gender}
+                  </MenuItem>
+                ))};
+              </Select>
+            )}
+          />
         </FormControl>
-        <FormControl fullWidth>
-          <InputLabel
-            id="demo-simple-select-label"
-          >
-            Age ranges
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            size="small"
-            value="18-24" // TODO: Dynamic
-            label="Age ranges"
-            // onChange={handleChange}
-          >
-            {[
-              "18-24", 
-              "25-34", 
-              "35-44", 
-              "45-54", 
-              "55-64",
-              "65+"
-            ].map((ageRange, index) => (
-              <MenuItem
-                key={index}
-                value={ageRange}
-              >
-                {ageRange}
-              </MenuItem>
-            ))};
-          </Select>
-        </FormControl>
+        <MultipleSelectChip
+          name="target_ages"
+          label="Age ranges"
+          options={[
+            "All", 
+            "18-24", 
+            "25-34", 
+            "35-44", 
+            "45-54", 
+            "55-64", 
+            "65+"
+          ]} 
+          control={control}
+        />
       </Box>
       {/* Medium */}
       <Box
@@ -345,7 +345,7 @@ export default function BriefForm() {
             id="demo-simple-select"
             size="small"
             value={5} // TODO: Dynamic
-            label="Ideass"
+            label="Ideas"
             // onChange={handleChange}
           >
             {/* TODO: Import object data */}
@@ -370,7 +370,7 @@ export default function BriefForm() {
         variant="outlined"
         size="large"
         disabled={!isValid || isSubmitting || isSubmitted}
-        color={isValid ? "success" : "secondary"}
+        color={isValid ? "primary" : "secondary"}
         endIcon={<ArrowForwardIcon />}
         className="
           w-full
