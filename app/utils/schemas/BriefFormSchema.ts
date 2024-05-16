@@ -1,18 +1,30 @@
 import { z } from 'zod';
 
 const BriefFormSchema = z.object({
-  id: z.number(),
-  user_id: z.number().min(1),
-  created_at: z.string(),
-  updated_at: z.string(),
-  title: z.string().min(1),
-  brief_details: z.string().min(1),
-  company: z.string().min(1),
-  company_details: z.string().min(1),
-  company_avatar: z.string().min(1),
-  product_details: z.string().min(1),
-  usp: z.string().min(1),
-  goals: z.array(z.string()).min(1),
+  id: z.number().optional(),
+  user_id: z.number().optional(), // TODO: Change to required
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+  project_name: z.string().optional(),
+  company_avatar: z.string().optional(),
+  company_name: z.string().optional(),
+  company_details: z.string().optional(),
+  project_details: z.string().optional(),
+  product_details: z.string().optional(),
+  product_usp: z.string().optional(),
+  project_goals: z.array(z.string()).optional(),
+  project_goals_details: z.string().optional(),
+  project_objectives: z.array(z.string()),
+  brand_strategy: z.string().optional(),
+  brand_message: z.string().optional(),
+  brand_tone: z.string().optional(),
+  target_markets: z.array(z.string()).optional(),
+  target_genders: z.array(z.string()).optional(),
+  target_ages: z.array(z.string()).optional(),
+  target_description: z.string().optional(),
+  ideas_medium: z.array(z.string()).optional(),
+  ideas_channels: z.array(z.string()).optional(),
+  ideas_quantity: z.number(),
 });
 
 export default BriefFormSchema;

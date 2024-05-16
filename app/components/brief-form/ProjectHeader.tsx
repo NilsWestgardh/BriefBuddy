@@ -1,4 +1,13 @@
+"use client";
+
+// Hooks
 import React from "react";
+import { 
+  useFormContext, 
+  Controller 
+} from "react-hook-form";
+// Validation
+import { BriefFormType } from "@/app/utils/types/BriefFormType";
 // Custom components
 import DynamicAvatarGroup from "@/app/components/DynamicAvatarGroup";
 // Components
@@ -6,12 +15,21 @@ import Box from "@mui/material/Box";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 // Icons
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 export default function ProjectHeader() {
+  const {
+    control,
+    formState: { 
+      isSubmitting, 
+      isSubmitted,
+  },
+  } = useFormContext<BriefFormType>();
+
   return (
     <Box
       id="project-header-container"
@@ -26,7 +44,9 @@ export default function ProjectHeader() {
         bg-neutral-100
         border-b
         border-neutral-300
-        z-12
+        z-10
+        sticky
+        top-0
       "
     >
       <Box
@@ -112,9 +132,11 @@ export default function ProjectHeader() {
             justify-start
             items-center
             gap-1
+            border
+            border-red-500
           "
         >
-          <Typography
+          {/* <Typography
             variant="subtitle1"
             className="
               text-black
@@ -122,7 +144,58 @@ export default function ProjectHeader() {
             "
           >
             Project name
-          </Typography>
+          </Typography> */}
+          <Controller
+            name="project_name"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                id="project-name-input-field"
+                label="Project name"
+                placeholder="Project name"
+                size="small"
+                error={!!fieldState.error}
+                color="primary"
+                inputProps={{
+                  maxLength: 50,
+                  style: {
+                    paddingLeft: "0",
+                    textAlign: "left",
+                  },
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                  style: {
+                    textAlign: "left",
+                    transformOrigin: "top left",
+                    left: "0", // Align the label text to the left
+                  },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    display: "flex",
+                    alignItems: "center",
+                    paddingLeft: "0",
+                  },
+                  '& .MuiOutlinedInput-input': {
+                    paddingLeft: "0", // Ensure the input text has no left padding
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    border: "none",
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    border: "none",
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    border: "none",
+                  },
+                }}
+              />
+            )}
+            disabled={isSubmitting || isSubmitted}
+        />
           <EditIcon
             sx={{ fontSize: 16 }}
             className="
