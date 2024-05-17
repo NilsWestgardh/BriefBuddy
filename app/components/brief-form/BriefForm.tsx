@@ -4,7 +4,7 @@
 import React from "react";
 import { 
   useFormContext, 
-  // Controller, 
+  Controller, 
 } from "react-hook-form";
 // Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
@@ -21,11 +21,13 @@ import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import FormHelperText from '@mui/material/FormHelperText';
 // Icons
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function BriefForm() {
   const {
+    watch,
     control,
     formState: { 
       isSubmitting, 
@@ -33,6 +35,7 @@ export default function BriefForm() {
       isValid,
   },
   } = useFormContext<BriefFormType>();
+  const form = watch();
 
   return (
     <Box
@@ -45,6 +48,7 @@ export default function BriefForm() {
         w-full
         p-4
         gap-4
+        max-w-3xl
       "
     >
       <Box
@@ -124,6 +128,8 @@ export default function BriefForm() {
           label="Unique selling point"
           placeholder="What makes the product unique?"
           helperText="The product's unique selling point. (Optional)"
+          rows={2}
+          multiline={true}
           required={false}
         />
       </Box>
@@ -148,123 +154,38 @@ export default function BriefForm() {
           label="Goals details"
           placeholder="Increase sales by 20%.."
           helperText="A short description of the goals. (Optional)"
+          rows={2}
+          multiline={true}
           required={false}
         />
-        <FormControl fullWidth>
-          <InputLabel
-            id="demo-simple-select-label"
-          >
-            Objectives
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            size="small"
-            value={"Brand Awareness"}
-            label="Objectives"
-            // onChange={handleChange}
-          >
-            <MenuItem
-              value={"Brand Awareness"}
-            >
-              Brand Awareness
-            </MenuItem>
-            <MenuItem
-              value={"Increase Sales"}
-            >
-              Increase Sales
-            </MenuItem>
-            <MenuItem 
-              value={"Increase Conversion"}
-            >
-              Increase Conversion
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      <Box
-        id="section-strategy-container"
-        className="
-          flex
-          flex-col
-          justify-start
-          items-start
-          w-full
-          gap-4
-        "
-      >
-        <SectionTitle
-          title="Strategy"
-          subtitle="Lorem ipsum dolor sit amet"
-        />
-        <CustomTextInput
-          fieldName="brand_strategy"
-          label="Strategy"
-          placeholder="e.g. Increase sales by 20%"
-          helperText=""
-          required={false}
-        />
-        <CustomTextInput
-          fieldName="brand_message"
-          label="Message"
-          placeholder="e.g. Increase sales by 20%"
-          helperText=""
-          required={false}
-        />
-        <CustomTextInput
-          fieldName="brand_tone"
-          label="Tone of voice"
-          placeholder="e.g. Increase sales by 20%"
-          helperText=""
-          required={false}
-        />
-      </Box>
-      <Box
-        id="section-audience-container"
-        className="
-          flex
-          flex-col
-          justify-start
-          items-start
-          w-full
-          gap-4
-        "
-      >
-        <SectionTitle
-          title="Audience"
-          subtitle="Lorem ipsum dolor sit amet"
-        />
-        {/* MARKETS */}
+        {/* OBJECTIVES */}
         <MultipleSelectChip
-          name="target_markets"
-          label="Markets"
-          helperText="Select all that apply."
+          name="project_objectives"
+          label="Objectives"
+          helperText="Select all objectives that apply. (Optional)"
           options={[
-            "Global 🌍",
-            "European Union 🇪🇺",
-            "Sweden 🇸🇪", 
-            "Norway 🇳🇴", 
-            "Denmark 🇩🇰", 
-            "Finland 🇫🇮",
-            "United States 🇺🇸",
-            "Canada 🇨🇦",
-            "Australia 🇦🇺",
-            "United Kingdom 🇬🇧",
-            "Germany 🇩🇪",
-            "France 🇫🇷",
-            "Spain 🇪🇸",
-            "Italy 🇮🇹",
-            "Japan 🇯🇵",
-            "India 🇮🇳",
-            "Netherlands 🇳🇱",
+            "Brand Awareness",
+            "Customer Acquisition",
+            "Customer Loyalty",
+            "Customer Retention",
+            "Engagement",
+            "Event Promotion",
+            "Increase Website Traffic",
+            "Lead Generation",
+            "Product Launch",
+            "Social Media Following",
           ]} 
           control={control}
+        />
+        <SectionTitle
+          title="Targets"
+          subtitle="Who the brief is targeting, and where they are."
         />
         {/* GENDERS */}
         <MultipleSelectChip
           name="target_genders"
           label="Genders"
-          helperText="Select all that apply."
+          helperText="Select all genders that apply. (Optional)"
           options={[
             "All", 
             "Men", 
@@ -277,7 +198,7 @@ export default function BriefForm() {
         <MultipleSelectChip
           name="target_ages"
           label="Age ranges"
-          helperText="Select all that apply."
+          helperText="Select all age ranges that apply. (Optional)"
           options={[
             "All", 
             "18-24", 
@@ -286,6 +207,32 @@ export default function BriefForm() {
             "45-54", 
             "55-64", 
             "65+"
+          ]} 
+          control={control}
+        />
+        {/* MARKETS */}
+        <MultipleSelectChip
+          name="target_markets"
+          label="Markets"
+          helperText="Select all markets that apply. (Optional)"
+          options={[
+            "🌍 Global",
+            "🇪🇺 European Union",
+            "🇸🇪 Sweden", 
+            "🇳🇴 Norway", 
+            "🇩🇰 Denmark", 
+            "🇫🇮 Finland",
+            "🇺🇸 United States",
+            "🇨🇦 Canada",
+            "🇦🇺 Australia",
+            "🇬🇧 United Kingdom",
+            "🇩🇪 Germany",
+            "🇫🇷 France",
+            "🇪🇸 Spain",
+            "🇮🇹 Italy",
+            "🇯🇵 Japan",
+            "🇮🇳 India",
+            "🇳🇱 Netherlands",
           ]} 
           control={control}
         />
@@ -303,39 +250,80 @@ export default function BriefForm() {
         "
       >
         <SectionTitle
-          title="Ideas"
+          title="Output"
           subtitle="Lorem ipsum dolor sit amet"
         />
+        {/* MEDIUMS */}
+        <MultipleSelectChip
+          name="ideas_medium"
+          label="Medium"
+          helperText="Select all mediums that apply. (Optional)"
+          options={[
+            "Digital",
+            "Social",
+            "Influencer",
+            "Film",
+            "Print",
+            "Audio",
+            "Integrated",
+            "Outdoor",
+            "Activation",
+          ]} 
+          control={control}
+        />
+        {/* CHANNELS */}
+        {
+          Array.isArray(form.ideas_medium) && (
+          form.ideas_medium
+            .join()
+            .toLowerCase()
+            .includes("social") || 
+          form.ideas_medium
+            .join()
+            .toLowerCase()
+            .includes("influencer") 
+          ) && (
+          <MultipleSelectChip
+            name="ideas_channels"
+            label="Channels"
+            helperText="Select all channels that apply. (Optional)"
+            options={[
+              "Instagram",
+              "Facebook",
+              "X (Twitter)",
+              "LinkedIn",
+              "TikTok",
+              "YouTube",
+              "Twitch",
+            ]} 
+            control={control}
+          />
+        )}
         <FormControl fullWidth>
           <InputLabel
-            id="demo-simple-select-label"
+            id="ideas-quantity-label"
           >
             Ideas
           </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            size="small"
-            value={5} // TODO: Dynamic
-            label="Ideas"
-            // onChange={handleChange}
-          >
-            {/* TODO: Import object data */}
-            {[
-              5, 
-              10, 
-              15, 
-              20, 
-              25,
-            ].map((ideas, index) => (
-              <MenuItem
-                key={index}
-                value={ideas}
+          <Controller
+            name="ideas_quantity"
+            control={control}
+            render={({ field }) => (
+              <Select
+                labelId="ideas-quantity-label"
+                id="ideas-quantity-select"
+                {...field}
+                label="Ideas"
               >
-                {ideas}
-              </MenuItem>
-            ))};
-          </Select>
+                {[5, 10, 15, 20, 25].map((quantity) => (
+                  <MenuItem key={quantity} value={quantity}>
+                    {quantity}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          />
+          <FormHelperText>Select the amount of ideas you need.</FormHelperText>
         </FormControl>
       </Box>
       <Button

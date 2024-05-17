@@ -43,7 +43,7 @@ export default function NewBriefPage() {
       target_description: "",
       ideas_medium: [],
       ideas_channels: [],
-      ideas_quantity: 0,
+      ideas_quantity: 5,
     },
     resolver: zodResolver(BriefFormSchema),
     mode: "onChange",

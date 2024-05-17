@@ -93,7 +93,10 @@ export default function MultipleSelectChip({
                 "
               >
                 {(Array.isArray(selected) ? selected : []).map((value) => (
-                  <Chip key={value} label={value} />
+                  <Chip
+                    key={value}
+                    label={value}
+                  />
                 ))}
               </Box>
             )}
