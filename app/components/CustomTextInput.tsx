@@ -17,6 +17,7 @@ type CustomTextInputProps = {
   helperText?: string;
   multiline?: boolean;
   rows?: number;
+  size?: "small" | "medium";
   required: boolean;
   color?: TextFieldColor;
   maxLength?: number;
@@ -29,6 +30,7 @@ export default function CustomTextInput({
   helperText,
   multiline,
   rows,
+  size,
   required,
   color,
   maxLength,
@@ -56,7 +58,7 @@ export default function CustomTextInput({
           helperText={helperText ?? undefined}
           multiline={multiline ?? undefined}
           rows={rows ?? 1}
-          size="small"
+          size={size ? size : "medium"}
           error={!!fieldState.error}
           color={color ? color : "primary"}
           inputProps={{

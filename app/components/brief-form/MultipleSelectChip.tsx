@@ -1,6 +1,8 @@
 // Hooks
 import React from "react";
 import { Controller, Control } from "react-hook-form";
+// Validation
+import { BriefFormType } from "@/app/utils/types/BriefFormType";
 // Utils
 import { useTheme } from "@mui/material/styles";
 import { Theme } from "@mui/material/styles";
@@ -12,7 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
-import { BriefFormType } from "@/app/utils/types/BriefFormType";
+import FormHelperText from '@mui/material/FormHelperText';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -30,8 +32,8 @@ type MultipleSelectChipProps = {
   label: string;
   options: string[];
   control: Control<BriefFormType>;
+  helperText?: string;
 }
-
 
 function getStyles(
   name: string, 
@@ -50,7 +52,8 @@ export default function MultipleSelectChip({
   name, 
   label, 
   options, 
-  control 
+  control,
+  helperText,
 }: MultipleSelectChipProps) {
   const theme = useTheme();
 
@@ -77,7 +80,7 @@ export default function MultipleSelectChip({
             }}
             input={
               <OutlinedInput
-                id="select-multiple-chip" 
+                id={`${name}-select-chip`} 
                 label={label}
               />
             }
@@ -86,7 +89,7 @@ export default function MultipleSelectChip({
                 className="
                   flex
                   flex-wrap
-                  gap-0.5
+                  gap-1
                 "
               >
                 {(Array.isArray(selected) ? selected : []).map((value) => (
@@ -111,6 +114,7 @@ export default function MultipleSelectChip({
           </Select>
         )}
       />
+      {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
     </FormControl>
   );
 };

@@ -4,7 +4,7 @@
 import React from "react";
 import { 
   useFormContext, 
-  Controller, 
+  // Controller, 
 } from "react-hook-form";
 // Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
@@ -202,7 +202,7 @@ export default function BriefForm() {
           label="Strategy"
           placeholder="e.g. Increase sales by 20%"
           helperText=""
-          required={true}
+          required={false}
         />
         <CustomTextInput
           fieldName="brand_message"
@@ -234,78 +234,50 @@ export default function BriefForm() {
           title="Audience"
           subtitle="Lorem ipsum dolor sit amet"
         />
-        <FormControl fullWidth>
-          <InputLabel
-            id="demo-simple-select-label"
-          >
-            Markets
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            size="small"
-            value="Sweden" // TODO: Dynamic
-            label="Markets"
-            // onChange={handleChange}
-          >
-            {/* TODO: Import object with countries */}
-            {[
-              "Sweden", 
-              "Norway", 
-              "Denmark", 
-              "Finland", 
-              "United States"
-            ].map((market, index) => (
-              <MenuItem
-                key={index}
-                value={market}
-              >
-                {market}
-              </MenuItem>
-            ))};
-          </Select>
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel
-            id="target-genders-select-label"
-          >
-            Genders
-          </InputLabel>
-          <Controller
-            name="target_ages"
-            control={control}
-            defaultValue={["All ages"]}
-            render={({ field }) => (
-              <Select
-                labelId="target-genders-select-label"
-                id="target-genders-select"
-                size="small"
-                multiple
-                {...field}
-                label="All"
-                value={Array.isArray(field.value) ? field.value : []}
-              >
-                {[
-                  "All", 
-                  "Unisex", 
-                  "Men", 
-                  "Women", 
-                  "Non-binary"
-                ].map((gender, index) => (
-                  <MenuItem
-                    key={index}
-                    value={gender}
-                  >
-                    {gender}
-                  </MenuItem>
-                ))};
-              </Select>
-            )}
-          />
-        </FormControl>
+        {/* MARKETS */}
+        <MultipleSelectChip
+          name="target_markets"
+          label="Markets"
+          helperText="Select all that apply."
+          options={[
+            "Global 🌍",
+            "European Union 🇪🇺",
+            "Sweden 🇸🇪", 
+            "Norway 🇳🇴", 
+            "Denmark 🇩🇰", 
+            "Finland 🇫🇮",
+            "United States 🇺🇸",
+            "Canada 🇨🇦",
+            "Australia 🇦🇺",
+            "United Kingdom 🇬🇧",
+            "Germany 🇩🇪",
+            "France 🇫🇷",
+            "Spain 🇪🇸",
+            "Italy 🇮🇹",
+            "Japan 🇯🇵",
+            "India 🇮🇳",
+            "Netherlands 🇳🇱",
+          ]} 
+          control={control}
+        />
+        {/* GENDERS */}
+        <MultipleSelectChip
+          name="target_genders"
+          label="Genders"
+          helperText="Select all that apply."
+          options={[
+            "All", 
+            "Men", 
+            "Women", 
+            "Non-binary"
+          ]} 
+          control={control}
+        />
+        {/* AGES */}
         <MultipleSelectChip
           name="target_ages"
           label="Age ranges"
+          helperText="Select all that apply."
           options={[
             "All", 
             "18-24", 
