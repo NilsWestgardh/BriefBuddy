@@ -50,13 +50,13 @@ export default function NewBriefPage() {
   });
   const {
     handleSubmit,
-    watch,
+    // watch,
     // formState: { 
     //   isValid,
     //  },
   } = methods;
 
-  const form = watch();
+  // const form = watch();
   // const posthog = PostHogClient();
 
   async function onSubmit(data: BriefFormType) {
@@ -96,7 +96,7 @@ export default function NewBriefPage() {
         >
           <ProjectHeader />
           {/* DELETE: Display Form Data */}
-          {JSON.stringify(form, null, 2)}
+          {/* {JSON.stringify(form, null, 2)} */}
           <BriefForm />
         </Box>
       </form>

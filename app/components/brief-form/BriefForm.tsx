@@ -251,7 +251,7 @@ export default function BriefForm() {
       >
         <SectionTitle
           title="Output"
-          subtitle="Lorem ipsum dolor sit amet"
+          subtitle="What you need from the brief."
         />
         {/* MEDIUMS */}
         <MultipleSelectChip
