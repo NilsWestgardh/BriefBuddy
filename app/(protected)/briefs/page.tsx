@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 // Icons
 import AddIcon from '@mui/icons-material/Add';
 
-export default function MyBriefs() {
+export default function Briefs() {
   return (
     <Box
       id="home-container"
@@ -71,44 +71,21 @@ export default function MyBriefs() {
       <Grid
         container
         spacing={4}
+        className="w-full gap-4 m-0 flex-wrap"
       >
         <Grid
           xs={12}
-          md={6}
-          lg={4}
+          sm={6}
+          md={4}
+          lg={3}
           className="
-
             bg-white
             border
             border-black
             hover:border-neutral-700
             hover:cursor-pointer
-            rounded-md
-            p-4
-          "
-        >
-          {/* TODO: Replace with dynamic data */}
-          <CustomGridItem
-            id={1}
-            title="Project Title"
-            briefDetails="Lorem ipsum dolor sit amet."
-            company="Company"
-            companyAvatar="/briefbuddy-logo.png"
-            createdAt="2021-10-01"
-            updatedAt={null}
-            ideasQuantity={5}
-          />
-        </Grid>
-        <Grid
-          xs={6}
-          className="
-            bg-neutral-50
-            border
-            border-neutral-100
-            hover:border-neutral-200
             hover:shadow-md
-            hover:shadow-neutral-100
-            hover:cursor-pointer
+            hover:shadow-neutral-300
             rounded-md
             p-4
           "
@@ -127,23 +104,24 @@ export default function MyBriefs() {
         </Grid>
         <Grid
           xs={12}
-          md={6}
-          lg={4}
+          sm={6}
+          md={4}
+          lg={3}
           className="
-            bg-neutral-50
+            bg-white
             border
-            border-neutral-100
-            hover:border-neutral-200
-            hover:shadow-md
-            hover:shadow-neutral-100
+            border-black
+            hover:border-neutral-700
             hover:cursor-pointer
+            hover:shadow-md
+            hover:shadow-neutral-300
             rounded-md
             p-4
           "
         >
           {/* TODO: Replace with dynamic data */}
           <CustomGridItem
-            id={1}
+            id={2}
             title="Project Title"
             briefDetails="Lorem ipsum dolor sit amet."
             company="Company"
@@ -155,23 +133,53 @@ export default function MyBriefs() {
         </Grid>
         <Grid
           xs={12}
-          md={6}
-          lg={4}
+          sm={6}
+          md={4}
+          lg={3}
           className="
-            bg-neutral-50
+            bg-white
             border
-            border-neutral-100
-            hover:border-neutral-200
-            hover:shadow-md
-            hover:shadow-neutral-100
+            border-black
+            hover:border-neutral-700
             hover:cursor-pointer
+            hover:shadow-md
+            hover:shadow-neutral-300
             rounded-md
             p-4
           "
         >
           {/* TODO: Replace with dynamic data */}
           <CustomGridItem
-            id={1}
+            id={3}
+            title="Project Title"
+            briefDetails="Lorem ipsum dolor sit amet."
+            company="Company"
+            companyAvatar="/briefbuddy-logo.png"
+            createdAt="2021-10-01"
+            updatedAt={null}
+            ideasQuantity={5}
+          />
+        </Grid>
+        <Grid
+          xs={12}
+          sm={6}
+          md={4}
+          lg={3}
+          className="
+            bg-white
+            border
+            border-black
+            hover:border-neutral-700
+            hover:cursor-pointer
+            hover:shadow-md
+            hover:shadow-neutral-300
+            rounded-md
+            p-4
+          "
+        >
+          {/* TODO: Replace with dynamic data */}
+          <CustomGridItem
+            id={4}
             title="Project Title"
             briefDetails="Lorem ipsum dolor sit amet."
             company="Company"

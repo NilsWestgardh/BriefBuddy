@@ -54,7 +54,7 @@ export default function Sidebar() {
           "
         >
           <NavButton route="new-brief" />
-          <NavButton route="my-briefs" />
+          <NavButton route="briefs" />
           <NavButton route="settings" />
         </Box>
       </Box>

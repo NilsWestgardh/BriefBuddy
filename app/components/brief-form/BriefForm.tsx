@@ -323,7 +323,9 @@ export default function BriefForm() {
               </Select>
             )}
           />
-          <FormHelperText>Select the amount of ideas you need.</FormHelperText>
+          <FormHelperText>
+            Select the amount of ideas you need.
+          </FormHelperText>
         </FormControl>
       </Box>
       <Button

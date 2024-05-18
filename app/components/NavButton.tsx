@@ -40,9 +40,9 @@ export default function NavButton({
           setIcon(<EditNoteIcon />);
           setTitle("New Brief");
           break;
-        case "my-briefs":
+        case "briefs":
           setIcon(<ArticleIcon />);
-          setTitle("My Briefs");
+          setTitle("Briefs");
           break;
         case "settings":
           setIcon(<SettingsIcon />);
@@ -78,7 +78,7 @@ export default function NavButton({
         className={clsx("flex flex-row justify-start items-center w-full hover:cursor-pointer",
           {
             "hover:opacity-80": currentPathname.includes(route.toLowerCase()),
-            "opacity-60 hover:opacity-100": !currentPathname.includes(route.toLowerCase()),
+            "opacity-50 hover:opacity-100 transition-all": !currentPathname.includes(route.toLowerCase()),
           }
         )}
       >
