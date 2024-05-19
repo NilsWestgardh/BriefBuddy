@@ -1,5 +1,7 @@
+"use client";
+
 // Hooks
-import React from "react";
+import React, { useState } from "react";
 // Utils
 import Link from "next/link";
 // Custom Components
@@ -13,7 +15,16 @@ import Typography from "@mui/material/Typography";
 // Icons
 import AddIcon from '@mui/icons-material/Add';
 
+const sortByOptions = {
+  latest: "latest",
+  oldest: "oldest",
+};
+
 export default function Briefs() {
+  const [sortBy, setSortBy] = useState<string>(sortByOptions.latest);
+
+  // TODO: Sort by logic
+
   return (
     <Box
       id="home-container"
@@ -23,14 +34,16 @@ export default function Briefs() {
         justify-start
         items-start
         w-full
-        gap-6
+        gap-2
         p-4
       "
     >
       <Typography
         variant="h4"
         className="
+          text-black
           font-semibold
+          mb-2
         "
       >
         My Briefs
@@ -56,13 +69,15 @@ export default function Briefs() {
         </Typography>
         <Button
           size="small"
-          color="secondary"
+          color={sortBy === sortByOptions.latest ? "primary" : "secondary"}
+          onClick={() => setSortBy(sortByOptions.latest)}
         >
           Latest
         </Button>
         <Button
           size="small"
-          color="secondary"
+          color={sortBy === sortByOptions.oldest ? "primary" : "secondary"}
+          onClick={() => setSortBy(sortByOptions.oldest)}
         >
           Oldest
         </Button>
