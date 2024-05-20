@@ -74,6 +74,41 @@ export default function NewBriefPage() {
     message: string;
   } | null>(null);
 
+  // OpenAI API fetch with retry
+  // async function fetchIdeasWithRetry(
+  //   url: string, 
+  //   body: Record<string, unknown>, 
+  //   retries = 3, 
+  //   delay = 1000
+  // ) {
+  //   for (let attempt = 1; attempt <= retries; attempt++) {
+  //     try {
+  //       const response = await fetch(url, {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify(body),
+  //       });
+  
+  //       if (!response.ok) {
+  //         throw new Error(`Attempt ${attempt}: Server responded with status ${response.status}`);
+  //       }
+  
+  //       return response;
+  //     } catch (error) {
+  //       console.error(`Attempt ${attempt}:`, error);
+  
+  //       if (attempt === retries) {
+  //         throw new Error(`Failed after ${retries} attempts.`);
+  //       }
+  
+  //       await new Promise(resolve => setTimeout(resolve, delay));
+  //       delay *= 2;
+  //     }
+  //   }
+  // }
+
   async function onSubmit(
     data: BriefFormType
   ) {
@@ -85,12 +120,26 @@ export default function NewBriefPage() {
     setShowAlertInfo(true);
 
     try {
-      const response = await fetch("/api/submit-brief-form", { 
+      // Fetch ideas
+      const openAiResponse = await fetchWithRetry(
+        "/api/data/generate-ideas", {
+        prompt: constructedPrompt,
+      });
+      
+      if (openAiResponse.ok && onAiResponse.data) {
+
+      }
+
+      // Submit brief + ideas
+      const supabaseResponse = await fetch("/api/submit-brief-form", { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          ideas: re
+        }),
       });
       
       const responseData = await response.json();

@@ -1,8 +1,8 @@
 export type BriefFormType = {
   id?: number;
-  user_id?: number;
   created_at?: string;
   updated_at?: string;
+  user_id?: number;
   project_name: string;
   company_avatar?: string;
   company_name?: string;

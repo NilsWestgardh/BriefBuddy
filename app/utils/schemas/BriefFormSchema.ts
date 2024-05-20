@@ -25,6 +25,7 @@ const BriefFormSchema = z.object({
   ideas_medium: z.array(z.string()).optional(),
   ideas_channels: z.array(z.string()).optional(),
   ideas_quantity: z.number(),
+  ideas_generated: z.array(z.string()).optional(),
 });
 
 export default BriefFormSchema;
