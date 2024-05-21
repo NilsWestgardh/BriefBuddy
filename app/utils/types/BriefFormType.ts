@@ -23,4 +23,5 @@ export type BriefFormType = {
   ideas_medium?: string[];
   ideas_channels?: string[];
   ideas_quantity: number;
+  ideas_generated?: string[];
 };

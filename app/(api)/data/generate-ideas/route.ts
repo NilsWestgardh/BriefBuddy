@@ -1,46 +1,37 @@
-// import { NextRequest } from "next/server";
-// import fetch from "node-fetch";
+import { NextRequest, NextResponse } from "next/server";
+import fetch from "node-fetch";
 
-// export const maxDuration = 45;
-// // TODO: Update
-// const openAiApiUrl = "https://api.openai.com/v1/images/generations";
+const openAiApiUrl = "https://api.openai.com/v1/completions";
 
-// export async function POST(req: NextRequest) {
-//     if (req.method === 'POST') {
-//         const { prompt } = await req.json();
-        
-//         try {
-//             // Generate image
-//             const response = await fetch(openAiApiUrl, {
-//                 method: "POST",
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     "Authorization": `Bearer ${process.env["OPENAI_API_KEY"]}`
-//                 },
-//                 body: JSON.stringify(
-//                   // TODO: define header
-//                 )
-//             });
+export async function POST(req: NextRequest) {
+  const { prompt } = await req.json();
 
-//             if (!response.ok) {
-//                 throw new Error(`API call failed: ${response.statusText}`);
-//             }
+  try {
+    const response = await fetch(openAiApiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env["OPENAI_API_KEY"]}`,
+      },
+      body: JSON.stringify({
+        model: "text-davinci-003",
+        prompt,
+        max_tokens: 1000,
+      }),
+    });
 
-//             const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error(`API call failed: ${response.statusText}`);
+    }
 
-//             // return new Response(JSON.stringify({ imageUrl: openAiImageUrl }), {
-//             //     status: 200,
-//             //     headers: { 'Content-Type': 'application/json' },
-//             // });
+    const responseData = await response.json();
 
-//         } catch (error) {
-//             console.error('Error generating ideas:', error);
-//             return new Response(JSON.stringify({ error: 'Error generating ideas' }), {
-//                 status: 500,
-//                 headers: { 'Content-Type': 'application/json' },
-//             });
-//         }
-//     } else {
-//         return new Response(null, { status: 405 });
-//     }
-// }
+    return NextResponse.json(responseData);
+  } catch (error) {
+    console.error("Error generating ideas:", error);
+    return new NextResponse(JSON.stringify({ error: "Error generating ideas" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+};
