@@ -91,7 +91,8 @@ export default function LoginPage({
     formState: {
       isValid,
       errors,
-      isSubmitting
+      isSubmitting,
+      touchedFields,
     }
   } = methods;
 
@@ -649,7 +650,13 @@ export default function LoginPage({
                           }
                         )}
                       >
-                        {confirmPasswordMatch ? "Passwords match." : "Passwords do not match."}
+                        {confirmPasswordMatch
+                          ? touchedFields.password && touchedFields.confirmPassword
+                            ? "Passwords match."
+                            : ""
+                          : touchedFields.password && touchedFields.confirmPassword
+                          ? "Passwords do not match."
+                          : ""}
                       </Typography>
                     )}
 
