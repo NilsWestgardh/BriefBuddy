@@ -4,11 +4,12 @@ import Sidebar from "@/app/components/Sidebar";
 // Components
 import Box from "@mui/material/Box";
 
-export default function ProtectedRoutesLayout({
+export default async function ProtectedRoutesLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <Box
       id="protected-routes-layout"
