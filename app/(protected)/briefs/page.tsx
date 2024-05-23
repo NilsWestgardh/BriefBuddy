@@ -99,11 +99,14 @@ export default function Briefs() {
             border-black
             hover:border-neutral-700
             hover:cursor-pointer
-            hover:shadow-md
-            hover:shadow-neutral-300
             rounded-md
             p-4
           "
+          sx={{
+            "&:hover": {
+              boxShadow: "0 2px 0 0 #000000"
+            }
+          }}
         >
           {/* TODO: Replace with dynamic data */}
           <CustomGridItem
@@ -128,11 +131,14 @@ export default function Briefs() {
             border-black
             hover:border-neutral-700
             hover:cursor-pointer
-            hover:shadow-md
-            hover:shadow-neutral-300
             rounded-md
             p-4
           "
+          sx={{
+            "&:hover": {
+              boxShadow: "0 2px 0 0 #000000"
+            }
+          }}
         >
           {/* TODO: Replace with dynamic data */}
           <CustomGridItem
@@ -157,11 +163,14 @@ export default function Briefs() {
             border-black
             hover:border-neutral-700
             hover:cursor-pointer
-            hover:shadow-md
-            hover:shadow-neutral-300
             rounded-md
             p-4
           "
+          sx={{
+            "&:hover": {
+              boxShadow: "0 2px 0 0 #000000"
+            }
+          }}
         >
           {/* TODO: Replace with dynamic data */}
           <CustomGridItem
@@ -186,11 +195,14 @@ export default function Briefs() {
             border-black
             hover:border-neutral-700
             hover:cursor-pointer
-            hover:shadow-md
-            hover:shadow-neutral-300
             rounded-md
             p-4
           "
+          sx={{
+            "&:hover": {
+              boxShadow: "0 2px 0 0 #000000"
+            }
+          }}
         >
           {/* TODO: Replace with dynamic data */}
           <CustomGridItem
