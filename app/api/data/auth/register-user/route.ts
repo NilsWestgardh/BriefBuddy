@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       email,
       password,
       options: {
-        emailRedirectTo: `${url}/auth/callback`,
+        emailRedirectTo: `${url}/api/auth/callback`,
       },
     });
 
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     console.log(`Error when attempting sign up: ${error.message}`);
     const errorMessage = encodeURIComponent(error.message);
     return Response.redirect(`${url}/login?error=${errorMessage}`);
-  }
+  };
 
   return Response.redirect(
     `${url}/login?message=Check your email to continue sign in process!`,
