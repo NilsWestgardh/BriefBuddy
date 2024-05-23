@@ -132,7 +132,7 @@ export default function LoginPage({
     password: string
   }) {
     const { email, password } = data;
-    const endpoint = showSignUp ? "/auth/register-user" : "/auth/login-user";
+    const endpoint = showSignUp ? "/api/auth/register-user" : "/api/auth/login-user";
 
     try {
       const response = await fetch(endpoint, {
@@ -175,12 +175,12 @@ export default function LoginPage({
           session?.user.id && 
           session?.user.id !== "undefined"
         ) {
-          if (endpoint === "/auth/register-user") {
+          if (endpoint === "/api/auth/register-user") {
             posthog.capture({
               distinctId: session?.user.id,
               event: "📝 User Signed Up"
             })
-          } else if (endpoint === "/auth/login-user") {
+          } else if (endpoint === "/api/auth/login-user") {
             posthog.capture({
               distinctId: session.user.id,
               event: "🔓 User Signed In"
