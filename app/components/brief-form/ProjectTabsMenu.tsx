@@ -13,7 +13,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import NoteIcon from '@mui/icons-material/Note';
 
-const ideas_quantity = 3; // TODO: Replace placeholder with fetched data
+const ideas_quantity = 100; // TODO: Replace placeholder with fetched data
 const team_size = 5; // TODO: Replace placeholder with fetched data
 
 type TabsMenuProps = {
@@ -75,7 +75,7 @@ export default function TabsMenu({
               }}
               sx={{
                 "& .MuiBadge-badge": {
-                  transform: "translate(100%, -70%)",
+                  transform: "translate(60%, -70%)",
                   marginRight: "6px",
                 },
               }}

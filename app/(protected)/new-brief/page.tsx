@@ -18,6 +18,9 @@ import BriefForm from "@/app/components/brief-form/BriefForm";
 import SubmitButton from "@/app/components/brief-form/SubmitButton";
 import ProjectTabsMenu from "@/app/components/brief-form/ProjectTabsMenu";
 import ProjectTabContent from "@/app/components/brief-form/ProjectTabContent";
+import IdeaContainer from "@/app/components/brief-results/IdeaContainer";
+import TeamTable from "@/app/components/TeamTable";
+import TeamTableHeader from "@/app/components/TeamTableHeader";
 // Components
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
@@ -25,6 +28,28 @@ import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
+
+// TODO: Replace with fetched ideas data
+const placeholderIdeas = {
+  1: {
+    title: "Idea 1",
+    problem: "Problem lorem ipsum dolor sit amet.",
+    insight: "Insight lorem ipsum dolor sit amet.",
+    idea: "Idea lorem ipsum dolor sit amet.",
+  },
+  2: {
+    title: "Idea 2",
+    problem: "Problem lorem ipsum dolor sit amet.",
+    insight: "Insight lorem ipsum dolor sit amet.",
+    idea: "Idea lorem ipsum dolor sit amet.",
+  },
+  3: {
+    title: "Idea 3",
+    problem: "Problem lorem ipsum dolor sit amet.",
+    insight: "Insight lorem ipsum dolor sit amet.",
+    idea: "Idea lorem ipsum dolor sit amet.",
+  },
+};
 
 type OpenAiMessageType = {
   role: string;
@@ -142,9 +167,9 @@ export default function NewBriefPage() {
 
         await new Promise((resolve) => setTimeout(resolve, delay));
         delay *= 2;
-      }
-    }
-  }
+      };
+    };
+  };
 
   // Construct OpenAI prompt
   async function constructPrompt(data: BriefFormType): Promise<string> {
@@ -313,15 +338,47 @@ export default function NewBriefPage() {
                   // TODO: Logic to call OpenAI API & switch to Ideas tab on success
                 />
               </Box>
-              
             </ProjectTabContent>
             {/* IDEAS TAB */}
             <ProjectTabContent value={tab} index={1}>
-              <div>Ideas placeholder: Ideas stack</div>
+              <Box
+                className="
+                  flex
+                  flex-col
+                  justify-center
+                  items-center
+                  w-full
+                  gap-4
+                  p-4
+                "
+              >
+                {Object.values(placeholderIdeas).map((idea, index) => (
+                  <IdeaContainer
+                    key={index}
+                    title={idea.title}
+                    problem={idea.problem}
+                    insight={idea.insight}
+                    idea={idea.idea}
+                  />
+                ))}
+              </Box>
             </ProjectTabContent>
             {/* TEAM TAB */}
             <ProjectTabContent value={tab} index={2}>
-              <div>Team placeholder: Table</div>
+              <Box
+                className="
+                  flex
+                  flex-col
+                  justify-center
+                  items-center
+                  w-full
+                  p-4
+                  gap-4
+                "
+              >
+                <TeamTableHeader />
+                <TeamTable />
+              </Box>
             </ProjectTabContent>
           </Box>
         </form>

@@ -4,9 +4,9 @@ import SidebarHeader from "@/app/components/SidebarHeader";
 import SidebarTeamSelect from "@/app/components/SidebarTeamSelect";
 import NavButton from "@/app/components/NavButton";
 import SignOutButton from "@/app/components/auth/SignOutButton";
+import NewProjectButton from "@/app/components/NewProjectButton";
 // Components
 import Box from "@mui/material/Box";
-// import Typography from "@mui/material/Typography";
 
 export default function Sidebar() {
   return (
@@ -54,6 +54,7 @@ export default function Sidebar() {
             w-full
           "
         >
+          <NewProjectButton />
           <NavButton route="new-brief" />
           <NavButton route="briefs" />
           <NavButton route="settings" />
