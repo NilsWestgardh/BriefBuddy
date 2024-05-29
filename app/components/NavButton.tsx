@@ -1,10 +1,7 @@
 "use client";
 
 // Hooks
-import React, {
-  useState,
-  useEffect 
-} from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname } from 'next/navigation';
 // Utils
 import Link from "next/link";
@@ -16,20 +13,18 @@ import HomeIcon from '@mui/icons-material/Home';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import ArticleIcon from '@mui/icons-material/Article';
 import SettingsIcon from '@mui/icons-material/Settings';
-import LogoutIcon from '@mui/icons-material/Logout';
 
-export default function NavButton({ 
-  route 
-}: { 
-  route: string 
-}) {
+interface NavButtonProps {
+  route: string;
+}
+
+export default function NavButton({ route }: NavButtonProps) {
   const [icon, setIcon] = useState<React.ReactNode>(null);
   const [title, setTitle] = useState<string>("");
 
   const currentPathname = usePathname();
 
-  // setButton
-  useEffect (() => {
+  useEffect(() => {
     function setButton() {
       switch (route.toLowerCase()) {
         case "home":
@@ -48,25 +43,16 @@ export default function NavButton({
           setIcon(<SettingsIcon />);
           setTitle("Settings");
           break;
-        case "sign-out":
-          setIcon(<LogoutIcon />);
-          setTitle("Sign out");
-          break;
         default:
           setIcon(null);
-      };
-    };
-  
-    if (!icon || !title) {
-      setButton();
-    };
-  }, [
-    route,
-    icon,
-    title,
-  ]);
+          setTitle("");
+      }
+    }
 
-  return route !== "sign-out" ? (
+    setButton();
+  }, [route]);
+
+  return (
     <Link
       href={`/${route.toLowerCase()}`}
       className="w-full"
@@ -75,39 +61,13 @@ export default function NavButton({
         id={`${route.toLowerCase()}-button`}
         color="primary"
         startIcon={icon}
-        className={clsx("flex flex-row justify-start items-center w-full hover:cursor-pointer",
-          {
-            "hover:opacity-80": currentPathname.includes(route.toLowerCase()),
-            "opacity-50 hover:opacity-100 transition-all": !currentPathname.includes(route.toLowerCase()),
-          }
-        )}
+        className={clsx("flex flex-row justify-start items-center w-full hover:cursor-pointer", {
+          "hover:opacity-80": currentPathname.includes(route.toLowerCase()),
+          "opacity-50 hover:opacity-100 transition-all": !currentPathname.includes(route.toLowerCase()),
+        })}
       >
         {title}
       </Button>
     </Link>
-  ) : (
-    <Link
-      href={`/${route.toLowerCase()}`}
-      className="w-full"
-    >
-      <Button
-        id={`${route.toLowerCase()}-button`}
-        startIcon={<LogoutIcon className="hover:text-red-500" />}
-        color={"secondary"}
-        className="
-          flex
-          flex-row
-          justify-start
-          items-center
-          w-full
-          hover:bg-red-100
-          hover:text-red-500
-          hover:cursor-pointer
-          hover:opacity-90
-        "
-      >
-        {title}
-      </Button>
-    </Link>
-  )
+  );
 };

@@ -17,13 +17,16 @@ const PostHogPageView = dynamic(() => import('@/app/PostHogPageView'), {
 const inter = Inter({ subsets: ["latin"] });
 
 const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
+  ? `${process.env.VERCEL_URL}`
   : "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
   keywords: [
-    "TCG",
+    "Marketing",
+    "Advertising",
+    "Marketing Campaigns",
+    "Marketing Briefs",
   ],
   title: {
     default: "BriefBuddy",

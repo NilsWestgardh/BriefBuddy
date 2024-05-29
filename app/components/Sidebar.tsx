@@ -3,6 +3,7 @@ import React from "react";
 import SidebarHeader from "@/app/components/SidebarHeader";
 import SidebarTeamSelect from "@/app/components/SidebarTeamSelect";
 import NavButton from "@/app/components/NavButton";
+import SignOutButton from "@/app/components/auth/SignOutButton";
 // Components
 import Box from "@mui/material/Box";
 // import Typography from "@mui/material/Typography";
@@ -58,7 +59,7 @@ export default function Sidebar() {
           <NavButton route="settings" />
         </Box>
       </Box>
-      <NavButton route="sign-out" />
+      <SignOutButton />
     </Box>
   );
-}
+};

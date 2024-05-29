@@ -155,7 +155,7 @@ export default function NewBriefPage() {
 
     const prompt = Object.values(promptParts).filter(part => part).join("\n");
 
-    return `${prompt}\nPlease generate marketing ideas in the following format:\n\nIdea Name #1\nProblem: [Problem statement]\nInsight: [Unique insight]\nIdea: [Big idea description]\n`;
+    return `Please generate ${data.ideas_quantity} advertising campaign ideas base on this brief:\n${prompt}, using this format:\n\nIdea Name #1\nProblem: [Problem statement]\nInsight: [Unique insight]\nIdea: [Big idea description]`;
   };
 
   // Submit form
@@ -171,21 +171,26 @@ export default function NewBriefPage() {
       const constructedPrompt = await constructPrompt(data);
 
       if (constructedPrompt) {
-        const openAiResponse: OpenAiResponseType = await fetchWithRetry("/api/data/generate-ideas", {
+        const openAiResponse: OpenAiResponseType = await fetchWithRetry(
+          "/api/data/generate-ideas", {
           prompt: constructedPrompt,
         });
 
-        if (openAiResponse && openAiResponse.choices) {
+        if (
+          openAiResponse && 
+          openAiResponse.choices
+        ) {
           const ideas = openAiResponse.choices.map((choice) => choice.message.content);
 
-          const supabaseResponse = await fetch("/api/data/submit-brief-form", {
+          const supabaseResponse = await fetch(
+            "/api/data/submit-brief-form", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
               ...data,
-              ideas,
+              ideas_generated: ideas,
             }),
           });
 

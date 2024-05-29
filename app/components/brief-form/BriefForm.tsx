@@ -329,6 +329,7 @@ export default function BriefForm() {
         </FormControl>
       </Box>
       <Button
+        type="submit"
         variant="outlined"
         size="large"
         disabled={!isValid || isSubmitting || isSubmitted}

@@ -1,5 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { 
+  NextRequest, 
+  NextResponse 
+} from "next/server";
 import fetch from "node-fetch";
+import { openai } from "@ai-sdk/openai";
 
 const openAiApiUrl = "https://api.openai.com/v1/completions";
 
