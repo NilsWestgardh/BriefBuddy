@@ -16,39 +16,31 @@ import CustomTextInput from "@/app/components/CustomTextInput";
 import MultipleSelectChip from "@/app/components/brief-form/MultipleSelectChip";
 // Components
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormHelperText from '@mui/material/FormHelperText';
-// Icons
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function BriefForm() {
   const {
     watch,
-    control,
-    formState: { 
-      isSubmitting, 
-      isSubmitted,
-      isValid,
-  },
+    control
   } = useFormContext<BriefFormType>();
   const form = watch();
 
   return (
     <Box
-      id="brief-form-container"
+      id="brief-form-sections"
       className="
         flex
         flex-col
         justify-start
         items-start
         w-full
-        p-4
         gap-4
-        max-w-3xl
+        p-4
+        overflow-y-auto
       "
     >
       <Box
@@ -328,22 +320,6 @@ export default function BriefForm() {
           </FormHelperText>
         </FormControl>
       </Box>
-      <Button
-        type="submit"
-        variant="outlined"
-        size="large"
-        disabled={!isValid || isSubmitting || isSubmitted}
-        color={isValid ? "primary" : "secondary"}
-        endIcon={<ArrowForwardIcon />}
-        className="
-          w-full
-          hover:cursor-pointer
-          justify-between
-          px-4
-        "
-      >
-        Generate ideas
-      </Button>
     </Box>
   );
 };

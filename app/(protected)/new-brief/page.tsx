@@ -15,6 +15,9 @@ import BriefFormSchema from "@/app/utils/schemas/BriefFormSchema";
 // Custom Components
 import ProjectHeader from "@/app/components/brief-form/ProjectHeader";
 import BriefForm from "@/app/components/brief-form/BriefForm";
+import SubmitButton from "@/app/components/brief-form/SubmitButton";
+import ProjectTabsMenu from "@/app/components/brief-form/ProjectTabsMenu";
+import ProjectTabContent from "@/app/components/brief-form/ProjectTabContent";
 // Components
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
@@ -92,12 +95,21 @@ export default function NewBriefPage() {
   // const posthog = PostHogClient();
   const router = useRouter();
 
+  const [tab, setTab] = useState(0);
   const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<{
     type: "success" | "error" | "info" | "warning";
     icon: React.ReactNode;
     message: string;
   } | null>(null);
+
+  // Tab change handler
+  function handleTabChange(
+    event: React.SyntheticEvent, 
+    newTab: number
+  ) {
+    setTab(newTab);
+  };
 
   // OpenAI API fetch with retry
   async function fetchWithRetry(
@@ -253,10 +265,64 @@ export default function NewBriefPage() {
               w-full
               h-full
               mb-8
+              relative
             "
           >
-            <ProjectHeader />
-            <BriefForm />
+            <Box
+              id="project-header-container"
+              className="
+                flex
+                flex-col
+                justify-center
+                items-center
+                w-full
+                sticky
+                top-0
+                z-10
+              "
+            >
+              <ProjectHeader />
+              <ProjectTabsMenu
+                tab={tab}
+                handleTabChange={handleTabChange}
+              />
+            </Box>
+            {/* BRIEF TAB */}
+            <ProjectTabContent
+              value={tab}
+              index={0}
+            >
+              <BriefForm />
+              <Box
+                id="submit-button-container"
+                className="
+                  bottom-0
+                  sticky
+                  z-10
+                  w-full
+                  bg-white
+                  border-t
+                  border-neutral-300
+                  p-4
+                  pb-8
+                "
+              >
+                <SubmitButton 
+                  cta="Generate ideas" 
+                  feedback="Generating ideas..."
+                  // TODO: Logic to call OpenAI API & switch to Ideas tab on success
+                />
+              </Box>
+              
+            </ProjectTabContent>
+            {/* IDEAS TAB */}
+            <ProjectTabContent value={tab} index={1}>
+              <div>Ideas placeholder: Ideas stack</div>
+            </ProjectTabContent>
+            {/* TEAM TAB */}
+            <ProjectTabContent value={tab} index={2}>
+              <div>Team placeholder: Table</div>
+            </ProjectTabContent>
           </Box>
         </form>
       </FormProvider>
@@ -279,4 +345,4 @@ export default function NewBriefPage() {
       )}
     </>
   );
-}
+};
