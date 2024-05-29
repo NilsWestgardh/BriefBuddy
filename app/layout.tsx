@@ -35,8 +35,8 @@ export const metadata: Metadata = {
   openGraph: {
     description: "BriefBuddy uses AI to turn marketing briefs into campaign ideas in minutes, not days.",
     images: [
-      "https://briefbuddy.ai/opengraph-image.png", 
-      "https://briefbuddy.ai/twitter-image.png"
+      `${defaultUrl}/opengraph-image.png`,
+      `${defaultUrl}/twitter-image.png`,
     ],
   }
 };
