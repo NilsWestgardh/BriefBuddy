@@ -1,8 +1,8 @@
 import React from "react";
 // Custom components
-import SidebarHeader from "@/app/components/SidebarHeader";
-import SidebarTeamSelect from "@/app/components/SidebarTeamSelect";
-import NavButton from "@/app/components/NavButton";
+import SidebarHeader from "@/app/components/sidebar/SidebarHeader";
+import SidebarTeamSelect from "@/app/components/sidebar/SidebarTeamSelect";
+import NavButton from "@/app/components/sidebar/NavButton";
 import SignOutButton from "@/app/components/auth/SignOutButton";
 import NewProjectButton from "@/app/components/NewProjectButton";
 // Components
@@ -55,8 +55,7 @@ export default function Sidebar() {
           "
         >
           <NewProjectButton />
-          <NavButton route="new-brief" />
-          <NavButton route="briefs" />
+          <NavButton route="projects" />
           <NavButton route="settings" />
         </Box>
       </Box>

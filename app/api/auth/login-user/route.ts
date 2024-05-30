@@ -3,7 +3,7 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { cookies } from "next/headers";
 
-const protectedRedirectRoute = "/briefs";
+const protectedRedirectRoute = "/projects";
 
 export async function POST(request: Request) {
   const requestUrl = new URL(request.url).origin;

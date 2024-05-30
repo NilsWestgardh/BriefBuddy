@@ -12,11 +12,13 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 type SubmitButtonProps = {
   cta: string;
   feedback: string;
+  onClick?: () => void;
 };
 
 export default function SubmitButton({ 
   cta,
-  feedback
+  feedback,
+  onClick,
  }: SubmitButtonProps) {
   const {
     formState: { 
@@ -28,6 +30,7 @@ export default function SubmitButton({
 
   return (
     <Button
+      onClick={onClick}
       type="submit"
       variant="outlined"
       size="large"

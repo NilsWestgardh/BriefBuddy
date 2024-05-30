@@ -1,6 +1,6 @@
 import React from "react";
 // Custom Components
-import Sidebar from "@/app/components/Sidebar";
+import Sidebar from "@/app/components/sidebar/Sidebar";
 // Components
 import Box from "@mui/material/Box";
 

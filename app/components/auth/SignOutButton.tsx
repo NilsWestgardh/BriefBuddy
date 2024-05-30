@@ -43,6 +43,7 @@ export default function SignOutButton() {
         hover:text-red-500
         hover:cursor-pointer
         hover:opacity-90
+        transition-all
       "
     >
       {buttonDisabled ? "Logging out.." : "Log out"}

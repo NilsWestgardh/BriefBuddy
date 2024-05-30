@@ -13,14 +13,15 @@ import BriefFormSchema from "@/app/utils/schemas/BriefFormSchema";
 // Utils
 // import PostHogClient from "@/app/lib/posthog/posthog";
 // Custom Components
-import ProjectHeader from "@/app/components/brief-form/ProjectHeader";
-import BriefForm from "@/app/components/brief-form/BriefForm";
-import SubmitButton from "@/app/components/brief-form/SubmitButton";
-import ProjectTabsMenu from "@/app/components/brief-form/ProjectTabsMenu";
-import ProjectTabContent from "@/app/components/brief-form/ProjectTabContent";
-import IdeaContainer from "@/app/components/brief-results/IdeaContainer";
+import ProjectHeader from "@/app/components/project/ProjectHeader";
+import BriefForm from "@/app/components/project/BriefForm";
+import SubmitButton from "@/app/components/project/SubmitButton";
+import ProjectTabsMenu from "@/app/components/project/ProjectTabsMenu";
+import ProjectTabContent from "@/app/components/project/ProjectTabContent";
+import IdeaContainer from "@/app/components/project/IdeaContainer";
 import TeamTable from "@/app/components/TeamTable";
 import TeamTableHeader from "@/app/components/TeamTableHeader";
+import IdeasPlaceholder from "@/app/components/project/IdeasPlaceholder";
 // Components
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
@@ -30,26 +31,29 @@ import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
 
 // TODO: Replace with fetched ideas data
-const placeholderIdeas = {
-  1: {
-    title: "Idea 1",
+const placeholderIdeas = [
+  {
+    title: "Amazing idea",
+    description: "Amazing idea for a campaign",
     problem: "Problem lorem ipsum dolor sit amet.",
     insight: "Insight lorem ipsum dolor sit amet.",
     idea: "Idea lorem ipsum dolor sit amet.",
   },
-  2: {
-    title: "Idea 2",
+  {
+    title: "Astonishing idea",
+    description: "Astonishing idea for a campaign",
     problem: "Problem lorem ipsum dolor sit amet.",
     insight: "Insight lorem ipsum dolor sit amet.",
     idea: "Idea lorem ipsum dolor sit amet.",
   },
-  3: {
-    title: "Idea 3",
+  {
+    title: "Superb idea",
+    description: "Superb idea for a campaign",
     problem: "Problem lorem ipsum dolor sit amet.",
     insight: "Insight lorem ipsum dolor sit amet.",
     idea: "Idea lorem ipsum dolor sit amet.",
   },
-};
+];
 
 type OpenAiMessageType = {
   role: string;
@@ -76,7 +80,7 @@ type OpenAiResponseType = {
   choices: OpenAiChoiceType[];
 };
 
-export default function NewBriefPage() {
+export default function ProjectPage() {
   const methods = useForm<BriefFormType>({
     defaultValues: {
       id: 0,
@@ -333,6 +337,7 @@ export default function NewBriefPage() {
                 "
               >
                 <SubmitButton 
+                  onClick={() => (setTab(1))}
                   cta="Generate ideas" 
                   feedback="Generating ideas..."
                   // TODO: Logic to call OpenAI API & switch to Ideas tab on success
@@ -342,6 +347,7 @@ export default function NewBriefPage() {
             {/* IDEAS TAB */}
             <ProjectTabContent value={tab} index={1}>
               <Box
+                id="ideas-tab-container"
                 className="
                   flex
                   flex-col
@@ -352,15 +358,28 @@ export default function NewBriefPage() {
                   p-4
                 "
               >
-                {Object.values(placeholderIdeas).map((idea, index) => (
-                  <IdeaContainer
-                    key={index}
-                    title={idea.title}
-                    problem={idea.problem}
-                    insight={idea.insight}
-                    idea={idea.idea}
-                  />
-                ))}
+                {/* TODO: Replace with real data */}
+                {
+                  placeholderIdeas.length > 0 ? 
+                    <>
+                      {placeholderIdeas.map((idea, index) => (
+                        <IdeaContainer
+                          key={index}
+                          id={index + 1}
+                          title={idea.title}
+                          description={idea.description}
+                          problem={idea.problem}
+                          insight={idea.insight}
+                          idea={idea.idea}
+                          idea_quantity={placeholderIdeas.length}
+                        />
+                      ))}
+                    </>
+                  :
+                    <IdeasPlaceholder
+                      onClick={() => (setTab(0))}
+                    />
+                }
               </Box>
             </ProjectTabContent>
             {/* TEAM TAB */}

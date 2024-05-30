@@ -10,8 +10,7 @@ import clsx from "clsx";
 import Button from "@mui/material/Button";
 // Icons
 import HomeIcon from '@mui/icons-material/Home';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import ArticleIcon from '@mui/icons-material/Article';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 interface NavButtonProps {
@@ -31,13 +30,9 @@ export default function NavButton({ route }: NavButtonProps) {
           setIcon(<HomeIcon />);
           setTitle("Home");
           break;
-        case "new-brief":
-          setIcon(<EditNoteIcon />);
-          setTitle("New Brief");
-          break;
-        case "briefs":
-          setIcon(<ArticleIcon />);
-          setTitle("Briefs");
+        case "projects":
+          setIcon(<AssignmentIcon />);
+          setTitle("Projects");
           break;
         case "settings":
           setIcon(<SettingsIcon />);

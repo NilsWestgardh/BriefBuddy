@@ -25,6 +25,7 @@ export default function SidebarHeader({
           items-center
           w-full
           gap-2
+          py-1
           hover:cursor-pointer
           hover:opacity-90
         "

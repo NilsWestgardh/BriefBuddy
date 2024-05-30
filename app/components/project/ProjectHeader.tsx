@@ -7,6 +7,8 @@ import {
 } from "react-hook-form";
 // Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
+// Utils
+import Link from 'next/link';
 // Custom components
 // import DynamicAvatarGroup from "@/app/components/DynamicAvatarGroup";
 // Components
@@ -34,7 +36,8 @@ export default function ProjectHeader() {
         items-center
         w-full
         px-4
-        py-1
+        pt-1
+        pb-2
         bg-neutral-100
         border-b
         border-neutral-300
@@ -119,15 +122,47 @@ export default function ProjectHeader() {
         </Breadcrumbs>
         </Box>
         {/* TODO: Make dynamic */}
-        <Typography
-          variant="subtitle1"
+        <Box
+          id="brief-id-header-info-container"
           className="
-            text-black
-            font-semibold
+            flex
+            flex-col
+            justify-start
+            items-start
           "
         >
-          {form.project_name ? form.project_name : "Project name"}
-        </Typography>
+          <Typography
+            variant="subtitle1"
+            className="
+              text-black
+              font-semibold
+            "
+          >
+            {form.project_name ? form.project_name : "Project name"}
+          </Typography>
+          <Typography
+            variant="caption"
+            className="
+            text-neutral-700
+            "
+          >
+            Created by {" "}
+            <Link
+              href="/username"
+              className="
+                hover:pointer-cursor 
+                hover:underline 
+                hover:text-neutral-900
+              "
+            >
+              Username
+            </Link>
+            {" "} <span className="text-neutral-500">•</span> {" "}
+            Created 25/10/1988 {/* TODO: Make Dynamic */}
+            {" "} <span className="text-neutral-500">•</span> {" "}
+            Updated 25/10/1988 {/* TODO: Make Dynamic */}
+          </Typography>
+        </Box>
       </Box>
       {/* <Box
         id="avatars-buttons-container"

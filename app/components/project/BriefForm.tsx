@@ -11,9 +11,9 @@ import { BriefFormType } from "@/app/utils/types/BriefFormType";
 // Utils
 // import PostHogClient from "@/app/utils/posthog/posthog";
 // Custom components
-import SectionTitle from "@/app/components/brief-form/SectionTitle";
+import SectionTitle from "@/app/components/project/SectionTitle";
 import CustomTextInput from "@/app/components/CustomTextInput";
-import MultipleSelectChip from "@/app/components/brief-form/MultipleSelectChip";
+import MultipleSelectChip from "@/app/components/project/MultipleSelectChip";
 // Components
 import Box from "@mui/material/Box";
 import Select from "@mui/material/Select";

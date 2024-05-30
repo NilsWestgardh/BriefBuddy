@@ -1,32 +1,55 @@
 "use client";
 
+// Hooks
 import React, { useState } from "react";
+// Components
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+// Icons
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
 type IdeaContainerProps = {
+  id: number;
   title: string;
   problem: string;
   insight: string;
   idea: string;
+  description: string;
+  idea_quantity: number;
 };
 
 const ToolTipCopy = "Copy to clipboard";
 const ToolTipCopied = "Copied!";
 
-export default function IdeaContainer ({ title, problem, insight, idea }: IdeaContainerProps) {
+export default function IdeaContainer({ 
+  id,
+  title, 
+  problem, 
+  insight, 
+  idea,
+  description,
+  idea_quantity,
+}: IdeaContainerProps) {
   const [copiedSection, setCopiedSection] = useState<{ [key: string]: boolean }>({});
 
-  const handleCopyToClipboardClick = (content: string, sectionKey: string) => {
+  function handleCopyToClipboardClick(
+    content: string, 
+    sectionKey: string
+  ) {
     navigator.clipboard.writeText(content);
-    setCopiedSection((prevState) => ({ ...prevState, [sectionKey]: true }));
+    setCopiedSection((prevState) => ({ 
+      ...prevState, 
+      [sectionKey]: true 
+    }));
     setTimeout(() => {
-      setCopiedSection((prevState) => ({ ...prevState, [sectionKey]: false }));
+      setCopiedSection((prevState) => ({ 
+        ...prevState, 
+        [sectionKey]: false 
+      }));
     }, 2000);
   };
 
@@ -68,12 +91,59 @@ export default function IdeaContainer ({ title, problem, insight, idea }: IdeaCo
             items-start
           "
         >
-          <Typography variant="subtitle1" className="text-black font-semibold">
-            {title}
+          <Box
+            className="
+              flex
+              flex-row
+              justify-start
+              items-baseline
+              gap-2
+            "
+          >
+            <Typography
+              variant="subtitle1"
+              className="
+                text-black 
+                font-semibold
+              "
+            >
+              {title}
+            </Typography>
+            <Typography
+              variant="body2"
+              component="span"
+              className="
+                flex
+                flex-row
+                justify-start
+                items-center
+                text-neutral-700
+              "
+            >
+              {id}
+              <Typography
+                variant="body2"
+                className="
+                text-neutral-500
+              "
+              >
+                /{idea_quantity}
+              </Typography>
+            </Typography>
+          </Box>
+          {/* TODO: Replace with dynamic data */}
+          <Typography
+            variant="subtitle2"
+          >
+            {description}
           </Typography>
-          <Typography variant="subtitle2">Idea rationale lorem ipsum dolor sit amet.</Typography>
         </Box>
-        <IconButton aria-label="more options" disabled={false} color="secondary">
+        {/* TODO: Implement dropdown menu with CRUD options */}
+        <IconButton
+          aria-label="more options"
+          disabled={false}
+          color="secondary"
+        >
           <MoreHorizIcon />
         </IconButton>
       </Box>
@@ -119,19 +189,40 @@ export default function IdeaContainer ({ title, problem, insight, idea }: IdeaCo
                 w-full
               "
             >
-              <Typography variant="overline" className="font-semibold">
+              <Typography
+                variant="overline"
+                className="font-semibold"
+              >
                 {section.charAt(0).toUpperCase() + section.slice(1)}
               </Typography>
-              <Typography variant="body2">{sections[section as keyof typeof sections]}</Typography>
+              <Typography
+                variant="body2"
+              >
+                {sections[section as keyof typeof sections]}
+              </Typography>
             </Box>
-            <Tooltip title={copiedSection[`${title}-${section}`] ? ToolTipCopied : ToolTipCopy}>
+            <Tooltip
+              title={
+                copiedSection[`${title}-${section}`] ? 
+                ToolTipCopied : ToolTipCopy
+              }
+            >
               <IconButton
                 aria-label="copy to clipboard"
                 disabled={false}
-                color={copiedSection[`${title}-${section}`] ? "success" : "secondary"}
-                onClick={() => handleCopyToClipboardClick(sections[section as keyof typeof sections], `${title}-${section}`)}
+                color={
+                  copiedSection[`${title}-${section}`] ? 
+                  "success" : "secondary"
+                }
+                onClick={() => handleCopyToClipboardClick(
+                  sections[section as keyof typeof sections], 
+                  `${title}-${section}`
+                )}
               >
-                {copiedSection[`${title}-${section}`] ? <CheckIcon /> : <ContentCopyIcon />}
+                {
+                  copiedSection[`${title}-${section}`] ? 
+                  <CheckIcon /> : <ContentCopyIcon />
+                }
               </IconButton>
             </Tooltip>
           </Box>

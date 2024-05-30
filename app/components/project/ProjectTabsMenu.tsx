@@ -7,14 +7,10 @@ import clsx from "clsx";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import Badge from "@mui/material/Badge";
 // Icons
 import GroupsIcon from '@mui/icons-material/Groups';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import NoteIcon from '@mui/icons-material/Note';
-
-const ideas_quantity = 100; // TODO: Replace placeholder with fetched data
-const team_size = 5; // TODO: Replace placeholder with fetched data
 
 type TabsMenuProps = {
   tab: number;
@@ -63,26 +59,7 @@ export default function TabsMenu({
           )}
         />
         <Tab
-          label={
-            <Badge
-              badgeContent={ideas_quantity}
-              color="primary"
-              max={99}
-              showZero={false}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              sx={{
-                "& .MuiBadge-badge": {
-                  transform: "translate(60%, -70%)",
-                  marginRight: "6px",
-                },
-              }}
-            >
-              Ideas
-            </Badge>
-          }
+          label="Ideas"
           icon={<NoteIcon />}
           iconPosition="start"
           {...a11yProps(1)}
@@ -93,26 +70,7 @@ export default function TabsMenu({
           )}
         />
         <Tab
-          label={
-            <Badge
-              badgeContent={team_size}
-              color="primary"
-              max={99}
-              showZero={false}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              sx={{
-                "& .MuiBadge-badge": {
-                  transform: "translate(100%, -70%)",
-                  marginRight: "6px",
-                },
-              }}
-            >
-              Team
-            </Badge>
-          }
+          label="Team"
           icon={<GroupsIcon />}
           iconPosition="start"
           {...a11yProps(2)}

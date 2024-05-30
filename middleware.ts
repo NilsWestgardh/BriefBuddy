@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { createClient } from "@/app/utils/supabase/middleware";
 
-const protectedRedirectRoute = "/briefs";
+const protectedRedirectRoute = "/projects";
 const loginRoute = "/login";
 const rootRoute = "/";
 

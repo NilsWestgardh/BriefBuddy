@@ -20,7 +20,7 @@ const sortByOptions = {
   oldest: "oldest",
 };
 
-export default function Briefs() {
+export default function Projects() {
   const [sortBy, setSortBy] = useState<string>(sortByOptions.latest);
 
   // TODO: Sort by logic
@@ -46,7 +46,7 @@ export default function Briefs() {
           mb-2
         "
       >
-        My Briefs
+        My Projects
       </Typography>
       <Box
         id="sort-container"
