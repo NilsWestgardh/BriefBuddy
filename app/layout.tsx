@@ -17,7 +17,7 @@ const PostHogPageView = dynamic(() => import('@/app/PostHogPageView'), {
 const inter = Inter({ subsets: ["latin"] });
 
 const defaultUrl = process.env.VERCEL_URL
-  ? `${process.env.VERCEL_URL}`
+  ? process.env.VERCEL_URL.replace(/\/$/, "")
   : "http://localhost:3000";
 
 export const metadata: Metadata = {
