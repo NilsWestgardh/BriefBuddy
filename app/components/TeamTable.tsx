@@ -42,10 +42,10 @@ export default function TeamTable() {
         border
         border-neutral-300
         rounded-md
+        w-full
       "
     >
       <Table
-        sx={{ minWidth: 650 }}
         aria-label="team table"
       >
         <TableHead

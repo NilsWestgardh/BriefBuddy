@@ -4,7 +4,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import type { NextRequest } from "next/server";
 import { cookies } from "next/headers";
 
-const protectedRedirectRoute = "/briefs";
+const protectedRedirectRoute = "/projects";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
