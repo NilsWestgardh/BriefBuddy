@@ -83,27 +83,33 @@ type OpenAiResponseType = {
 export default function ProjectPage() {
   const methods = useForm<BriefFormType>({
     defaultValues: {
+      // Ids
       id: 0,
-      user_id: 0,
+      project_id: 0,
+      // Basics
       created_at: "",
       updated_at: "",
       project_name: "",
-      company_avatar: "",
-      company_name: "",
-      company_details: "",
+      client_name: "",
+      // Background
+      client_details: "",
       project_details: "",
+      // Product
       product_details: "",
       product_usp: "",
-      project_goals: [],
-      project_goals_details: "",
-      project_objectives: [],
+      // Goals
+      goals_details: "",
+      goals_objectives: [],
+      // Brand
       brand_strategy: "",
       brand_message: "",
       brand_tone: "",
+      // Targets
       target_markets: [],
       target_genders: [],
       target_ages: [],
       target_description: "",
+      // Ideas
       ideas_medium: [],
       ideas_channels: [],
       ideas_quantity: 5,
@@ -179,14 +185,13 @@ export default function ProjectPage() {
   async function constructPrompt(data: BriefFormType): Promise<string> {
     const promptParts: { [key: string]: string } = {
       role: "You are a marketing and advertising expert.",
-      client: data.company_name ? `Client: ${data.company_name}. ${data.company_details ?? ''}` : '',
+      client: data.client_name ? `Client: ${data.client_name}. ${data.client_details ?? ''}` : '',
       product: data.product_details ? `Product Details: ${data.product_details}` : '',
       context: `Context: Your task is to generate marketing ideas.`,
       targets: data.target_markets?.length ? `Targets: ${data.target_genders?.join(", ") || 'all genders'} aged ${data.target_ages?.join(", ") || 'all ages'} in ${data.target_markets.join(", ")}. ${data.target_description ?? ''}` : '',
       usp: data.product_usp ? `USP: ${data.product_usp}` : '',
-      goals: data.project_goals?.length ? `Goals: ${data.project_goals.join(", ")}` : '',
-      goals_details: data.project_goals_details ? `Goals Details: ${data.project_goals_details}` : '',
-      objectives: data.project_objectives?.length ? `Objectives: ${data.project_objectives.join(", ")}` : '',
+      goals_details: data.goals_details ? `Goals Details: ${data.goals_details}` : '',
+      goals_objectives: data.goals_objectives?.length ? `Objectives: ${data.goals_objectives.join(", ")}` : '',
       strategy: data.brand_strategy ? `Brand Strategy: ${data.brand_strategy}` : '',
       message: data.brand_message ? `Brand Message: ${data.brand_message}` : '',
       tone: data.brand_tone ? `Brand Tone: ${data.brand_tone}` : '',

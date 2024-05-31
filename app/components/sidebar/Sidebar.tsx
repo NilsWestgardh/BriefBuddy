@@ -4,7 +4,7 @@ import SidebarHeader from "@/app/components/sidebar/SidebarHeader";
 import SidebarTeamSelect from "@/app/components/sidebar/SidebarTeamSelect";
 import NavButton from "@/app/components/sidebar/NavButton";
 import SignOutButton from "@/app/components/auth/SignOutButton";
-import NewProjectButton from "@/app/components/NewProjectButton";
+import NewProjectButton from "@/app/components/sidebar/NewProjectButton";
 // Components
 import Box from "@mui/material/Box";
 
