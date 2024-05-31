@@ -66,22 +66,6 @@ export default function BriefForm() {
           required={true}
         />
         <CustomTextInput
-          fieldName="company_name"
-          label="Company name"
-          placeholder="ACME Inc."
-          helperText="The name of the company the brief is for."
-          required={true}
-        />
-        <CustomTextInput
-          fieldName="company_details"
-          label="Company details"
-          placeholder="ACME Inc. makes.."
-          helperText="A short description of the company. (Optional)"
-          rows={2}
-          multiline={true}
-          required={false}
-        />
-        <CustomTextInput
           fieldName="project_details"
           label="Brief details"
           placeholder="A campaign to.."
@@ -142,7 +126,7 @@ export default function BriefForm() {
         />
         {/* Select */}
         <CustomTextInput
-          fieldName="project_goals_details"
+          fieldName="goals_details"
           label="Goals details"
           placeholder="Increase sales by 20%.."
           helperText="A short description of the goals. (Optional)"
@@ -152,7 +136,7 @@ export default function BriefForm() {
         />
         {/* OBJECTIVES */}
         <MultipleSelectChip
-          name="project_objectives"
+          name="goals_objectives"
           label="Objectives"
           helperText="Select all objectives that apply. (Optional)"
           options={[
