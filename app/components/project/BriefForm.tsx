@@ -59,13 +59,6 @@ export default function BriefForm() {
           subtitle="Information about the brief."
         />
         <CustomTextInput
-          fieldName="project_name"
-          label="Project name"
-          placeholder="My new campaign"
-          helperText="The name of the brief."
-          required={true}
-        />
-        <CustomTextInput
           fieldName="project_details"
           label="Brief details"
           placeholder="A campaign to.."
