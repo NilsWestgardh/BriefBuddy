@@ -12,13 +12,11 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 type SubmitButtonProps = {
   cta: string;
   feedback: string;
-  onClick?: () => void;
 };
 
 export default function SubmitButton({ 
   cta,
   feedback,
-  onClick,
  }: SubmitButtonProps) {
   const {
     formState: { 
@@ -30,13 +28,18 @@ export default function SubmitButton({
 
   return (
     <Button
-      onClick={onClick}
       type="submit"
       variant="outlined"
       size="large"
-      disabled={!isValid || isSubmitting || isSubmitted}
+      disabled={!isValid || isSubmitting}
       color={isValid ? "primary" : "secondary"}
-      endIcon={!isSubmitting ? <ArrowForwardIcon /> : <CircularProgress color="primary" size={24} />}
+      endIcon={
+        !isSubmitting ? <ArrowForwardIcon /> 
+        : <CircularProgress
+            color="primary"
+            size={24}
+          />
+      }
       className="
         w-full
         hover:cursor-pointer

@@ -7,7 +7,6 @@ const BriefFormSchema = z.object({
   // Basics
   created_at: z.string(),
   updated_at: z.string().optional(),
-  project_name: z.string(),
   client_name: z.string().optional(),
   // Background
   client_details: z.string().optional(),

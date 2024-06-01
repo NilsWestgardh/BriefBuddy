@@ -1,17 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { 
+  useState, 
+  useEffect 
+} from "react";
 import { 
   useForm, 
   FormProvider 
 } from "react-hook-form";
-import { useRouter } from "next/navigation";
 // Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BriefFormSchema from "@/app/utils/schemas/BriefFormSchema";
+import { ideaType } from "@/app/utils/types/IdeaType";
 // Utils
-// import PostHogClient from "@/app/lib/posthog/posthog";
+import { createClient } from "@/app/utils/supabase/client";
+// import PostHogClient from "@/app/utils/posthog/posthog";
 // Custom Components
 import ProjectHeader from "@/app/components/project/ProjectHeader";
 import BriefForm from "@/app/components/project/BriefForm";
@@ -31,65 +35,44 @@ import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
 
 // TODO: Replace with fetched ideas data
-const placeholderIdeas = [
-  {
-    title: "Amazing idea",
-    description: "Amazing idea for a campaign",
-    problem: "Problem lorem ipsum dolor sit amet.",
-    insight: "Insight lorem ipsum dolor sit amet.",
-    idea: "Idea lorem ipsum dolor sit amet.",
-  },
-  {
-    title: "Astonishing idea",
-    description: "Astonishing idea for a campaign",
-    problem: "Problem lorem ipsum dolor sit amet.",
-    insight: "Insight lorem ipsum dolor sit amet.",
-    idea: "Idea lorem ipsum dolor sit amet.",
-  },
-  {
-    title: "Superb idea",
-    description: "Superb idea for a campaign",
-    problem: "Problem lorem ipsum dolor sit amet.",
-    insight: "Insight lorem ipsum dolor sit amet.",
-    idea: "Idea lorem ipsum dolor sit amet.",
-  },
-];
+// const placeholderIdeas = [
+//   {
+//     title: "Amazing idea",
+//     description: "Amazing idea for a campaign",
+//     problem: "Problem lorem ipsum dolor sit amet.",
+//     insight: "Insight lorem ipsum dolor sit amet.",
+//     idea: "Idea lorem ipsum dolor sit amet.",
+//   },
+//   {
+//     title: "Astonishing idea",
+//     description: "Astonishing idea for a campaign",
+//     problem: "Problem lorem ipsum dolor sit amet.",
+//     insight: "Insight lorem ipsum dolor sit amet.",
+//     idea: "Idea lorem ipsum dolor sit amet.",
+//   },
+//   {
+//     title: "Superb idea",
+//     description: "Superb idea for a campaign",
+//     problem: "Problem lorem ipsum dolor sit amet.",
+//     insight: "Insight lorem ipsum dolor sit amet.",
+//     idea: "Idea lorem ipsum dolor sit amet.",
+//   },
+// ];
 
-type OpenAiMessageType = {
-  role: string;
-  content: string;
-};
-
-type OpenAiChoiceType = {
-  message: OpenAiMessageType;
-  logprobs: null | object;
-  finish_reason: string;
-  index: number;
-};
-
-type OpenAiResponseType = {
-  id: string;
-  object: string;
-  created: number;
-  model: string;
-  usage: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-  choices: OpenAiChoiceType[];
-};
-
-export default function ProjectPage() {
+export default function ProjectPage({ 
+  params 
+}: { params: { 
+  slug: string 
+}}) {
+  const projectId = parseInt(params.slug);
   const methods = useForm<BriefFormType>({
     defaultValues: {
       // Ids
       id: 0,
-      project_id: 0,
+      project_id: projectId,
       // Basics
       created_at: "",
       updated_at: "",
-      project_name: "",
       client_name: "",
       // Background
       client_details: "",
@@ -128,15 +111,30 @@ export default function ProjectPage() {
   // Utils
   // const form = watch();
   // const posthog = PostHogClient();
-  const router = useRouter();
+  const supabase = createClient();
 
   const [tab, setTab] = useState(0);
+  const [ideas, setIdeas] = useState<ideaType[]>([]);
   const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<{
     type: "success" | "error" | "info" | "warning";
     icon: React.ReactNode;
     message: string;
   } | null>(null);
+
+  async function fetchIdeas(projectId: number) {
+    const { data, error } = await supabase
+      .from("ideas")
+      .select("*")
+      .eq("project_id", projectId);
+
+    if (error) {
+      console.error("Error fetching ideas:", error);
+      return null;
+    } else (
+      setIdeas(data)
+    );
+  };
 
   // Tab change handler
   function handleTabChange(
@@ -146,48 +144,15 @@ export default function ProjectPage() {
     setTab(newTab);
   };
 
-  // OpenAI API fetch with retry
-  async function fetchWithRetry(
-    url: string, 
-    body: Record<string, unknown>, 
-    retries = 3, 
-    delay = 1000
-  ) {
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      try {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Attempt ${attempt}: Server responded with status ${response.status}`);
-        }
-
-        return response.json();
-      } catch (error) {
-        console.error(`Attempt ${attempt}:`, error);
-
-        if (attempt === retries) {
-          throw new Error(`Failed after ${retries} attempts.`);
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        delay *= 2;
-      };
-    };
-  };
-
   // Construct OpenAI prompt
-  async function constructPrompt(data: BriefFormType): Promise<string> {
-    const promptParts: { [key: string]: string } = {
-      role: "You are a marketing and advertising expert.",
+  async function constructPrompt(
+    data: BriefFormType
+  ): Promise<string> {
+    const promptParts: { 
+      [key: string]: string 
+    } = {
       client: data.client_name ? `Client: ${data.client_name}. ${data.client_details ?? ''}` : '',
       product: data.product_details ? `Product Details: ${data.product_details}` : '',
-      context: `Context: Your task is to generate marketing ideas.`,
       targets: data.target_markets?.length ? `Targets: ${data.target_genders?.join(", ") || 'all genders'} aged ${data.target_ages?.join(", ") || 'all ages'} in ${data.target_markets.join(", ")}. ${data.target_description ?? ''}` : '',
       usp: data.product_usp ? `USP: ${data.product_usp}` : '',
       goals_details: data.goals_details ? `Goals Details: ${data.goals_details}` : '',
@@ -200,8 +165,7 @@ export default function ProjectPage() {
     };
 
     const prompt = Object.values(promptParts).filter(part => part).join("\n");
-
-    return `Please generate ${data.ideas_quantity} advertising campaign ideas base on this brief:\n${prompt}, using this format:\n\nIdea Name #1\nProblem: [Problem statement]\nInsight: [Unique insight]\nIdea: [Big idea description]`;
+    return prompt;
   };
 
   // Submit form
@@ -217,42 +181,49 @@ export default function ProjectPage() {
       const constructedPrompt = await constructPrompt(data);
 
       if (constructedPrompt) {
-        const openAiResponse: OpenAiResponseType = await fetchWithRetry(
-          "/api/data/generate-ideas", {
-          prompt: constructedPrompt,
+        const response = await fetch("/api/data/generate-ideas", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt: constructedPrompt,
+            ideas_quantity: data.ideas_quantity,
+          }),
         });
 
-        if (
-          openAiResponse && 
-          openAiResponse.choices
-        ) {
-          const ideas = openAiResponse.choices.map((choice) => choice.message.content);
+        const generatedIdeas = await response.json();
 
-          const supabaseResponse = await fetch(
-            "/api/data/submit-brief-form", {
+        if (generatedIdeas) {
+          const supabaseResponse = await fetch("/api/data/insert-ideas", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              ...data,
-              ideas_generated: ideas,
+              ideas: generatedIdeas.ideas,
+              project_id: data.project_id,
+              brief_id: data.id,
             }),
           });
 
           const responseData = await supabaseResponse.json();
 
-          if (supabaseResponse.ok && responseData.data) {
+          if (
+            supabaseResponse.ok && 
+            responseData.data
+          ) {
             setAlertInfo({
               type: "success",
               icon: <CheckIcon />,
-              message: "Brief form submitted successfully! Redirecting...",
+              message: "Brief form submitted successfully!",
             });
 
-            setTimeout(() => {
-              setShowAlertInfo(false);
-              router.push(`/briefs/${responseData.data.id}`);
-            }, 5000);
+            // TODO: Register event in posthog
+
+            // Switch to ideas tab
+            setTab(1);
+
           } else {
             throw new Error(responseData.error);
           }
@@ -272,6 +243,13 @@ export default function ProjectPage() {
       setShowAlertInfo(false);
     }, 5000);
   };
+
+  // Fetch project ideas
+  useEffect(() => {
+    if (ideas === null) {
+      fetchIdeas(parseInt(params.slug))
+    };
+  }, [ideas]);
 
   return (
     <>
@@ -315,7 +293,7 @@ export default function ProjectPage() {
                 z-10
               "
             >
-              <ProjectHeader />
+              <ProjectHeader project_id={projectId} />
               <ProjectTabsMenu
                 tab={tab}
                 handleTabChange={handleTabChange}
@@ -342,10 +320,8 @@ export default function ProjectPage() {
                 "
               >
                 <SubmitButton 
-                  onClick={() => (setTab(1))}
                   cta="Generate ideas" 
                   feedback="Generating ideas..."
-                  // TODO: Logic to call OpenAI API & switch to Ideas tab on success
                 />
               </Box>
             </ProjectTabContent>
@@ -363,27 +339,19 @@ export default function ProjectPage() {
                   p-4
                 "
               >
-                {/* TODO: Replace with real data */}
                 {
-                  placeholderIdeas.length > 0 ? 
-                    <>
-                      {placeholderIdeas.map((idea, index) => (
-                        <IdeaContainer
-                          key={index}
-                          id={index + 1}
-                          title={idea.title}
-                          description={idea.description}
-                          problem={idea.problem}
-                          insight={idea.insight}
-                          idea={idea.idea}
-                          idea_quantity={placeholderIdeas.length}
-                        />
-                      ))}
-                    </>
-                  :
-                    <IdeasPlaceholder
-                      onClick={() => (setTab(0))}
+                  ideas.length > 0 ? ideas.map((idea, index) => (
+                    <IdeaContainer
+                      key={index}
+                      id={idea.id}
+                      title={idea.name}
+                      description={idea.description}
+                      problem={idea.problem}
+                      insight={idea.insight}
+                      idea={idea.solution}
+                      idea_quantity={ideas.length}
                     />
+                  )) : <IdeasPlaceholder onClick={() => setTab(0)} />
                 }
               </Box>
             </ProjectTabContent>

@@ -7,7 +7,7 @@ const ProjectFormSchema = z.object({
   user_id: z.number(),
   created_at: z.string(),
   updated_at: z.string().optional(),
-  name: z.string(),
+  name: z.string().min(4, "Minimum 4 characters").max(50, "Maximum 50 characters"),
   client: z.string().optional(),
   ideas_limit: z.number(),
 });

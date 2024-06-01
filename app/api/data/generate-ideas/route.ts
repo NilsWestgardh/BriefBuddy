@@ -1,41 +1,35 @@
-import { 
-  NextRequest, 
-  NextResponse 
-} from "next/server";
-import fetch from "node-fetch";
-// import { openai } from "@ai-sdk/openai";
+import { NextRequest, NextResponse } from "next/server";
+import { openai } from "@ai-sdk/openai";
+import { generateObject } from "ai";
+// Validation
+import { z } from "zod";
+import GenerateIdeasSchema from "@/app/utils/schemas/GenerateIdeasSchema";
 
-const openAiApiUrl = "https://api.openai.com/v1/completions";
+const model = "gpt-4o";
 
 export async function POST(req: NextRequest) {
-  const { prompt } = await req.json();
+  const { prompt, ideas_quantity } = await req.json();
 
   try {
-    const response = await fetch(openAiApiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env["OPENAI_API_KEY"]}`,
-      },
-      body: JSON.stringify({
-        model: "text-davinci-003",
-        prompt,
-        max_tokens: 1000,
+    const { object } = await generateObject({
+      model: openai(model),
+      schema : z.object({
+        ideas: GenerateIdeasSchema.array().length(ideas_quantity),
       }),
+      prompt: `You are an expert marketing and advertising creative. Generate ${ideas_quantity} advertising campaign ideas. Use the following format for each idea: Title, Description, Problem, Insight, and Solution.\n${prompt}`,
     });
 
-    if (!response.ok) {
-      throw new Error(`API call failed: ${response.statusText}`);
-    }
+    const ideas = object.ideas;
 
-    const responseData = await response.json();
+    return NextResponse.json({ ideas });
 
-    return NextResponse.json(responseData);
   } catch (error) {
     console.error("Error generating ideas:", error);
-    return new NextResponse(JSON.stringify({ error: "Error generating ideas" }), {
+    return new NextResponse(JSON.stringify({ 
+      error: "Error generating ideas" 
+    }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
-  }
+  };
 };
