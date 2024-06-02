@@ -26,8 +26,11 @@ export default function NewProjectButton() {
         variant="outlined"
         onClick={handleOpen}
         startIcon={<AssignmentIcon />}
+        size="small"
         className="
-          w-full
+          flex
+          justify-center
+          items-center
           bg-white
           hover:bg-neutral-100
           transition-all

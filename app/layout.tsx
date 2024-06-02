@@ -1,5 +1,7 @@
 import React from "react";
+// Providers
 import { ThemeProvider } from "@mui/material/styles";
+import UserProvider from "@/app/contexts/UserContext";
 import { Analytics } from "@vercel/analytics/react";
 import { Inter } from "next/font/google";
 import type { Metadata } from 'next'
@@ -54,31 +56,33 @@ export default function RootLayout(
     <html lang="en" className={inter.className}>
       <PHProvider>
         <ThemeProvider theme={theme}>
-          <body
-            className="
-              bg-background
-              text-foreground
-            "
-          >
-            <main
+          <UserProvider>
+            <body
               className="
-                min-h-screen
-                flex
-                flex-col
-                items-center
-                text-neutral-700
+                bg-background
+                text-foreground
               "
             >
-              {children}
-              <Analytics />
-            </main>
-            {/* <Script
-              type="text/javascript"
-              src="https://app.termly.io/resource-blocker/c38fdc46-d3b8-4bf8-8c5d-460cba620841?autoBlock=on"
-              strategy="beforeInteractive"
-              async
-            ></Script> */}
-          </body>
+              <main
+                className="
+                  min-h-screen
+                  flex
+                  flex-col
+                  items-center
+                  text-neutral-700
+                "
+              >
+                {children}
+                <Analytics />
+              </main>
+              {/* <Script
+                type="text/javascript"
+                src="https://app.termly.io/resource-blocker/c38fdc46-d3b8-4bf8-8c5d-460cba620841?autoBlock=on"
+                strategy="beforeInteractive"
+                async
+              ></Script> */}
+            </body>
+          </UserProvider>
         </ThemeProvider>
       </PHProvider>
     </html>

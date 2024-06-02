@@ -4,9 +4,9 @@ import SidebarHeader from "@/app/components/sidebar/SidebarHeader";
 import SidebarTeamSelect from "@/app/components/sidebar/SidebarTeamSelect";
 import NavButton from "@/app/components/sidebar/NavButton";
 import SignOutButton from "@/app/components/auth/SignOutButton";
-import NewProjectButton from "@/app/components/sidebar/NewProjectButton";
 // Components
 import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
 
 export default function Sidebar() {
   return (
@@ -24,7 +24,7 @@ export default function Sidebar() {
         bg-neutral-50
         border-r
         border-neutral-200
-        p-3
+        p-2
       "
     >
       <Box
@@ -35,7 +35,7 @@ export default function Sidebar() {
           justify-start
           items-start
           w-full
-          gap-4
+          gap-2
         "
       >
         <SidebarHeader
@@ -45,21 +45,38 @@ export default function Sidebar() {
           team="Nils's Team" // TODO: Replace with dynamic data
         />
         <Box
-          id="sidebar-nav-buttons"
+          id="sidebar-primary-nav"
           className="
             flex
             flex-col
             justify-start
             items-start
             w-full
+            gap-2
           "
         >
-          <NewProjectButton />
-          <NavButton route="projects" />
-          <NavButton route="settings" />
+          <NavButton route="home" />
+          <Divider flexItem className="opacity-20" />
+          {/* TODO: Fetch the currently selected team id */}
+          <NavButton route="team" />
+          <NavButton route="contact" />
         </Box>
       </Box>
-      <SignOutButton />
+      <Box
+        id="sidebar-secondary-nav"
+        className="
+          flex
+          flex-col
+          justify-start
+          items-start
+          w-full
+          gap-2
+        "
+      >
+        <NavButton route="settings" />
+        <Divider flexItem className="opacity-20" />
+        <SignOutButton />
+      </Box>
     </Box>
   );
 };

@@ -30,7 +30,7 @@ export default function CustomGridItem({
 }: CustomGridItemProps) {
   return (
     <Link
-      href={`/projects/${id}`}
+      href={`/project/${id}`}
     >
       <Item
         id={`${title}-${updatedAt ? updatedAt : createdAt}-grid-item-container`}

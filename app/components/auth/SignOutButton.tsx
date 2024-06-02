@@ -31,6 +31,7 @@ export default function SignOutButton() {
       id="sign-out-button"
       onClick={handleSignOut}
       startIcon={<LogoutIcon />}
+      size="small"
       color={buttonDisabled ? "error" : "secondary"}
       disabled={buttonDisabled}
       className="

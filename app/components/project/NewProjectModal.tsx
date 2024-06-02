@@ -1,5 +1,8 @@
+"use client";
+
 // Hooks
 import React from "react";
+import { useRouter } from 'next/navigation'
 import { 
   useForm, 
   // SubmitHandler 
@@ -8,6 +11,9 @@ import {
 import ProjectFormSchema from "@/app/utils/schemas/ProjectFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProjectFormType } from "@/app/utils/types/ProjectFormType";
+// Utils
+import { createClient } from "@/app/utils/supabase/client";
+// TODO: Import PostHog
 // Components
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -56,10 +62,58 @@ export default function NewProjectModal({
       isSubmitting
     } 
   } = methods;
+
+  const supabase = createClient();
+  const router = useRouter();
   
-  function onSubmit(data: ProjectFormType) {
-    console.log(data); // Placeholder
-    // TODO: Logic to create new project in Supabase & redirect to new project page
+  async function onSubmit(
+    data: ProjectFormType
+  ) {
+    try {
+      const { 
+        data: { 
+          user 
+        } 
+      } = await supabase
+        .auth
+        .getUser()
+
+      if (!user) {
+        throw new Error("User not found");
+      } else if (user) {
+        const { 
+          data: project, 
+          error 
+        } = await supabase
+          .from("projects")
+          .insert([
+            {
+              name: data.name,
+              client: data.client,
+              user_id: user.id,
+              team_id: data.team_id,
+            },
+          ])
+          .select()
+
+        if (error) {
+          console.log(
+            "Error creating project: ", 
+            error
+          );
+        } else if (project) {
+          console.log(
+            "Project created successfully: ", 
+            project
+          );
+          // TODO: PostHog tracking
+          router.push(`/project/${project[0].id}`);
+          handleClose();
+        };
+      };
+    } catch (error) {
+      console.log("Error creating project: ", error);
+    };
     handleClose();
   };
 
@@ -160,7 +214,7 @@ export default function NewProjectModal({
                   "
                 >
                   <TextField
-                    {...register("name", { required: true })}
+                    {...register("name", { required: "Project name is required" })}
                     disabled={projects_limit === 0}
                     type="text"
                     label="Project Name"
@@ -168,7 +222,7 @@ export default function NewProjectModal({
                     color="primary"
                     fullWidth
                     error={!!errors.name}
-                    helperText={errors.name ? "This field is required" : ""}
+                    helperText={errors.name?.message}
                     inputProps={{ autoComplete: "off" }}
                   />
                   <TextField

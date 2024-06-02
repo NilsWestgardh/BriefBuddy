@@ -1,4 +1,4 @@
-export type ideaType = {
+export type IdeaType = {
   id: number,
   created_at: string,
   updated_at: string,

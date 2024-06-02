@@ -4,10 +4,14 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-export default function Settings() {
+export default function TeamIdPage({ 
+  params 
+}: { params: { 
+  slug: string 
+}}) {
   return (
     <Box
-      id="settings-container"
+      id={`team-${params.slug}-container`}
       className="
         flex
         flex-col
@@ -26,7 +30,7 @@ export default function Settings() {
           mb-2
         "
       >
-        Settings
+        Team {params.slug} settings
       </Typography>
     </Box>
   )

@@ -9,13 +9,15 @@ import clsx from "clsx";
 // Components
 import Button from "@mui/material/Button";
 // Icons
+import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 
-interface NavButtonProps {
+type NavButtonProps = {
   route: string;
-}
+};
 
 export default function NavButton({ route }: NavButtonProps) {
   const [icon, setIcon] = useState<React.ReactNode>(null);
@@ -30,9 +32,17 @@ export default function NavButton({ route }: NavButtonProps) {
           setIcon(<HomeIcon />);
           setTitle("Home");
           break;
-        case "projects":
+        case "team":
+          setIcon(<GroupIcon />);
+          setTitle("team");
+          break;
+        case "project":
           setIcon(<AssignmentIcon />);
           setTitle("Projects");
+          break;
+        case "contact":
+          setIcon(<ContactSupportIcon />);
+          setTitle("Contact");
           break;
         case "settings":
           setIcon(<SettingsIcon />);
@@ -55,6 +65,7 @@ export default function NavButton({ route }: NavButtonProps) {
       <Button
         id={`${route.toLowerCase()}-button`}
         color="primary"
+        size="small"
         startIcon={icon}
         className={clsx("flex flex-row justify-start items-center w-full hover:cursor-pointer", {
           "hover:opacity-80": currentPathname.includes(route.toLowerCase()),

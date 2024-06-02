@@ -12,7 +12,7 @@ import {
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BriefFormSchema from "@/app/utils/schemas/BriefFormSchema";
-import { ideaType } from "@/app/utils/types/IdeaType";
+import { IdeaType } from "@/app/utils/types/IdeaType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
 // import PostHogClient from "@/app/utils/posthog/posthog";
@@ -59,7 +59,7 @@ import InfoIcon from "@mui/icons-material/Info";
 //   },
 // ];
 
-export default function ProjectPage({ 
+export default function ProjectIdPage({ 
   params 
 }: { params: { 
   slug: string 
@@ -114,7 +114,7 @@ export default function ProjectPage({
   const supabase = createClient();
 
   const [tab, setTab] = useState(0);
-  const [ideas, setIdeas] = useState<ideaType[]>([]);
+  const [ideas, setIdeas] = useState<IdeaType[]>([]);
   const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
   const [alertInfo, setAlertInfo] = useState<{
     type: "success" | "error" | "info" | "warning";

@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 // Custom Components
 import CustomGridItem from "@/app/components/CustomGridItem";
+import NewProjectButton from "@/app/components/sidebar/NewProjectButton";
 // Components
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -20,7 +21,7 @@ const sortByOptions = {
   oldest: "oldest",
 };
 
-export default function Projects() {
+export default function Home() {
   const [sortBy, setSortBy] = useState<string>(sortByOptions.latest);
 
   // TODO: Sort by logic
@@ -38,16 +39,29 @@ export default function Projects() {
         p-4
       "
     >
-      <Typography
-        variant="h4"
+      <Box
+        id="home-header"
         className="
-          text-black
-          font-semibold
-          mb-2
+          flex
+          flex-row
+          justify-between
+          items-center
+          w-full
         "
       >
-        My Projects
-      </Typography>
+        <Typography
+          variant="h4"
+          className="
+            text-black
+            font-semibold
+            mb-2
+          "
+        >
+          My home
+        </Typography>
+        <NewProjectButton />
+      </Box>
+      
       <Box
         id="sort-container"
         className="

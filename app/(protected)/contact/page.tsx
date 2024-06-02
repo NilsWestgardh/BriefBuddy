@@ -4,10 +4,10 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-export default function Settings() {
+export default function Contact() {
   return (
     <Box
-      id="settings-container"
+      id="contact-container"
       className="
         flex
         flex-col
@@ -26,7 +26,7 @@ export default function Settings() {
           mb-2
         "
       >
-        Settings
+        Contact
       </Typography>
     </Box>
   )
