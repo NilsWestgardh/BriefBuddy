@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/app/utils/supabase/server";
 import { cookies } from "next/headers";
-import { ideaType } from "@/app/utils/types/IdeaType";
+import { IdeaType } from "@/app/utils/types/IdeaType";
 
 export async function POST(req: NextRequest) {
   const { ideas, project_id, brief_id } = await req.json();
@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   const supabase = createClient(cookieStore);
 
   try {
-    const ideasWithProjectId = ideas.map((idea: ideaType) => ({
+    const ideasWithProjectId = ideas.map((idea: IdeaType) => ({
       project_id,
       brief_id,
       name: idea.name,
