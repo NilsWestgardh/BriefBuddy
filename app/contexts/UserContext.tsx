@@ -67,10 +67,7 @@ export default function UserProvider({
     if (!profile) {
       fetchUserProfile();
     };
-  }, [
-    supabase, 
-    profile,
-  ]);
+  }, [supabase]);
 
   return (
     <UserContext.Provider

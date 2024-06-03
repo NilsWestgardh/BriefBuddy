@@ -23,8 +23,8 @@ import SubmitButton from "@/app/components/project/SubmitButton";
 import ProjectTabsMenu from "@/app/components/project/ProjectTabsMenu";
 import ProjectTabContent from "@/app/components/project/ProjectTabContent";
 import IdeaContainer from "@/app/components/project/IdeaContainer";
-import TeamTable from "@/app/components/TeamTable";
-import TeamTableHeader from "@/app/components/TeamTableHeader";
+import TeamTable from "@/app/components/team/TeamTable";
+import TeamTableHeader from "@/app/components/team/TeamTableHeader";
 import IdeasPlaceholder from "@/app/components/project/IdeasPlaceholder";
 // Components
 import Box from "@mui/material/Box";

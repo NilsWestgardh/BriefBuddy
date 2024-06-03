@@ -1,19 +1,16 @@
 "use client";
 
 // Hooks
-import React from "react";
-import { useRouter } from 'next/navigation'
-import { 
-  useForm, 
-  // SubmitHandler 
-} from "react-hook-form";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useUser } from '@/app/contexts/UserContext';
+import { useRouter } from "next/navigation";
 // Validation
-import ProjectFormSchema from "@/app/utils/schemas/ProjectFormSchema";
+import TeamFormSchema from "@/app/utils/schemas/TeamFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProjectFormType } from "@/app/utils/types/ProjectFormType";
+import { TeamFormType } from "@/app/utils/types/TeamFormType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
-// TODO: Import PostHog
 // Components
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -21,39 +18,39 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
+import Alert from "@mui/material/Alert";
 // Icons
 import CloseIcon from "@mui/icons-material/Close";
+import InfoIcon from '@mui/icons-material/Info';
+import ErrorIcon from '@mui/icons-material/Error';
+import CheckIcon from '@mui/icons-material/Check';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-type NewProjectModalProps = {
+type NewTeamModalProps = {
   open: boolean;
-  projects_limit: number;
   handleClose: () => void;
 }
 
-export default function NewProjectModal({ 
-  open, 
-  projects_limit,
-  handleClose,
-}: NewProjectModalProps) {
-  const methods = useForm<ProjectFormType>({
+export default function NewTeamModal({ 
+  open, handleClose 
+}: NewTeamModalProps) {
+  const methods = useForm<TeamFormType>({
     defaultValues: {
       id: 0,
-      project_id: 0,
-      team_id: 0,
-      user_id: 0,
       created_at: "",
       updated_at: "",
       name: "",
-      client: "",
-      ideas_limit: 25,
+      plan: "",
+      project_limit: 0,
+      members_limit: 0,
     },
-    resolver: zodResolver(ProjectFormSchema),
+    resolver: zodResolver(TeamFormSchema),
   });
   const { 
+    reset,
     register, 
     handleSubmit, 
     formState: { 
@@ -64,58 +61,111 @@ export default function NewProjectModal({
     } 
   } = methods;
 
+  const { user } = useUser();
   const supabase = createClient();
   const router = useRouter();
-  
-  async function onSubmit(
-    data: ProjectFormType
-  ) {
-    try {
-      const { 
-        data: { 
-          user 
-        } 
-      } = await supabase
-        .auth
-        .getUser()
 
+  const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
+  const [alertInfo, setAlertInfo] = useState<{
+    type: "success" | "error" | "info" | "warning";
+    icon: React.ReactNode;
+    message: string;
+  } | null>(null);
+
+  // Create a new team
+  async function onSubmit(
+    data: TeamFormType
+  ) {
+    setAlertInfo({
+      type: "info",
+      icon: <InfoIcon />,
+      message: "Creating team..."
+    });
+    setShowAlertInfo(true);
+    try {
       if (!user) {
         throw new Error("User not found");
-      } else if (user) {
+      } else {
         const { 
-          data: project, 
+          data: newTeam, 
           error 
         } = await supabase
-          .from("projects")
+          .from("teams")
           .insert([
             {
               name: data.name,
-              client: data.client,
               user_id: user.id,
-              team_id: data.team_id,
             },
           ])
-          .select()
+          .select();
 
         if (error) {
-          console.log(
-            "Error creating project: ", 
+          console.error(
+            "Error creating team: ", 
             error
           );
-        } else if (project) {
-          console.log(
-            "Project created successfully: ", 
-            project
-          );
-          // TODO: PostHog tracking
-          router.push(`/project/${project[0].id}`);
-          handleClose();
+          setAlertInfo({
+            type: "error",
+            icon: <ErrorIcon />,
+            message: "Error creating team. Please try again."
+          });
+        } else if (newTeam) {
+          const teamId = newTeam[0].id;
+          const { 
+            error: teamMemberError 
+          } = await supabase
+            .from("team_members")
+            .insert([
+              {
+                team_id: teamId,
+                user_id: user.id,
+                role: "owner",
+              }
+            ]);
+          
+          if (teamMemberError) {
+            console.error(
+              "Error adding user to team_members: ", 
+              teamMemberError
+            );
+            setAlertInfo({
+              type: "error",
+              icon: <ErrorIcon />,
+              message: "Error creating team. Please try again."
+            });
+          } else {
+            console.log(
+              "Team created and user added successfully: ", 
+              newTeam
+            );
+            setAlertInfo({
+              type: "success",
+              icon: <CheckIcon />,
+              message: "Team created successfully! Redirecting..."
+            });
+            setTimeout(() => {
+              handleClose();
+              setShowAlertInfo(false);
+              reset();
+              router.push(`/team/${newTeam[0].id}`);
+            }, 2000);
+          };
         };
       };
     } catch (error) {
-      console.log("Error creating project: ", error);
+      console.error(
+        "Error creating team: ", 
+        error
+      );
+      setAlertInfo({
+        type: "error",
+        icon: <ErrorIcon />,
+        message: "Error creating team. Please try again."
+      });
     };
-    handleClose();
+    setTimeout(() => {
+      setShowAlertInfo(false);
+    }, 3000);
   };
 
   return (
@@ -123,8 +173,8 @@ export default function NewProjectModal({
       open={open}
       onClose={handleClose}
       closeAfterTransition
-      aria-labelledby="New project modal"
-      aria-describedby="New project modal"
+      aria-labelledby="New team modal"
+      aria-describedby="New team modal"
       slots={{ backdrop: Backdrop }}
     >
       <Fade in={open}>
@@ -142,14 +192,13 @@ export default function NewProjectModal({
             className="
               bg-white
               p-4
-              pb-6
               rounded-md
               shadow-lg
               w-full
               max-w-md
               relative
               border
-              border-neutral-500a
+              border-neutral-500
             "
           >
             <Box
@@ -160,7 +209,7 @@ export default function NewProjectModal({
                 items-center
                 justify-center
                 w-full
-                gap-8
+                gap-6
               "
             >
               <Box
@@ -189,7 +238,7 @@ export default function NewProjectModal({
                       text-black
                     "
                   >
-                    New Project
+                    New Team
                   </Typography>
                   <Typography
                     variant="body2"
@@ -197,7 +246,7 @@ export default function NewProjectModal({
                       text-neutral-500
                     "
                   >
-                    Name your project to get started.
+                    Name your team to get started.
                   </Typography>
                 </Box>
                 <IconButton onClick={handleClose}>
@@ -216,10 +265,9 @@ export default function NewProjectModal({
                   "
                 >
                   <TextField
-                    {...register("name", { required: "Project name is required" })}
-                    disabled={projects_limit === 0}
+                    {...register("name", { required: "Team name is required" })}
                     type="text"
-                    label="Project Name"
+                    label="Team Name"
                     variant="outlined"
                     color="primary"
                     fullWidth
@@ -227,25 +275,29 @@ export default function NewProjectModal({
                     helperText={errors.name?.message}
                     inputProps={{ autoComplete: "off" }}
                   />
-                  <TextField
-                    {...register("client")}
-                    disabled={projects_limit === 0}
-                    type="text"
-                    label="Client Name"
-                    placeholder=""
-                    variant="outlined"
-                    color="primary"
-                    fullWidth
-                    error={!!errors.client}
-                    helperText={"(Client name is optional)"}
-                    inputProps={{ autoComplete: "off" }}
-                  />
+                  {/* Alert */}
+                  {showAlertInfo && (
+                    <Alert
+                      severity={alertInfo?.type}
+                      icon={
+                        alertInfo ? 
+                        alertInfo.icon : 
+                        undefined
+                      }
+                      className="w-full"
+                    >
+                      {
+                        alertInfo ? 
+                        alertInfo.message : 
+                        "Error"
+                      }
+                    </Alert>
+                  )}
+                  {/* Submit Button */}
                   {isDirty && (
                     <Button
                       type="submit"
-                      disabled={
-                        projects_limit === 0 || !isValid || isSubmitting
-                      }
+                      disabled={!isValid || isSubmitting}
                       variant="outlined"
                       className="
                         w-full
@@ -271,7 +323,7 @@ export default function NewProjectModal({
                         )
                       }
                     >
-                      Create project
+                      Create Team
                     </Button>
                   )}
                 </Box>

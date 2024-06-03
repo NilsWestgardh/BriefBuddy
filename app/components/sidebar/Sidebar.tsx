@@ -1,14 +1,25 @@
+"use client";
+
+// Hooks
 import React from "react";
+import { useTeam } from "@/app/contexts/TeamContext";
 // Custom components
 import SidebarHeader from "@/app/components/sidebar/SidebarHeader";
-import SidebarTeamSelect from "@/app/components/sidebar/SidebarTeamSelect";
+import TeamSelect from "@/app/components/team/TeamSelect";
 import NavButton from "@/app/components/sidebar/NavButton";
 import SignOutButton from "@/app/components/auth/SignOutButton";
 // Components
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
+// Icons
+import GroupIcon from '@mui/icons-material/Group';
+import HomeIcon from '@mui/icons-material/Home';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 
 export default function Sidebar() {
+  const { selectedTeam } = useTeam();
+
   return (
     <Box
       id="sidebar-container"
@@ -41,9 +52,7 @@ export default function Sidebar() {
         <SidebarHeader
           version="v1.0.0"
         />
-        <SidebarTeamSelect
-          team="Nils's Team" // TODO: Replace with dynamic data
-        />
+        <TeamSelect />
         <Box
           id="sidebar-primary-nav"
           className="
@@ -55,11 +64,25 @@ export default function Sidebar() {
             gap-2
           "
         >
-          <NavButton route="home" />
-          <Divider flexItem className="opacity-20" />
-          {/* TODO: Fetch the currently selected team id */}
-          <NavButton route="team" />
-          <NavButton route="contact" />
+          <NavButton
+            route="home"
+            title="Home"
+            icon={<HomeIcon />}
+          />
+          <Divider
+            flexItem
+            className="opacity-20"
+          />
+          <NavButton
+            route={`team/${selectedTeam?.id ?? ''}`}
+            title="Team"
+            icon={<GroupIcon />}
+          />
+          <NavButton
+            route="contact"
+            title="Contact"
+            icon={<ContactSupportIcon />}
+          />
         </Box>
       </Box>
       <Box
@@ -73,7 +96,11 @@ export default function Sidebar() {
           gap-2
         "
       >
-        <NavButton route="settings" />
+        <NavButton
+          route="settings"
+          title="Settings"
+          icon={<SettingsIcon />}
+        />
         <Divider flexItem className="opacity-20" />
         <SignOutButton />
       </Box>
