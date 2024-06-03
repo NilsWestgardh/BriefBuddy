@@ -9,7 +9,7 @@ import React,
 } from "react";
 import { createClient } from '@/app/utils/supabase/client';
 import { TeamType } from "@/app/utils/types/TeamType";
-import { TeamMemberType } from "@/app/utils/types/TeamMemberType";
+// import { TeamMemberType } from "@/app/utils/types/TeamMemberType";
 import { useUser } from '@/app/contexts/UserContext';
 
 type TeamContextType = {
@@ -37,7 +37,10 @@ export default function TeamProvider({
   useEffect(() => {
     async function fetchTeams() {
       if (user) {
-        const { data, error } = await supabase
+        const { 
+          data, 
+          error 
+        } = await supabase
           .from("team_members")
           .select("team_id, teams(id, name, created_at, updated_at, user_id, plan, projects_limit, members_limit)")
           .eq("user_id", user.id);
@@ -48,16 +51,16 @@ export default function TeamProvider({
             error
           );
         } else if (data) {
-          const fetchedTeams: TeamType[] = data
-            .flatMap((
-                item: TeamMemberType
-              ) => item.teams
-            );
+          console.log("Team member data: ", data);
+          const fetchedTeams: TeamType[] = data.flatMap(
+            (item: { teams: TeamType[] }) => item.teams
+          );
+          console.log("Fetched teams: ", fetchedTeams);
           setTeams(fetchedTeams);
           if (fetchedTeams.length > 0) {
             setSelectedTeam(fetchedTeams[0]);
-          };
-        };
+          }
+        }
       };
     };
 
