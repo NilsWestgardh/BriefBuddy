@@ -3,13 +3,13 @@
 // Hooks
 import React, { useState } from "react";
 // Custom components
-import NewProjectModal from "@/app/components/project/NewProjectModal";
+import NewProjectModal from "@/app/components/project/CreateProjectModal";
 // Components
 import Button from "@mui/material/Button";
 // Icons
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
-export default function NewProjectButton() {
+export default function CreateProjectButton() {
   const [open, setOpen] = useState(false);
 
   function handleOpen() {

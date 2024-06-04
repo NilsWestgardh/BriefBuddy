@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 // Custom Components
 import CustomGridItem from "@/app/components/CustomGridItem";
-import NewProjectButton from "@/app/components/sidebar/NewProjectButton";
+import CreateProjectButton from "@/app/components/project/CreateProjectButton";
 // Components
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -59,7 +59,7 @@ export default function Home() {
         >
           My home
         </Typography>
-        <NewProjectButton />
+        <CreateProjectButton />
       </Box>
       
       <Box

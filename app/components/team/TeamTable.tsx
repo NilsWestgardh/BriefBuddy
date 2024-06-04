@@ -9,6 +9,7 @@ import { useTeam } from "@/app/contexts/TeamContext";
 import { useUser } from "@/app/contexts/UserContext";
 // Types
 import { TeamMemberType } from "@/app/utils/types/TeamMemberType";
+import { UserProfileType } from "@/app/utils/types/UserProfileType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
 // Components
@@ -26,7 +27,7 @@ import MenuItem from '@mui/material/MenuItem';
 // Icons
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const roles = {
+const roles: { [key: string]: string } = {
   owner: "Owner",
   admin: "Admin",
   editor: "Editor",
@@ -34,7 +35,7 @@ const roles = {
   guest: "Guest",
 };
 
-const statusColors = {
+const statusColors: { [key: string]: string } = {
   Active: "text-green-700",
   Pending: "text-red-700",
 };
@@ -46,7 +47,10 @@ export default function TeamTable() {
   const [teamMembers, setTeamMembers] = useState<TeamMemberType[]>([]);
   const [userRole, setUserRole] = useState<string>("");
 
-  async function handleRoleChange(userId: string, newRole: string) {
+  async function handleRoleChange(
+    userId: string, 
+    newRole: string
+  ) {
     const { error } = await supabase
       .from('team_members')
       .update({ role: newRole })
@@ -56,6 +60,7 @@ export default function TeamTable() {
     if (error) {
       console.error('Error updating role:', error);
     } else {
+      console.log("teamMembers: ", teamMembers)
       setTeamMembers(teamMembers.map(member => 
         member.user_id === userId ? { ...member, role: newRole } : member
       ));
@@ -125,28 +130,52 @@ export default function TeamTable() {
 
     async function fetchTeamMembers() {
       const { 
-        data, 
-        error 
+        data: teamMembers, 
+        error: teamMembersError, 
       } = await supabase
         .from('team_members')
         .select(`
+          id,
+          created_at,
+          updated_at,
+          team_id,
           user_id,
           role,
           status,
-          users ( name, avatar_url )
+          users ( id, created_at, updated_at, first_name, last_name, email, avatar_url, status )
         `)
         .eq(
           'team_id', 
           selectedTeam?.id
         );
 
-      if (error) {
+      if (teamMembersError) {
         console.error(
           'Error fetching team members:', 
-          error
+          teamMembersError
         );
-      } else {
-        setTeamMembers(data);
+      } else if (teamMembers) {
+        console.log("teamMembers: ", teamMembers)
+        const mappedData: TeamMemberType[] = teamMembers.map((item: { 
+          id: number;
+          created_at: string;
+          updated_at?: string;
+          team_id: number;
+          user_id: string;
+          role: string;
+          status: string;
+          users: UserProfileType[];
+        }) => ({
+          id: item.id,
+          created_at: item.created_at,
+          updated_at: item.updated_at,
+          team_id: item.team_id,
+          user_id: item.user_id,
+          role: item.role,
+          status: item.status,
+          users: item.users[0],
+        }));
+        setTeamMembers(mappedData);
       }
     }
 
@@ -166,7 +195,8 @@ export default function TeamTable() {
           'Error fetching user role:',
            userError
         );
-      } else {
+      } else if (userData) {
+        console.log("userData: ", userData)
         setUserRole(userData.role);
       }
     }
@@ -220,11 +250,11 @@ export default function TeamTable() {
               >
                 <Avatar
                   sx={{ width: 30, height: 30 }}
-                  src={member.users.avatar_url}
+                  src={member.users?.avatar_url}
                 >
-                  {member.users.name[0]}
+                  {member.users?.first_name} {member.users?.last_name}
                 </Avatar>
-                {member.users.name}
+                {member.users?.first_name} {member.users?.last_name}
               </TableCell>
               <TableCell>
                 {renderRoleControls(member)}

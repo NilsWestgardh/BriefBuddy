@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useUser } from '@/app/contexts/UserContext';
+import { useTeam } from '@/app/contexts/TeamContext';
 import { useRouter } from "next/navigation";
 // Validation
 import TeamFormSchema from "@/app/utils/schemas/TeamFormSchema";
@@ -62,6 +63,7 @@ export default function NewTeamModal({
   } = methods;
 
   const { user } = useUser();
+  const { setSelectedTeam } = useTeam();
   const supabase = createClient();
   const router = useRouter();
 
@@ -86,6 +88,7 @@ export default function NewTeamModal({
       if (!user) {
         throw new Error("User not found");
       } else {
+        // Create new team
         const { 
           data: newTeam, 
           error 
@@ -111,6 +114,8 @@ export default function NewTeamModal({
           });
         } else if (newTeam) {
           const teamId = newTeam[0].id;
+
+          // Add user to team_members
           const { 
             error: teamMemberError 
           } = await supabase
@@ -143,11 +148,17 @@ export default function NewTeamModal({
               icon: <CheckIcon />,
               message: "Team created successfully! Redirecting..."
             });
+
+            // Update selected team
+            setSelectedTeam(newTeam[0]);
+
+            // Redirect to new team
             setTimeout(() => {
-              handleClose();
               setShowAlertInfo(false);
               reset();
-              router.push(`/team/${newTeam[0].id}`);
+              console.log("Redirecting to team: ", teamId)
+              router.push(`/team/${teamId}`);
+              handleClose();
             }, 2000);
           };
         };

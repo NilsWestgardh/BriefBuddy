@@ -10,7 +10,7 @@ import TeamFormSchema from "@/app/utils/schemas/TeamFormSchema";
 import { TeamFormType } from "@/app/utils/types/TeamFormType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
-import Link from 'next/link';
+import timeSince from "@/app/actions/timeSince"; // Replace with ISO date formatting
 // Components
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -57,7 +57,9 @@ export default function TeamHeader() {
 
   // Update team name
   async function onSubmit(data: TeamFormType) {
-    const { error } = await supabase
+    const { 
+      error 
+    } = await supabase
       .from('teams')
       .update({ 
         name: data.name, 
@@ -66,7 +68,10 @@ export default function TeamHeader() {
       .eq('id', data.id);
 
     if (error) {
-      console.error('Error updating team name:', error);
+      console.error(
+        'Error updating team name:', 
+        error
+      );
     } else {
       setUpdatedAt(new Date().toISOString());
       setNameEditable(false);
@@ -82,7 +87,10 @@ export default function TeamHeader() {
       if (form.name === defaultTeamName) {
         setValue("name", "");
       };
-      setTimeout(() => textFieldRef.current?.focus(), 100);
+      setTimeout(
+        () => textFieldRef.current?.focus(), 
+        100
+      );
     };
   };
 
@@ -119,7 +127,10 @@ export default function TeamHeader() {
         setCreatedAt(new Date(data.created_at).toLocaleDateString());
         setUpdatedAt(new Date(data.updated_at).toLocaleDateString());
 
-        const { data: teamMembersData, error: teamMembersError } = await supabase
+        const { 
+          data: teamMembersData, 
+          error: teamMembersError 
+        } = await supabase
           .from('team_members')
           .select('user_id')
           .eq('team_id', data.id)
@@ -127,24 +138,37 @@ export default function TeamHeader() {
           .single();
 
         if (teamMembersError) {
-          console.error('Error fetching team members data:', teamMembersError);
+          console.error(
+            'Error fetching team members data:', 
+            teamMembersError
+          );
         } else if (teamMembersData) {
-          const { data: userData, error: userError } = await supabase
+          const { 
+            data: userData, 
+            error: userError 
+          } = await supabase
             .from('users')
-            .select('username')
+            .select('first_name, last_name')
             .eq('id', teamMembersData.user_id)
             .single();
 
           if (userError) {
-            console.error('Error fetching user data:', userError);
+            console.error(
+              'Error fetching user data:', 
+              userError
+            );
           } else {
-            setCreatorName(userData.username);
+            setCreatorName(`${userData.first_name} ${userData.last_name}`);
           }
         }
       }
     };
     fetchTeamData();
-  }, [selectedTeam, setValue, supabase]);
+  }, [
+    selectedTeam, 
+    setValue, 
+    supabase
+  ]);
 
   return (
     <Box
@@ -155,6 +179,7 @@ export default function TeamHeader() {
         justify-between
         items-center
         w-full
+        min-h-20
         px-4
         pt-1
         pb-2
@@ -248,40 +273,50 @@ export default function TeamHeader() {
               {form.name}
             </Typography>
           )}
-          <IconButton
-            onClick={handleEditableName}
-            size="small"
-            disabled={
-              form.name.length < 4 ||
-              !isValid
-            }
-          >
-            {nameEditable ? <CheckIcon /> : <EditIcon />}
-          </IconButton>
+          {form.name !== defaultTeamName && (
+            <IconButton
+              onClick={handleEditableName}
+              size="small"
+              disabled={
+                form.name.length < 4 ||
+                !isValid
+              }
+            >
+              {nameEditable ? <CheckIcon /> : <EditIcon />}
+            </IconButton>
+          )}
         </Box>
         
-        <Typography
-          variant="caption"
+        <Box
+          id="team-details"
           className="
-          text-neutral-700
+            flex
+            flex-row
+            flex-wrap
+            justify-start
+            items-center
+            gap-2
+            text-neutral-700
           "
         >
-          Created by {" "}
-          <Link
-            href={`/users/${creatorName}`}
-            className="
-              hover:pointer-cursor 
-              hover:underline 
-              hover:text-neutral-900
-            "
-          >
-            {creatorName}
-          </Link>
-          {" "} <span className="text-neutral-500">•</span> {" "}
-          Created {createdAt}
-          {" "} <span className="text-neutral-500">•</span> {" "}
-          Updated {updatedAt}
-        </Typography>
+          <Typography variant="caption">
+            {creatorName ? `Created by ${creatorName}` : "Created by user"}
+          </Typography>
+          <span className="text-neutral-500">•</span>
+          <Typography variant="caption">
+            {/* TODO: Replace with ISO formatted date */}
+            {createdAt ? `Created ${timeSince(createdAt)}` : "Created date"}
+          </Typography>
+          {updatedAt && updatedAt !== createdAt && (
+            <>
+              <span className="text-neutral-500">•</span>
+              <Typography variant="caption">
+                {/* TODO: Replace with ISO formatted date */}
+                Updated {timeSince(updatedAt)}
+              </Typography>
+            </>
+          )}
+        </Box>
       </Box>
     </Box>
   );

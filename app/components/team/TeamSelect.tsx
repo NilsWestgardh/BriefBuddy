@@ -3,6 +3,7 @@
 // Hooks
 import React, { useState } from "react";
 import { useTeam } from "@/app/contexts/TeamContext";
+import { useRouter } from "next/navigation";
 // Types
 import { TeamType } from "@/app/utils/types/TeamType";
 // Utils
@@ -19,7 +20,12 @@ import CreateTeamButton from "@/app/components/team/CreateTeamButton";
 
 export default function TeamSelect() {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-  const { teams, selectedTeam, setSelectedTeam } = useTeam();
+  const { 
+    teams, 
+    selectedTeam, 
+    setSelectedTeam 
+  } = useTeam();
+  const router = useRouter();
 
   function handleClick(
     event: React.MouseEvent<HTMLDivElement>
@@ -179,6 +185,7 @@ export default function TeamSelect() {
                   variant="body2"
                   onClick={() => {
                     setSelectedTeam(team);
+                    router.push(`/team/${team.id}`);
                     handleClose();
                   }}
                   className={clsx(

@@ -5,6 +5,6 @@ export type UserProfileType = {
   first_name: string,
   last_name: string,
   email: string,
-  avatar_url: string,
-  status: string,
+  avatar_url?: string,
+  status?: string,
 };

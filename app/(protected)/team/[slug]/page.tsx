@@ -1,7 +1,10 @@
 "use client";
 
 // Hooks
-import React, { useEffect } from "react";
+import React, { 
+  useEffect, 
+  useRef 
+} from "react";
 import { useRouter } from "next/navigation";
 import { useTeam } from "@/app/contexts/TeamContext";
 // Custom components
@@ -17,26 +20,45 @@ export default function TeamIdPage({
 }: { params: { 
   slug: string 
 }}) {
-  const { selectedTeam } = useTeam();
+  const { 
+    selectedTeam, 
+    setSelectedTeam, 
+    teams 
+  } = useTeam();
   const router = useRouter();
+  const initialRender = useRef(true);
 
   // Redirect to selected team page if
   // slug doesn't match selected team id
   useEffect(() => {
     if (!selectedTeam) return;
 
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
+    }
+
     if (
       params.slug !== selectedTeam.id.toString()
     ) {
-      router.push(`/team/${selectedTeam.id}`);
+      const matchingTeam = teams
+        .find(team => team.id.toString() === params.slug);
+      if (matchingTeam) {
+        setSelectedTeam(matchingTeam);
+      } else {
+        router.push(`/team/${selectedTeam.id}`);
+      }
     }
   }, [
     selectedTeam, 
     params.slug, 
-    router
+    teams, 
+    router, 
+    setSelectedTeam
   ]);
 
-  return selectedTeam && params.slug === selectedTeam.id.toString() ? (
+  return selectedTeam && 
+    params.slug === selectedTeam.id.toString() ? (
     <Box
       id={`team-${params.slug}-container`}
       className="

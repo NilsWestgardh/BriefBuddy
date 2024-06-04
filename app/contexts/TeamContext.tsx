@@ -51,11 +51,9 @@ export default function TeamProvider({
             error
           );
         } else if (data) {
-          console.log("Team member data: ", data);
           const fetchedTeams: TeamType[] = data.flatMap(
             (item: { teams: TeamType[] }) => item.teams
           );
-          console.log("Fetched teams: ", fetchedTeams);
           setTeams(fetchedTeams);
           if (fetchedTeams.length > 0) {
             setSelectedTeam(fetchedTeams[0]);

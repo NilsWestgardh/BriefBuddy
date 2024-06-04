@@ -28,17 +28,17 @@ import Backdrop from "@mui/material/Backdrop";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-type NewProjectModalProps = {
+type CreateProjectModalProps = {
   open: boolean;
   projects_limit: number;
   handleClose: () => void;
 }
 
-export default function NewProjectModal({ 
+export default function CreateProjectModal({ 
   open, 
   projects_limit,
   handleClose,
-}: NewProjectModalProps) {
+}: CreateProjectModalProps) {
   const methods = useForm<ProjectFormType>({
     defaultValues: {
       id: 0,
