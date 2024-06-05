@@ -190,9 +190,13 @@ export default function TeamSelect() {
                   }}
                   className={clsx(
                     "hover:cursor-pointer hover:bg-neutral-100 p-2 rounded-md w-full",
-                    { "bg-neutral-200 font-semibold": selectedTeam?.id === team.id }
+                    { 
+                      "bg-neutral-200 font-semibold": selectedTeam?.id === team.id 
+                    }
                   )}
-                  style={{ wordWrap: "break-word" }}
+                  style={{ 
+                    wordWrap: "break-word" 
+                  }}
                 >
                   {team?.name ?? "Unnamed team"}
                 </Typography>

@@ -1,20 +1,22 @@
 "use client";
 
 // Hooks
-import React, { useState } from "react";
+import React, { 
+  useState,
+  useEffect,
+} from "react";
+import { useTeam } from "@/app/contexts/TeamContext";
 // Utils
-import Link from "next/link";
+import { createClient } from "@/app/utils/supabase/client";
+// Types
+import { ProjectCardType } from "@/app/utils/types/ProjectCardType";
 // Custom Components
-import CustomGridItem from "@/app/components/CustomGridItem";
+import ProjectCard from "@/app/components/ProjectCard";
 import CreateProjectButton from "@/app/components/project/CreateProjectButton";
 // Components
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Item from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-// Icons
-import AddIcon from '@mui/icons-material/Add';
 
 const sortByOptions = {
   latest: "latest",
@@ -22,9 +24,58 @@ const sortByOptions = {
 };
 
 export default function Home() {
+  const supabase = createClient();
+  const { selectedTeam } = useTeam();
+
+  const [projectCards, setProjectCards] = useState<ProjectCardType[]>([]);
   const [sortBy, setSortBy] = useState<string>(sortByOptions.latest);
 
   // TODO: Sort by logic
+  useEffect(() => {
+    if (!selectedTeam) return;
+
+    async function fetchprojects() {
+      const { 
+        data, 
+        error 
+      } = await supabase
+        .from("projects")
+        .select(`
+          id,
+          created_at,
+          updated_at,
+          team_id,
+          user_id,
+          name,
+          client,
+          ideas_limit,
+          details,
+          team_members ( id, created_at, updated_at, team_id, user_id, role, status, users )
+        `)
+        .eq(
+          "team_id", 
+          selectedTeam?.id
+        )
+        .order("created_at", { 
+          ascending: sortBy === sortByOptions.oldest 
+        });
+      
+      if (error) {
+        console.log(
+          "Error fetching projects: ", 
+          error
+        );
+      } else if (data) {
+        console.log("Projects fetched: ", data)
+        setProjectCards(data);
+      };
+    };
+    fetchprojects();
+  }, [
+    supabase, 
+    selectedTeam, 
+    sortBy
+  ]);
 
   return (
     <Box
@@ -35,8 +86,8 @@ export default function Home() {
         justify-start
         items-start
         w-full
-        gap-2
-        p-4
+        gap-4
+        p-6
       "
     >
       <Box
@@ -96,187 +147,55 @@ export default function Home() {
           Oldest
         </Button>
       </Box>
-      {/* TODO: Dynamically render each brief */}
-      <Grid
-        container
-        spacing={4}
-        className="w-full gap-4 m-0 flex-wrap"
-      >
-        <Grid
-          xs={12}
-          sm={6}
-          md={4}
-          lg={3}
+      {projectCards.length > 0 && (
+        <Box
+          id="projects-container"
           className="
-            bg-white
-            border
-            border-black
-            hover:border-neutral-700
-            hover:cursor-pointer
-            rounded-md
-            p-4
+            flex
+            flex-col
+            flex-wrap
+            justify-start
+            items-start
+            w-full
+            gap-4
           "
-          sx={{
-            "&:hover": {
-              boxShadow: "0 2px 0 0 #000000"
-            }
-          }}
         >
-          {/* TODO: Replace with dynamic data */}
-          <CustomGridItem
-            id={1}
-            title="Project Title"
-            briefDetails="Lorem ipsum dolor sit amet."
-            company="Company"
-            companyAvatar="/briefbuddy-logo.png"
-            createdAt="2021-10-01"
-            updatedAt={null}
-            ideasQuantity={5}
-          />
-        </Grid>
-        <Grid
-          xs={12}
-          sm={6}
-          md={4}
-          lg={3}
-          className="
-            bg-white
-            border
-            border-black
-            hover:border-neutral-700
-            hover:cursor-pointer
-            rounded-md
-            p-4
-          "
-          sx={{
-            "&:hover": {
-              boxShadow: "0 2px 0 0 #000000"
-            }
-          }}
-        >
-          {/* TODO: Replace with dynamic data */}
-          <CustomGridItem
-            id={2}
-            title="Project Title"
-            briefDetails="Lorem ipsum dolor sit amet."
-            company="Company"
-            companyAvatar="/briefbuddy-logo.png"
-            createdAt="2021-10-01"
-            updatedAt={null}
-            ideasQuantity={5}
-          />
-        </Grid>
-        <Grid
-          xs={12}
-          sm={6}
-          md={4}
-          lg={3}
-          className="
-            bg-white
-            border
-            border-black
-            hover:border-neutral-700
-            hover:cursor-pointer
-            rounded-md
-            p-4
-          "
-          sx={{
-            "&:hover": {
-              boxShadow: "0 2px 0 0 #000000"
-            }
-          }}
-        >
-          {/* TODO: Replace with dynamic data */}
-          <CustomGridItem
-            id={3}
-            title="Project Title"
-            briefDetails="Lorem ipsum dolor sit amet."
-            company="Company"
-            companyAvatar="/briefbuddy-logo.png"
-            createdAt="2021-10-01"
-            updatedAt={null}
-            ideasQuantity={5}
-          />
-        </Grid>
-        <Grid
-          xs={12}
-          sm={6}
-          md={4}
-          lg={3}
-          className="
-            bg-white
-            border
-            border-black
-            hover:border-neutral-700
-            hover:cursor-pointer
-            rounded-md
-            p-4
-          "
-          sx={{
-            "&:hover": {
-              boxShadow: "0 2px 0 0 #000000"
-            }
-          }}
-        >
-          {/* TODO: Replace with dynamic data */}
-          <CustomGridItem
-            id={4}
-            title="Project Title"
-            briefDetails="Lorem ipsum dolor sit amet."
-            company="Company"
-            companyAvatar="/briefbuddy-logo.png"
-            createdAt="2021-10-01"
-            updatedAt={null}
-            ideasQuantity={5}
-          />
-        </Grid>
-        {/* Create New Brief */}
-        <Link
-          href="/new-brief"
-          className="w-full"
-        >
-          <Grid
-            xs={12}
-            md={6}
-            lg={4}
-            className="
-              bg-neutral-100
-              hover:cursor-pointer
-              rounded-md
-              p-4
-            "
-          >
-            {/* TODO: Replace with dynamic data */}
-            <Item
+          {projectCards.map((projectCard) => (
+            <Box
+              key={projectCard.id}
+              id={`project-${projectCard.id}-card`}
               className="
                 flex
                 flex-col
-                justify-center
-                items-center
+                justify-start
+                items-start
+                max-w-[300px]
+                min-w-[200px]
                 w-full
-                min-h-[120px]
-                gap-2
+                gap-4
+                p-4
+                rounded-lg
+                border
+                border-black
+                hover:border-neutral-500
+                hover:bg-neutral-50
               "
             >
-              <Typography
-                variant="subtitle1"
-                className="
-                text-neutral-400
-                hover:text-neutral-500
-                  gap-2
-                "
-              >
-                New brief
-                <AddIcon
-                  className="
-                    ml-2
-                  "
-                />
-              </Typography>
-            </Item>
-          </Grid>
-        </Link>
-      </Grid>
+              <ProjectCard
+                id={projectCard.id}
+                created_at={projectCard.created_at}
+                updated_at={projectCard.updated_at}
+                name={projectCard.name}
+                client={projectCard?.client ?? 'ACME Inc.'}
+                details={projectCard.details}
+                ideas_limit={projectCard.ideas_limit}
+                ideas_count={projectCard.ideas_count}
+                team_members={projectCard.team_members}
+              />
+            </Box>
+          ))}
+        </Box>
+      )}
     </Box>
   );
 };

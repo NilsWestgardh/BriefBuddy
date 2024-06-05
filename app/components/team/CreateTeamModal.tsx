@@ -45,7 +45,7 @@ export default function NewTeamModal({
       updated_at: "",
       name: "",
       plan: "",
-      project_limit: 0,
+      projects_limit: 0,
       members_limit: 0,
     },
     resolver: zodResolver(TeamFormSchema),

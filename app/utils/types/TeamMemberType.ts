@@ -9,6 +9,6 @@ export type TeamMemberType = {
   user_id: string;
   role: string;
   status: string;
-  users: UserProfileType;
+  users?: UserProfileType;
   teams?: TeamType[];
 };

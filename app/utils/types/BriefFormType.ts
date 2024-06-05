@@ -5,6 +5,7 @@ export type BriefFormType = {
   // Basics
   created_at: string;
   updated_at?: string;
+  project_name: string;
   client_name?: string;
   // Background
   client_details?: string;
