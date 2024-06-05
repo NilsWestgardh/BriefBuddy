@@ -25,7 +25,7 @@ export default function NavButton({
       <Button
         id={`${route.toLowerCase()}-button`}
         color="primary"
-        size="small"
+        size="large"
         startIcon={icon}
         className={clsx("flex flex-row justify-start items-center w-full hover:cursor-pointer", {
           "hover:opacity-80": currentPathname.includes(route.toLowerCase()),

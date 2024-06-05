@@ -79,8 +79,8 @@ export default function TeamIdPage({
           justify-start
           items-start
           w-full
-          gap-2
-          p-4
+          gap-4
+          p-6
         "
       >
         <TeamTableHeader />

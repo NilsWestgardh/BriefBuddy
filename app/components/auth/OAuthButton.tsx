@@ -29,12 +29,16 @@ export default function OAuthButton({
   // Sign in handler
   async function handleSignIn() {
     if (provider !== null) {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-          redirectTo: `${window.location.origin}/api/auth/callback`,
-        },
-      });
+      const { 
+        error 
+      } = await supabase
+        .auth
+        .signInWithOAuth({
+          provider: provider,
+          options: {
+            redirectTo: `${window.location.origin}/api/auth/callback`,
+          },
+        });
       if (error) {
         console.log(error);
       };
@@ -65,7 +69,12 @@ export default function OAuthButton({
       disabled={disabled}
       startIcon={providerIcon}
       size="large"
-      className="flex justify-center items-center w-full"
+      className="
+        flex
+        justify-center
+        items-center
+        w-full
+      "
     >
       {cta}
     </Button>

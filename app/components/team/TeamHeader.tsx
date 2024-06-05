@@ -1,7 +1,11 @@
 "use client";
 
 // Hooks
-import React, { useState, useEffect, useRef } from "react";
+import React, { 
+  useState, 
+  useEffect, 
+  useRef 
+} from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTeam } from "@/app/contexts/TeamContext";
@@ -20,21 +24,21 @@ import IconButton from "@mui/material/IconButton";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 
-const defaultTeamName = "Team name";
+const defaultFormValues: TeamFormType = {
+  id: 0,
+  user_id: "",
+  created_at: "",
+  updated_at: "",
+  name: "Team name",
+  plan: "",
+  projects_limit: 0,
+  members_limit: 0,
+};
 
 export default function TeamHeader() {
   const { selectedTeam } = useTeam();
   const methods = useForm<TeamFormType>({
-    defaultValues: {
-      id: 0,
-      user_id: 0,
-      created_at: "",
-      updated_at: "",
-      name: defaultTeamName,
-      plan: "",
-      project_limit: 0,
-      members_limit: 0,
-    },
+    defaultValues: defaultFormValues,
     resolver: zodResolver(TeamFormSchema),
     mode: "onChange",
   });
@@ -44,19 +48,28 @@ export default function TeamHeader() {
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isValid },
+    formState: { 
+      errors, 
+      isDirty,
+      isValid 
+    },
   } = methods;
 
   const supabase = createClient();
   const form = watch();
-  const [nameEditable, setNameEditable] = useState(false);
+
   const textFieldRef = useRef<HTMLInputElement>(null);
+
+  const [nameEditable, setNameEditable] = useState(false);
   const [creatorName, setCreatorName] = useState<string>("");
   const [createdAt, setCreatedAt] = useState<string>("");
   const [updatedAt, setUpdatedAt] = useState<string>("");
 
   // Update team name
-  async function onSubmit(data: TeamFormType) {
+  async function onSubmit(
+    data: TeamFormType
+  ) {
+    // console.log("Submitted data: ", data);
     const { 
       error 
     } = await supabase
@@ -65,7 +78,10 @@ export default function TeamHeader() {
         name: data.name, 
         updated_at: new Date().toISOString() 
       })
-      .eq('id', data.id);
+      .eq(
+        'id', 
+        data.id
+      );
 
     if (error) {
       console.error(
@@ -84,7 +100,7 @@ export default function TeamHeader() {
       handleSubmit(onSubmit)();
     } else {
       setNameEditable(true);
-      if (form.name === defaultTeamName) {
+      if (form.name === defaultFormValues.name) {
         setValue("name", "");
       };
       setTimeout(
@@ -116,17 +132,19 @@ export default function TeamHeader() {
       };
 
       if (data) {
+        // console.log("Fetched team data: ", data)
         setValue('id', data.id);
         setValue('user_id', data.user_id);
         setValue('created_at', data.created_at);
         setValue('updated_at', data.updated_at);
         setValue('name', data.name);
         setValue('plan', data.plan);
-        setValue('project_limit', data.project_limit);
+        setValue('projects_limit', data.projects_limit);
         setValue('members_limit', data.members_limit);
         setCreatedAt(new Date(data.created_at).toLocaleDateString());
         setUpdatedAt(new Date(data.updated_at).toLocaleDateString());
 
+        // Fetch team members data
         const { 
           data: teamMembersData, 
           error: teamMembersError 
@@ -143,13 +161,17 @@ export default function TeamHeader() {
             teamMembersError
           );
         } else if (teamMembersData) {
+          // Fetch user data
           const { 
             data: userData, 
             error: userError 
           } = await supabase
             .from('users')
             .select('first_name, last_name')
-            .eq('id', teamMembersData.user_id)
+            .eq(
+              'id', 
+              teamMembersData.user_id
+            )
             .single();
 
           if (userError) {
@@ -270,20 +292,30 @@ export default function TeamHeader() {
               "
               sx={{ flex: 1 }}
             >
-              {form.name}
+              {form.name !== defaultFormValues.name ? form.name : ""}
             </Typography>
           )}
-          {form.name !== defaultTeamName && (
-            <IconButton
-              onClick={handleEditableName}
-              size="small"
-              disabled={
-                form.name.length < 4 ||
-                !isValid
-              }
-            >
-              {nameEditable ? <CheckIcon /> : <EditIcon />}
-            </IconButton>
+          {form.name !== defaultFormValues.name && (
+            !nameEditable ? (
+              <IconButton
+                onClick={handleEditableName}
+                size="small"
+              >
+                <EditIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                onClick={handleEditableName}
+                size="small"
+                disabled={
+                  form.name.length < 4 ||
+                  !isDirty ||
+                  !isValid
+                }
+              >
+                <CheckIcon />
+              </IconButton>
+            )
           )}
         </Box>
         
