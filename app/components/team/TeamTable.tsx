@@ -282,9 +282,13 @@ export default function TeamTable() {
   return (
     <TableContainer
       className="
+        flex
+        flex-col
+        justify-start
+        items-start
         border
         border-neutral-300
-        rounded-md
+        rounded-lg
         w-full
       "
     >

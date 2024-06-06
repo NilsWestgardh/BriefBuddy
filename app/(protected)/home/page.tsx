@@ -11,7 +11,7 @@ import { createClient } from "@/app/utils/supabase/client";
 // Types
 import { ProjectCardType } from "@/app/utils/types/ProjectCardType";
 // Custom Components
-import ProjectCard from "@/app/components/ProjectCard";
+import ProjectCard from "@/app/components/project/ProjectCard";
 import CreateProjectButton from "@/app/components/project/CreateProjectButton";
 // Components
 import Box from "@mui/material/Box";
@@ -50,7 +50,24 @@ export default function Home() {
           client,
           ideas_limit,
           details,
-          team_members ( id, created_at, updated_at, team_id, user_id, role, status, users )
+          project_members (
+            id,
+            created_at,
+            updated_at,
+            project_id,
+            user_id,
+            project_role,
+            team_members (
+              id,
+              created_at,
+              updated_at,
+              team_id,
+              user_id,
+              role,
+              status,
+              users ( id, first_name, last_name, email, avatar_url, status )
+            )
+          )
         `)
         .eq(
           "team_id", 
@@ -66,7 +83,10 @@ export default function Home() {
           error
         );
       } else if (data) {
-        console.log("Projects fetched: ", data)
+        // console.log(
+        //   "Projects fetched: ", 
+        //   data
+        // )
         setProjectCards(data);
       };
     };
@@ -152,7 +172,7 @@ export default function Home() {
           id="projects-container"
           className="
             flex
-            flex-col
+            flex-row
             flex-wrap
             justify-start
             items-start

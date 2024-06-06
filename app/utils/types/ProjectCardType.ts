@@ -1,4 +1,4 @@
-import { TeamMemberType } from './TeamMemberType';
+import { ProjectMemberType } from "@/app/utils/types/ProjectMemberType";
 
 export type ProjectCardType = {
   id: number;
@@ -12,5 +12,5 @@ export type ProjectCardType = {
   details?: string;
   ideas_limit: number;
   ideas_count?: number;
-  team_members?: TeamMemberType[];
+  team_members?: ProjectMemberType[];
 };

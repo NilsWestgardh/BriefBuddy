@@ -1,19 +1,17 @@
 "use client";
 
 // Hooks
-import React from "react";
-import { useRouter } from 'next/navigation'
-import { 
-  useForm, 
-  // SubmitHandler 
-} from "react-hook-form";
+import React, { useState } from "react";
+import { useRouter } from 'next/navigation';
+import { useUser } from "@/app/contexts/UserContext";
+import { useTeam } from "@/app/contexts/TeamContext";
+import { useForm } from "react-hook-form";
 // Validation
 import ProjectFormSchema from "@/app/utils/schemas/ProjectFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProjectFormType } from "@/app/utils/types/ProjectFormType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
-// TODO: Import PostHog
 // Components
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -24,13 +22,17 @@ import IconButton from "@mui/material/IconButton";
 import CircularProgress from '@mui/material/CircularProgress';
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
+import Alert from "@mui/material/Alert";
 // Icons
 import CloseIcon from "@mui/icons-material/Close";
+import InfoIcon from '@mui/icons-material/Info';
+import ErrorIcon from '@mui/icons-material/Error';
+import CheckIcon from '@mui/icons-material/Check';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 type CreateProjectModalProps = {
   open: boolean;
-  projects_limit: number;
+  projects_limit?: number;
   handleClose: () => void;
 }
 
@@ -53,6 +55,7 @@ export default function CreateProjectModal({
     },
     resolver: zodResolver(ProjectFormSchema),
   });
+
   const { 
     register, 
     handleSubmit, 
@@ -66,57 +69,118 @@ export default function CreateProjectModal({
 
   const supabase = createClient();
   const router = useRouter();
+  const { user } = useUser();
+  const { selectedTeam } = useTeam();
+
+  const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
+  const [alertInfo, setAlertInfo] = useState<{
+    type: "success" | "error" | "info" | "warning";
+    icon: React.ReactNode;
+    message: string;
+  } | null>(null);
   
+  // Create new project
   async function onSubmit(
     data: ProjectFormType
   ) {
+    setAlertInfo({
+      type: "info",
+      icon: <InfoIcon />,
+      message: "Creating project..."
+    });
+    setShowAlertInfo(true);
     try {
-      const { 
-        data: { 
-          user 
-        } 
-      } = await supabase
-        .auth
-        .getUser()
-
       if (!user) {
         throw new Error("User not found");
-      } else if (user) {
+      }
+  
+      const { 
+        data: project, 
+        error 
+      } = await supabase
+        .from("projects")
+        .insert([
+          {
+            name: data.name,
+            client: data.client,
+            user_id: user.id,
+            team_id: selectedTeam ? selectedTeam.id : null,
+            ideas_limit: data.ideas_limit,
+          },
+        ])
+        .select();
+  
+      if (error) {
+        console.log(
+          "Error creating project: ", 
+          error
+        );
+        setAlertInfo({
+          type: "error",
+          icon: <ErrorIcon />,
+          message: "Error creating project. Please try again."
+        });
+      } else if (project) {
+        const projectId = project[0].id;
+        console.log(
+          "Project created successfully: ", 
+          project
+        );
+        setAlertInfo({
+          type: "success",
+          icon: <CheckIcon />,
+          message: "Project created successfully! Redirecting..."
+        });
+  
+        // Add user to project_members
         const { 
-          data: project, 
-          error 
+          error: projectMemberError 
         } = await supabase
-          .from("projects")
+          .from("project_members")
           .insert([
             {
-              name: data.name,
-              client: data.client,
+              project_id: projectId,
               user_id: user.id,
-              team_id: data.team_id,
+              project_role: "owner",
             },
-          ])
-          .select()
-
-        if (error) {
+          ]);
+  
+        if (projectMemberError) {
           console.log(
-            "Error creating project: ", 
-            error
+            "Error adding user to project_members: ", 
+            projectMemberError
           );
-        } else if (project) {
-          console.log(
-            "Project created successfully: ", 
-            project
-          );
-          // TODO: PostHog tracking
-          router.push(`/project/${project[0].id}`);
+          setAlertInfo({
+            type: "error",
+            icon: <ErrorIcon />,
+            message: "Error adding user to project members. Please try again."
+          });
+        } else {
+          console.log("User added to project_members successfully");
+        }
+  
+        // Redirect to new project
+        setTimeout(() => {
+          setShowAlertInfo(false);
+          router.push(`/project/${projectId}`);
           handleClose();
-        };
-      };
+        }, 2000);
+      }
     } catch (error) {
-      console.log("Error creating project: ", error);
-    };
-    handleClose();
-  };
+      console.log(
+        "Error creating project: ", 
+        error
+      );
+      setAlertInfo({
+        type: "error",
+        icon: <ErrorIcon />,
+        message: "Error creating project. Please try again."
+      });
+    }
+    setTimeout(() => {
+      setShowAlertInfo(false);
+    }, 3000);
+  };  
 
   return (
     <Modal
@@ -142,14 +206,13 @@ export default function CreateProjectModal({
             className="
               bg-white
               p-4
-              pb-6
               rounded-md
               shadow-lg
               w-full
               max-w-md
               relative
               border
-              border-neutral-500a
+              border-neutral-500
             "
           >
             <Box
@@ -160,7 +223,7 @@ export default function CreateProjectModal({
                 items-center
                 justify-center
                 w-full
-                gap-8
+                gap-6
               "
             >
               <Box
@@ -240,12 +303,21 @@ export default function CreateProjectModal({
                     helperText={"(Client name is optional)"}
                     inputProps={{ autoComplete: "off" }}
                   />
+                  {/* Alert */}
+                  {showAlertInfo && (
+                    <Alert
+                      severity={alertInfo?.type}
+                      icon={alertInfo ? alertInfo.icon : undefined}
+                      className="w-full"
+                    >
+                      {alertInfo ? alertInfo.message : "Error"}
+                    </Alert>
+                  )}
+                  {/* Submit Button */}
                   {isDirty && (
                     <Button
                       type="submit"
-                      disabled={
-                        projects_limit === 0 || !isValid || isSubmitting
-                      }
+                      disabled={projects_limit === 0 || !isValid || isSubmitting}
                       variant="outlined"
                       className="
                         w-full

@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { useTeam } from "@/app/contexts/TeamContext";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 // Types
 import { TeamType } from "@/app/utils/types/TeamType";
 // Utils
@@ -20,12 +21,14 @@ import CreateTeamButton from "@/app/components/team/CreateTeamButton";
 
 export default function TeamSelect() {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+
   const { 
     teams, 
     selectedTeam, 
     setSelectedTeam 
   } = useTeam();
   const router = useRouter();
+  const pathname = usePathname();
 
   function handleClick(
     event: React.MouseEvent<HTMLDivElement>
@@ -39,6 +42,19 @@ export default function TeamSelect() {
 
   const open = Boolean(anchorEl);
   const id = open ? "team-popover" : undefined;
+
+  function handleTeamSelect(
+    team: TeamType
+  ) {
+    setSelectedTeam(team);
+    if (
+      pathname.startsWith("/team/") && 
+      pathname !== `/team/${team.id}`
+    ) {
+      router.push(`/team/${team.id}`);
+    }
+    handleClose();
+  }
 
   return (
     <Box
@@ -183,11 +199,7 @@ export default function TeamSelect() {
                 <Typography
                   key={index}
                   variant="body2"
-                  onClick={() => {
-                    setSelectedTeam(team);
-                    router.push(`/team/${team.id}`);
-                    handleClose();
-                  }}
+                  onClick={() => handleTeamSelect(team)}
                   className={clsx(
                     "hover:cursor-pointer hover:bg-neutral-100 p-2 rounded-md w-full",
                     { 

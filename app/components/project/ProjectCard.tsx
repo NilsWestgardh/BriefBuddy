@@ -25,6 +25,7 @@ export default function ProjectCard({
   return (
     <Link
       href={`/project/${id}`}
+      className="w-full"
     >
       <Item
         id={`${name}-grid-item-container`}
@@ -48,7 +49,7 @@ export default function ProjectCard({
           "
         >
           <Typography
-            variant="subtitle2"
+            variant="subtitle1"
             className="
               font-semibold
               hover:underline
@@ -66,16 +67,15 @@ export default function ProjectCard({
               flex-wrap
               justify-start
               items-center
-              gap-2
-              font-semibold
-              text-black
+              gap-1
+              text-neutral-700
             "
           >
             {client ? client : "ACME"}
             <Typography
               variant="body2"
               className="
-                text-neutral-700
+                text-neutral-500
               "
             >
               •
@@ -86,12 +86,27 @@ export default function ProjectCard({
             >
               {ideas_count ? ideas_count : 0}/{ideas_limit ? ideas_limit : 25} ideas
             </Typography>
-            <Typography
-              variant="body2"
-              component="span"
-            >
-              {team_members?.length ? team_members.length : 0} members
-            </Typography>
+            {
+              team_members && 
+              team_members?.length > 0 && (
+                <>
+                  <Typography
+                    variant="body2"
+                    className="
+                      text-neutral-500
+                    "
+                  >
+                    •
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    component="span"
+                  >
+                    {team_members?.length ? team_members.length : 0} members
+                  </Typography>
+                </>
+              )
+            }
           </Typography>
         </Box>
         <Box

@@ -16,7 +16,7 @@ export default function TeamTableHeader() {
         p-4
         border
         border-neutral-300
-        rounded-md
+        rounded-lg
         w-full
       "
     >

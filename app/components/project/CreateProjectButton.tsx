@@ -6,8 +6,6 @@ import React, { useState } from "react";
 import NewProjectModal from "@/app/components/project/CreateProjectModal";
 // Components
 import Button from "@mui/material/Button";
-// Icons
-import AssignmentIcon from '@mui/icons-material/Assignment';
 
 export default function CreateProjectButton() {
   const [open, setOpen] = useState(false);
@@ -25,7 +23,6 @@ export default function CreateProjectButton() {
       <Button
         variant="outlined"
         onClick={handleOpen}
-        startIcon={<AssignmentIcon />}
         size="small"
         className="
           flex

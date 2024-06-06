@@ -9,7 +9,6 @@ import React,
 } from "react";
 import { createClient } from '@/app/utils/supabase/client';
 import { TeamType } from "@/app/utils/types/TeamType";
-// import { TeamMemberType } from "@/app/utils/types/TeamMemberType";
 import { useUser } from '@/app/contexts/UserContext';
 
 type TeamContextType = {
@@ -42,8 +41,23 @@ export default function TeamProvider({
           error 
         } = await supabase
           .from("team_members")
-          .select("team_id, teams(id, name, created_at, updated_at, user_id, plan, projects_limit, members_limit)")
-          .eq("user_id", user.id);
+          .select(`
+            team_id,
+            teams (
+              id,
+              name,
+              created_at,
+              updated_at,
+              user_id,
+              plan,
+              projects_limit,
+              members_limit
+            )
+          `)
+          .eq(
+            "user_id", 
+            user.id
+          );
 
         if (error) {
           console.error(
@@ -54,9 +68,13 @@ export default function TeamProvider({
           const fetchedTeams: TeamType[] = data.flatMap(
             (item: { teams: TeamType[] }) => item.teams
           );
-          setTeams(fetchedTeams);
-          if (fetchedTeams.length > 0) {
-            setSelectedTeam(fetchedTeams[0]);
+          const sortedTeams = fetchedTeams.sort(
+            (a, b) => a.name.localeCompare(b.name)
+          );
+
+          setTeams(sortedTeams);
+          if (sortedTeams.length > 0) {
+            setSelectedTeam(sortedTeams[0]);
           }
         }
       };
