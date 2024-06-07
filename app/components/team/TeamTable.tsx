@@ -1,10 +1,7 @@
 "use client";
 
 // Hooks
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useState } from "react";
 import { useTeam } from "@/app/contexts/TeamContext";
 import { useUser } from "@/app/contexts/UserContext";
 // Types
@@ -28,9 +25,7 @@ import Tooltip from '@mui/material/Tooltip';
 // Icons
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const roles: { 
-  [key: string]: string 
-} = {
+const roles: { [key: string]: string } = {
   owner: "Owner",
   admin: "Admin",
   editor: "Editor",
@@ -38,32 +33,26 @@ const roles: {
   guest: "Guest",
 };
 
-const status: { 
-  [key: string]: string 
-} = {
+const status: { [key: string]: string } = {
   active: "Active",
   pending: "Pending",
 };
 
-const statusColors: { 
-  [key: string]: string 
-} = {
+const statusColors: { [key: string]: string } = {
   active: "text-green-700",
   pending: "text-red-700",
 };
 
 const tableRowColumns = [
-  "Name", 
-  "Role", 
+  "Name",
+  "Role",
   "Joined",
   "Email",
-  "Status", 
+  "Status",
   "Actions",
 ];
 
-function stringToColor(
-  string: string
-) {
+function stringToColor(string: string) {
   let hash = 0;
   for (let i = 0; i < string.length; i += 1) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
@@ -76,16 +65,16 @@ function stringToColor(
   return color;
 };
 
-function stringAvatar(
-  name: string
-) {
+function stringAvatar(name: string) {
   const initials = name
     .split(' ')
     .map(part => part[0])
-      .join('');
+    .join('');
   return {
     sx: {
       bgcolor: stringToColor(name),
+      width: 32, // Reduced width
+      height: 32, // Reduced height
     },
     children: initials,
   };
@@ -100,10 +89,7 @@ export default function TeamTable() {
   const [teamMembers, setTeamMembers] = useState<TeamMemberType[]>([]);
   const [userRole, setUserRole] = useState<string>("");
 
-  async function handleRoleChange(
-    userId: string, 
-    newRole: string
-  ) {
+  async function handleRoleChange(userId: string, newRole: string) {
     const { error } = await supabase
       .from('team_members')
       .update({ role: newRole })
@@ -113,8 +99,7 @@ export default function TeamTable() {
     if (error) {
       console.error('Error updating role:', error);
     } else {
-      // console.log("teamMembers: ", teamMembers)
-      setTeamMembers(teamMembers.map(member => 
+      setTeamMembers(teamMembers.map(member =>
         member.user_id === userId ? { ...member, role: newRole } : member
       ));
     }
@@ -134,28 +119,19 @@ export default function TeamTable() {
     }
   };
 
-  // Check if user can edit role
-  function canEditRole(
-    role: string
-  ) {
-    const editableRoles = userRole === 'owner' ? ['owner', 'admin', 'editor', 'viewer', 'guest'] : 
-                          userRole === 'admin' ? ['editor', 'viewer', 'guest'] : [];
+  function canEditRole(role: string) {
+    const editableRoles = userRole === 'owner' ? ['owner', 'admin', 'editor', 'viewer', 'guest'] :
+      userRole === 'admin' ? ['editor', 'viewer', 'guest'] : [];
     return editableRoles.includes(role);
   };
 
-  // Check if user can remove member
-  function canRemoveMember(
-    role: string
-  ) {
-    const removableRoles = userRole === 'owner' ? ['admin', 'editor', 'viewer', 'guest'] : 
-                           userRole === 'admin' ? ['editor', 'viewer', 'guest'] : [];
+  function canRemoveMember(role: string) {
+    const removableRoles = userRole === 'owner' ? ['admin', 'editor', 'viewer', 'guest'] :
+      userRole === 'admin' ? ['editor', 'viewer', 'guest'] : [];
     return removableRoles.includes(role);
   };
 
-  // Render role controls
-  function renderRoleControls(
-    member: TeamMemberType
-  ) {
+  function renderRoleControls(member: TeamMemberType) {
     return (
       <>
         {canEditRole(member.role) ? (
@@ -164,21 +140,21 @@ export default function TeamTable() {
             size="small"
             className="w-full"
             onChange={(e) => handleRoleChange(
-                member.user_id, 
-                e.target.value as string
-              )}
+              member.user_id,
+              e.target.value as string
+            )}
           >
             {
               Object
                 .keys(roles)
                 .map(role => (
-                <MenuItem
-                  key={role}
-                  value={role}
-                >
-                  {roles[role]}
-                </MenuItem>
-              ))
+                  <MenuItem
+                    key={role}
+                    value={role}
+                  >
+                    {roles[role]}
+                  </MenuItem>
+                ))
             }
           </Select>
         ) : (
@@ -188,10 +164,7 @@ export default function TeamTable() {
     );
   }
 
-  // Render remove button
-  function renderRemoveButton(
-    member: TeamMemberType
-  ) {
+  function renderRemoveButton(member: TeamMemberType) {
     return (
       <>
         {canRemoveMember(member.role.toLowerCase()) && (
@@ -207,16 +180,11 @@ export default function TeamTable() {
     );
   };
 
-  // Fetch team members & roles
   useEffect(() => {
     if (!selectedTeam) return;
 
-    // Fetch team members
     async function fetchTeamMembers() {
-      const { 
-        data: teamMembers, 
-        error: teamMembersError, 
-      } = await supabase
+      const { data: teamMembers, error: teamMembersError, } = await supabase
         .from('team_members')
         .select(`
           id,
@@ -229,17 +197,16 @@ export default function TeamTable() {
           users ( id, created_at, updated_at, first_name, last_name, email, avatar_url, status )
         `)
         .eq(
-          'team_id', 
+          'team_id',
           selectedTeam?.id
         );
 
       if (teamMembersError) {
         console.error(
-          'Error fetching team members:', 
+          'Error fetching team members:',
           teamMembersError
         );
       } else if (teamMembers) {
-        // console.log("teamMembers: ", teamMembers)
         const mappedData: TeamMemberType[] = teamMembers.map((item) => ({
           ...item,
           users: item.users as unknown as UserProfileType,
@@ -248,12 +215,8 @@ export default function TeamTable() {
       }
     }
 
-    // Fetch user role
     async function fetchUserRole() {
-      const { 
-        data: userRole, 
-        error: userError 
-      } = await supabase
+      const { data: userRole, error: userError } = await supabase
         .from('team_members')
         .select('role')
         .eq('team_id', selectedTeam?.id)
@@ -263,10 +226,9 @@ export default function TeamTable() {
       if (userError) {
         console.error(
           'Error fetching user role:',
-           userError
+          userError
         );
       } else if (userRole) {
-        // console.log("userData: ", userRole)
         setUserRole(userRole.role);
       };
     };
@@ -274,36 +236,25 @@ export default function TeamTable() {
     fetchTeamMembers();
     fetchUserRole();
   }, [
-    selectedTeam, 
+    selectedTeam,
     supabase,
     user
   ]);
 
   return (
     <TableContainer
-      className="
-        flex
-        flex-col
-        justify-start
-        items-start
-        border
-        border-neutral-300
-        rounded-lg
-        w-full
-      "
+      className="flex flex-col justify-start items-start border border-neutral-300 rounded-lg w-full overflow-hidden"
     >
       <Table
         aria-label="team table"
+        className="w-full table-fixed"
       >
-        <TableHead
-          className="bg-neutral-50"
-        >
+        <TableHead className="bg-neutral-50">
           <TableRow>
-            {tableRowColumns.map(
-              (column, index) => (
+            {tableRowColumns.map((column, index) => (
               <TableCell
                 key={index}
-                className="font-semibold"
+                className="font-semibold truncate"
               >
                 {column}
               </TableCell>
@@ -311,61 +262,46 @@ export default function TeamTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {teamMembers.map(
-            (member) => (
+          {teamMembers.map((member) => (
             <TableRow
               key={member.user_id}
-              sx={{ 
-                '&:last-child td, &:last-child th': { 
-                  border: 0 
-                } 
-              }}
+              className="last:border-0"
             >
               {/* MEMBER: AVATAR + NAME */}
               <TableCell
                 component="th"
                 scope="row"
-                className="
-                  flex
-                  flex-row
-                  justify-start
-                  items-center
-                  gap-4
-                "
+                className="flex flex-row justify-start items-center gap-4 truncate mt-1"
+                sx={{ borderBottom: 'none' }}
               >
                 {member.users?.avatar_url ? (
                   <Avatar
-                    sx={{ 
-                      width: 48, 
-                      height: 48 
-                    }} 
-                    src={member.users.avatar_url} 
+                    sx={{ width: 32, height: 32 }} // Reduced width and height
+                    src={member.users.avatar_url}
                   />
                 ) : (
-                  <Avatar
-                    {...stringAvatar(`${member.users.first_name} ${member.users.last_name}`)}
-                  />
+                  <Avatar {...stringAvatar(`${member.users.first_name} ${member.users.last_name}`)} />
                 )}
-                  {member.users?.first_name} {member.users?.last_name}
+                <span className="truncate">{member.users?.first_name} {member.users?.last_name}</span>
               </TableCell>
               {/* MEMBER: ROLE */}
-              <TableCell>
+              <TableCell className="truncate">
                 {renderRoleControls(member)}
               </TableCell>
               {/* MEMBER: JOINED */}
-              <TableCell>
+              <TableCell className="truncate">
                 <Typography variant="body2">
                   {new Date(member.created_at).toLocaleDateString()}
                 </Typography>
               </TableCell>
               {/* MEMBER: EMAIL */}
-              <TableCell>
+              <TableCell className="truncate">
                 <Typography variant="body2">
                   {member.users.email}
                 </Typography>
               </TableCell>
               {/* MEMBER: STATUS */}
-              <TableCell>
+              <TableCell className="truncate">
                 <Typography
                   variant="body2"
                   className={statusColors[member.status]}
@@ -374,19 +310,17 @@ export default function TeamTable() {
                 </Typography>
               </TableCell>
               {/* MEMBER: ACTIONS */}
-              {
-                member.role.toLowerCase() !== "owner" ? (
-                  <TableCell>
-                    {renderRemoveButton(member)}
-                  </TableCell>
-                ) : (
-                  <TableCell>
-                    <Tooltip title="Team owner can't remove themselves.">
-                      <Typography variant="body2">N/A</Typography>
-                    </Tooltip>
-                  </TableCell>
-                )
-              }
+              {member.role.toLowerCase() !== "owner" ? (
+                <TableCell className="truncate">
+                  {renderRemoveButton(member)}
+                </TableCell>
+              ) : (
+                <TableCell className="truncate">
+                  <Tooltip title="Team owner can't remove themselves.">
+                    <Typography variant="body2">N/A</Typography>
+                  </Tooltip>
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

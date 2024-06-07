@@ -121,7 +121,7 @@ export default function ProjectIdPage({
   const supabase = createClient();
   const { projects} = useProject();
 
-  const [loading, setloading] = useState<boolean>(false);
+  const [loading, setloading] = useState<boolean>(true);
   const [tab, setTab] = useState(0);
   const [ideas, setIdeas] = useState<IdeaType[]>([]);
   const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
@@ -135,7 +135,10 @@ export default function ProjectIdPage({
   async function fetchIdeas(
     projectId: number
   ) {
-    const { data, error } = await supabase
+    const { 
+      data, 
+      error 
+    } = await supabase
       .from("ideas")
       .select("*")
       .eq("project_id", projectId);
@@ -282,7 +285,7 @@ export default function ProjectIdPage({
     if (!projectExists) {
       router.push("/home");
     } else {
-      setloading(true);
+      setloading(false);
     };
   }, [
     projects,
