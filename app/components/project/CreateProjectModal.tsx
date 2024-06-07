@@ -10,6 +10,8 @@ import { useForm } from "react-hook-form";
 import ProjectFormSchema from "@/app/utils/schemas/ProjectFormSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProjectFormType } from "@/app/utils/types/ProjectFormType";
+// Types
+import { TeamMemberType } from "@/app/utils/types/TeamMemberType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
 // Components
@@ -43,20 +45,17 @@ export default function CreateProjectModal({
 }: CreateProjectModalProps) {
   const methods = useForm<ProjectFormType>({
     defaultValues: {
-      id: 0,
-      project_id: 0,
       team_id: 0,
       user_id: 0,
-      created_at: "",
-      updated_at: "",
       name: "",
       client: "",
-      ideas_limit: 25,
+      details: "",
     },
     resolver: zodResolver(ProjectFormSchema),
   });
 
   const { 
+    reset,
     register, 
     handleSubmit, 
     formState: { 
@@ -89,83 +88,133 @@ export default function CreateProjectModal({
       message: "Creating project..."
     });
     setShowAlertInfo(true);
+
     try {
-      if (!user) {
-        throw new Error("User not found");
-      }
-  
+      if (
+        !user || 
+        !selectedTeam
+      ) {
+        throw new Error("User or team not found");
+      };
+
+      // Fetch team members
       const { 
-        data: project, 
-        error 
+        data: teamMembers,
+        error: teamMembersError
       } = await supabase
-        .from("projects")
-        .insert([
-          {
-            name: data.name,
-            client: data.client,
-            user_id: user.id,
-            team_id: selectedTeam ? selectedTeam.id : null,
-            ideas_limit: data.ideas_limit,
-          },
-        ])
-        .select();
-  
-      if (error) {
-        console.log(
-          "Error creating project: ", 
-          error
+        .from("team_members")
+        .select("*")
+        .eq("team_id", selectedTeam.id);
+
+      if (teamMembersError) {
+        console.error(
+          "Error fetching team members: ", 
+          teamMembersError
         );
         setAlertInfo({
           type: "error",
           icon: <ErrorIcon />,
-          message: "Error creating project. Please try again."
+          message: "Error fetching team members. Please try again."
         });
-      } else if (project) {
-        const projectId = project[0].id;
-        console.log(
-          "Project created successfully: ", 
-          project
+
+      } else if (teamMembers) {
+        // Check if user is a team admin or owner
+        const adminOrOwnerMembers = teamMembers
+          .find((
+            member: TeamMemberType
+          ) => member.role === "admin" || member.role === "owner"
         );
-        setAlertInfo({
-          type: "success",
-          icon: <CheckIcon />,
-          message: "Project created successfully! Redirecting..."
-        });
-  
-        // Add user to project_members
-        const { 
-          error: projectMemberError 
-        } = await supabase
-          .from("project_members")
-          .insert([
-            {
-              project_id: projectId,
-              user_id: user.id,
-              project_role: "owner",
-            },
-          ]);
-  
-        if (projectMemberError) {
-          console.log(
-            "Error adding user to project_members: ", 
-            projectMemberError
+
+        if (!adminOrOwnerMembers) {
+          console.error(
+            "User is not an admin or owner of the team"
           );
           setAlertInfo({
             type: "error",
             icon: <ErrorIcon />,
-            message: "Error adding user to project members. Please try again."
+            message: "You are not an admin or owner of the team."
           });
-        } else {
-          console.log("User added to project_members successfully");
-        }
-  
-        // Redirect to new project
-        setTimeout(() => {
-          setShowAlertInfo(false);
-          router.push(`/project/${projectId}`);
-          handleClose();
-        }, 2000);
-      }
+          return;
+
+        } else if (adminOrOwnerMembers) {
+          // Create new project
+          const { 
+            data: project, 
+            error 
+          } = await supabase
+            .from("projects")
+            .insert([
+              {
+                name: data.name,
+                client: data.client,
+                details: data.details,
+                user_id: user.id,
+                team_id: selectedTeam ? selectedTeam.id : null,
+              },
+            ])
+            .select();
+    
+          if (error) {
+            console.log(
+              "Error creating project: ", 
+              error
+            );
+            setAlertInfo({
+              type: "error",
+              icon: <ErrorIcon />,
+              message: "Error creating project. Please try again."
+            });
+
+          } else if (project) {
+            const projectId = project[0].id;
+            
+            // Add user to project_members
+            const { 
+              error: projectMemberError 
+            } = await supabase
+              .from("project_members")
+              .insert([
+                {
+                  user_id: user.id,
+                  project_id: projectId,
+                  team_member_id: adminOrOwnerMembers.id,
+                  project_role: "owner",
+                },
+              ]);
+    
+            if (projectMemberError) {
+              console.log(
+                "Error adding user to project_members: ", 
+                projectMemberError
+              );
+              
+            } else {
+              // TODO: Log in PostHog
+
+              console.log(
+                "Project created successfully: ", 
+                project
+              );
+              setAlertInfo({
+                type: "success",
+                icon: <CheckIcon />,
+                message: "Project created successfully! Redirecting..."
+              });
+
+              setTimeout(() => {
+                // Hide alert
+                setShowAlertInfo(false);
+                // Reset form
+                reset();
+                // Close modal
+                handleClose();
+                // Redirect to project
+                router.push(`/project/${projectId}`);
+              }, 2000);
+            };
+          };
+        };
+      };
     } catch (error) {
       console.log(
         "Error creating project: ", 
@@ -176,11 +225,13 @@ export default function CreateProjectModal({
         icon: <ErrorIcon />,
         message: "Error creating project. Please try again."
       });
-    }
-    setTimeout(() => {
-      setShowAlertInfo(false);
-    }, 3000);
-  };  
+    } finally {
+      // Hide alert
+      setTimeout(() => {
+        setShowAlertInfo(false);
+      }, 3000);
+    };
+  };
 
   return (
     <Modal
@@ -189,7 +240,9 @@ export default function CreateProjectModal({
       closeAfterTransition
       aria-labelledby="New project modal"
       aria-describedby="New project modal"
-      slots={{ backdrop: Backdrop }}
+      slots={{ 
+        backdrop: Backdrop 
+      }}
     >
       <Fade in={open}>
         <Box

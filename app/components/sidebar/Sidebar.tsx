@@ -35,7 +35,8 @@ export default function Sidebar() {
         bg-neutral-50
         border-r
         border-neutral-200
-        p-2
+        px-2
+        py-3
       "
     >
       <Box
@@ -46,7 +47,7 @@ export default function Sidebar() {
           justify-start
           items-start
           w-full
-          gap-2
+          gap-3
         "
       >
         <SidebarHeader

@@ -2,16 +2,20 @@
 
 import React, { 
   useState, 
-  useEffect 
+  useEffect,
+  useRef,
 } from "react";
 import { 
   useForm, 
   FormProvider 
 } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useProject } from "@/app/contexts/ProjectContext";
 // Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BriefFormSchema from "@/app/utils/schemas/BriefFormSchema";
+// Types
 import { IdeaType } from "@/app/utils/types/IdeaType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
@@ -100,6 +104,7 @@ export default function ProjectIdPage({
     resolver: zodResolver(BriefFormSchema),
     mode: "onChange",
   });
+
   const {
     handleSubmit,
     // watch,
@@ -111,8 +116,15 @@ export default function ProjectIdPage({
   // Utils
   // const form = watch();
   // const posthog = PostHogClient();
+  const router = useRouter();
+  const initialRender = useRef(true);
   const supabase = createClient();
+  const { 
+    projects, 
+    projectMembers 
+  } = useProject();
 
+  const [loading, setloading] = useState<boolean>(false);
   const [tab, setTab] = useState(0);
   const [ideas, setIdeas] = useState<IdeaType[]>([]);
   const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
@@ -122,7 +134,10 @@ export default function ProjectIdPage({
     message: string;
   } | null>(null);
 
-  async function fetchIdeas(projectId: number) {
+  // Fetch ideas
+  async function fetchIdeas(
+    projectId: number
+  ) {
     const { data, error } = await supabase
       .from("ideas")
       .select("*")
@@ -169,7 +184,9 @@ export default function ProjectIdPage({
   };
 
   // Submit form
-  async function onSubmit(data: BriefFormType) {
+  async function onSubmit(
+    data: BriefFormType
+  ) {
     setAlertInfo({
       type: "info",
       icon: <InfoIcon />,
@@ -250,6 +267,31 @@ export default function ProjectIdPage({
       fetchIdeas(parseInt(params.slug))
     };
   }, [ideas]);
+
+  // Redirect to home if project 
+  // isn't found in ProjectContext
+  useEffect(() => {
+    if (!projects) return;
+
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
+    };
+
+    const projectExists = projects.some(
+      (project) => project.id.toString() === params.slug
+    );
+  
+    if (!projectExists) {
+      router.push("/home");
+    } else {
+      setloading(true);
+    };
+  }, [
+    projects,
+    params.slug,
+    router,
+  ]);
 
   return (
     <>
@@ -368,8 +410,8 @@ export default function ProjectIdPage({
                   gap-4
                 "
               >
-                <TeamTableHeader />
-                <TeamTable />
+                <TeamTableHeader loading={loading} />
+                <TeamTable loading={loading} />
               </Box>
             </ProjectTabContent>
           </Box>

@@ -2,13 +2,15 @@
 
 // Hooks
 import React, { useState } from "react";
+import { useTeam } from "@/app/contexts/TeamContext";
 // Custom components
-import NewProjectModal from "@/app/components/project/CreateProjectModal";
+import CreateProjectModal from "@/app/components/project/CreateProjectModal";
 // Components
 import Button from "@mui/material/Button";
 
 export default function CreateProjectButton() {
   const [open, setOpen] = useState(false);
+  const { selectedTeam } = useTeam();
 
   function handleOpen() {
     setOpen(true);
@@ -43,10 +45,10 @@ export default function CreateProjectButton() {
       >
         New project
       </Button>
-      <NewProjectModal 
+      <CreateProjectModal 
         open={open} 
         handleClose={handleClose}
-        projects_limit={5} // TODO: Replace with actual limit from team profile
+        projects_limit={selectedTeam?.projects_limit}
       />
     </>
   );
