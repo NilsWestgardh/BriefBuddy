@@ -119,10 +119,7 @@ export default function ProjectIdPage({
   const router = useRouter();
   const initialRender = useRef(true);
   const supabase = createClient();
-  const { 
-    projects, 
-    projectMembers 
-  } = useProject();
+  const { projects} = useProject();
 
   const [loading, setloading] = useState<boolean>(false);
   const [tab, setTab] = useState(0);
@@ -335,7 +332,7 @@ export default function ProjectIdPage({
                 z-10
               "
             >
-              <ProjectHeader project_id={projectId} />
+              <ProjectHeader loading={loading} project_id={projectId} />
               <ProjectTabsMenu
                 tab={tab}
                 handleTabChange={handleTabChange}
@@ -410,8 +407,8 @@ export default function ProjectIdPage({
                   gap-4
                 "
               >
-                <TeamTableHeader loading={loading} />
-                <TeamTable loading={loading} />
+                <TeamTableHeader />
+                <TeamTable />
               </Box>
             </ProjectTabContent>
           </Box>
