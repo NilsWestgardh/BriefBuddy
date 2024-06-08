@@ -21,6 +21,7 @@ type CustomTextInputProps = {
   required: boolean;
   color?: TextFieldColor;
   maxLength?: number;
+  disabled?: boolean;
 };
 
 export default function CustomTextInput({
@@ -34,6 +35,7 @@ export default function CustomTextInput({
   required,
   color,
   maxLength,
+  disabled,
 }: CustomTextInputProps) {
   const {
     control,
@@ -52,6 +54,7 @@ export default function CustomTextInput({
           {...field}
           required={required}
           id={`${label}-input-field`}
+          disabled={disabled}
           variant="outlined"
           label={label}
           placeholder={placeholder ?? undefined}

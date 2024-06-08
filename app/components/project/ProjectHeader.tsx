@@ -41,7 +41,7 @@ export default function ProjectHeader({
     defaultValues: {
       id: 0,
       team_id: 0,
-      user_id: 0,
+      user_id: "",
       updated_at: "",
       name: defaultProjectName,
       client: "",

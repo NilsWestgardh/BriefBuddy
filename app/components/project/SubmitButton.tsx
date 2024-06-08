@@ -12,11 +12,13 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 type SubmitButtonProps = {
   cta: string;
   feedback: string;
+  isGuest?: boolean;
 };
 
 export default function SubmitButton({ 
   cta,
   feedback,
+  isGuest,
  }: SubmitButtonProps) {
   const {
     formState: { 
@@ -31,7 +33,11 @@ export default function SubmitButton({
       type="submit"
       variant="outlined"
       size="large"
-      disabled={!isValid || isSubmitting}
+      disabled={
+        !isValid || 
+        isSubmitting || 
+        isGuest
+      }
       color={isValid ? "primary" : "secondary"}
       endIcon={
         !isSubmitting ? <ArrowForwardIcon /> 

@@ -22,7 +22,13 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormHelperText from '@mui/material/FormHelperText';
 
-export default function BriefForm() {
+type BriefFormProps = {
+  isGuest: boolean;
+};
+
+export default function BriefForm({ 
+  isGuest 
+}: BriefFormProps) {
   const {
     watch,
     control
@@ -59,6 +65,7 @@ export default function BriefForm() {
           subtitle="Information about the brief."
         />
         <CustomTextInput
+          disabled={isGuest}
           fieldName="project_details"
           label="Brief details"
           placeholder="A campaign to.."
@@ -84,6 +91,7 @@ export default function BriefForm() {
           subtitle="Information about the product."
         />
         <CustomTextInput
+          disabled={isGuest}
           fieldName="product_details"
           label="Product details"
           placeholder="Product name, features, etc."
@@ -93,6 +101,7 @@ export default function BriefForm() {
           required={false}
         />
         <CustomTextInput
+          disabled={isGuest}
           fieldName="product_usp"
           label="Unique selling point"
           placeholder="What makes the product unique?"
@@ -119,6 +128,7 @@ export default function BriefForm() {
         />
         {/* Select */}
         <CustomTextInput
+          disabled={isGuest}
           fieldName="goals_details"
           label="Goals details"
           placeholder="Increase sales by 20%.."
@@ -129,6 +139,7 @@ export default function BriefForm() {
         />
         {/* OBJECTIVES */}
         <MultipleSelectChip
+          disabled={isGuest}
           name="goals_objectives"
           label="Objectives"
           helperText="Select all objectives that apply. (Optional)"
@@ -152,6 +163,7 @@ export default function BriefForm() {
         />
         {/* GENDERS */}
         <MultipleSelectChip
+          disabled={isGuest}
           name="target_genders"
           label="Genders"
           helperText="Select all genders that apply. (Optional)"
@@ -165,6 +177,7 @@ export default function BriefForm() {
         />
         {/* AGES */}
         <MultipleSelectChip
+          disabled={isGuest}
           name="target_ages"
           label="Age ranges"
           helperText="Select all age ranges that apply. (Optional)"
@@ -181,6 +194,7 @@ export default function BriefForm() {
         />
         {/* MARKETS */}
         <MultipleSelectChip
+          disabled={isGuest}
           name="target_markets"
           label="Markets"
           helperText="Select all markets that apply. (Optional)"
@@ -224,6 +238,7 @@ export default function BriefForm() {
         />
         {/* MEDIUMS */}
         <MultipleSelectChip
+          disabled={isGuest}
           name="ideas_medium"
           label="Medium"
           helperText="Select all mediums that apply. (Optional)"
@@ -253,6 +268,7 @@ export default function BriefForm() {
             .includes("influencer") 
           ) && (
           <MultipleSelectChip
+            disabled={isGuest}
             name="ideas_channels"
             label="Channels"
             helperText="Select all channels that apply. (Optional)"
@@ -276,6 +292,7 @@ export default function BriefForm() {
           </InputLabel>
           <Controller
             name="ideas_quantity"
+            disabled={isGuest}
             control={control}
             render={({ field }) => (
               <Select

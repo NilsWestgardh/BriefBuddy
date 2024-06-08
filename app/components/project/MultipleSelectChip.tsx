@@ -33,6 +33,7 @@ type MultipleSelectChipProps = {
   options: string[];
   control: Control<BriefFormType>;
   helperText?: string;
+  disabled?: boolean;
 }
 
 function getStyles(
@@ -54,6 +55,7 @@ export default function MultipleSelectChip({
   options, 
   control,
   helperText,
+  disabled,
 }: MultipleSelectChipProps) {
   const theme = useTheme();
 
@@ -68,6 +70,7 @@ export default function MultipleSelectChip({
           <Select
             labelId={`${name}-label`}
             id={name}
+            disabled={disabled}
             multiple
             value={field.value}
             onChange={(event: SelectChangeEvent<typeof field.value>) => {

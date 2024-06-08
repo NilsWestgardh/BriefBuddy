@@ -11,6 +11,8 @@ import {
 } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useProject } from "@/app/contexts/ProjectContext";
+import { useUser } from "@/app/contexts/UserContext";
+
 // Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,31 +39,6 @@ import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
-
-// TODO: Replace with fetched ideas data
-// const placeholderIdeas = [
-//   {
-//     title: "Amazing idea",
-//     description: "Amazing idea for a campaign",
-//     problem: "Problem lorem ipsum dolor sit amet.",
-//     insight: "Insight lorem ipsum dolor sit amet.",
-//     idea: "Idea lorem ipsum dolor sit amet.",
-//   },
-//   {
-//     title: "Astonishing idea",
-//     description: "Astonishing idea for a campaign",
-//     problem: "Problem lorem ipsum dolor sit amet.",
-//     insight: "Insight lorem ipsum dolor sit amet.",
-//     idea: "Idea lorem ipsum dolor sit amet.",
-//   },
-//   {
-//     title: "Superb idea",
-//     description: "Superb idea for a campaign",
-//     problem: "Problem lorem ipsum dolor sit amet.",
-//     insight: "Insight lorem ipsum dolor sit amet.",
-//     idea: "Idea lorem ipsum dolor sit amet.",
-//   },
-// ];
 
 export default function ProjectIdPage({ 
   params 
@@ -120,7 +97,9 @@ export default function ProjectIdPage({
   const initialRender = useRef(true);
   const supabase = createClient();
   const { projects} = useProject();
+  const { user } = useUser();
 
+  const [isGuest, setIsGuest] = useState<boolean>(false);
   const [loading, setloading] = useState<boolean>(true);
   const [tab, setTab] = useState(0);
   const [ideas, setIdeas] = useState<IdeaType[]>([]);
@@ -130,26 +109,6 @@ export default function ProjectIdPage({
     icon: React.ReactNode;
     message: string;
   } | null>(null);
-
-  // Fetch ideas
-  async function fetchIdeas(
-    projectId: number
-  ) {
-    const { 
-      data, 
-      error 
-    } = await supabase
-      .from("ideas")
-      .select("*")
-      .eq("project_id", projectId);
-
-    if (error) {
-      console.error("Error fetching ideas:", error);
-      return null;
-    } else (
-      setIdeas(data)
-    );
-  };
 
   // Tab change handler
   function handleTabChange(
@@ -261,6 +220,90 @@ export default function ProjectIdPage({
     }, 5000);
   };
 
+  // Fetch ideas
+  async function fetchIdeas(
+    projectId: number
+  ) {
+    const { 
+      data, 
+      error 
+    } = await supabase
+      .from("ideas")
+      .select("*")
+      .eq(
+        "project_id", 
+        projectId
+      );
+
+    if (error) {
+      console.error(
+        "Error fetching ideas:", 
+        error
+      );
+      return null;
+    } else (
+      setIdeas(data)
+    );
+  };
+
+  // Fetch user's project role
+  useEffect(() => {
+    async function getUserRole() {
+      if (!user) return;
+
+      if (!user.id || !projectId) {
+        console.log("Profile ID or Project ID is missing");
+        return;
+      }
+
+      try {
+        const { 
+          data, 
+          error 
+        } = await supabase
+          .from("project_members")
+          .select("project_role")
+          .eq(
+            "project_id", 
+            projectId
+          )
+          .eq(
+            "user_id", 
+            user.id
+          );
+
+        if (error) {
+          console.error(
+            "Error fetching user role:", 
+            error
+          );
+          return;
+        }
+
+        if (
+          data && 
+          data.length > 0 && 
+          data[0].project_role === "viewer"
+        ) {
+          console.log("User is a viewer.");
+          setIsGuest(true);
+        } else {
+          setIsGuest(false);
+        }
+      } catch (error) {
+        console.error(
+          "Unexpected error fetching user role:", 
+          error
+        );
+      }
+    }
+
+    getUserRole();
+  }, [
+    user, 
+    supabase
+  ]);
+
   // Fetch project ideas
   useEffect(() => {
     if (ideas === null) {
@@ -335,7 +378,10 @@ export default function ProjectIdPage({
                 z-10
               "
             >
-              <ProjectHeader loading={loading} project_id={projectId} />
+              <ProjectHeader
+                loading={loading}
+                project_id={projectId}
+              />
               <ProjectTabsMenu
                 tab={tab}
                 handleTabChange={handleTabChange}
@@ -346,7 +392,7 @@ export default function ProjectIdPage({
               value={tab}
               index={0}
             >
-              <BriefForm />
+              <BriefForm isGuest={isGuest} />
               <Box
                 id="submit-button-container"
                 className="
@@ -364,6 +410,7 @@ export default function ProjectIdPage({
                 <SubmitButton 
                   cta="Generate ideas" 
                   feedback="Generating ideas..."
+                  isGuest={isGuest}
                 />
               </Box>
             </ProjectTabContent>
