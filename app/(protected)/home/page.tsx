@@ -222,10 +222,10 @@ export default function Home() {
         className="
           flex
           flex-col
-          justify-center
+          justify-start
           items-center
           w-full
-          h-screen
+          p-6
         "
       >
         <Box
@@ -235,9 +235,11 @@ export default function Home() {
             flex-col
             justify-center
             items-center
-            p-24
+            w-full
+            py-24
             rounded-xl
-            bg-neutral-50
+            border
+            border-neutral-200
             gap-6
           "
         >

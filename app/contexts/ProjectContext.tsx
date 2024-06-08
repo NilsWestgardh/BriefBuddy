@@ -10,6 +10,7 @@ import React, {
 import { useUser } from '@/app/contexts/UserContext';
 import { useTeam } from '@/app/contexts/TeamContext';
 // Utils
+import { fetchProjectsUtil } from "@/app/actions/fetchProjectsUtil";
 import { createClient } from "@/app/utils/supabase/client";
 import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 // Types
@@ -21,7 +22,8 @@ type ProjectContextType = {
   projectMembers: ProjectMemberType[];
   fetchProjects: (
     teamId: number, 
-    userId: string
+    userId: string,
+    sortBy?: "latest" | "oldest",
   ) => void;
   fetchProjectMembers: (
     projectId: number
@@ -51,30 +53,21 @@ export default function ProjectProvider({
   async function fetchProjects(
     teamId: number,
     userId: string,
+    sortBy: "latest" | "oldest" = "latest",
   ) {
-    const { 
-      data, 
-      error 
-    } = await supabase
-      .from("projects")
-      .select("*")
-      .eq(
-        "team_id", 
-        teamId
-      )
-      .eq(
-        "user_id",
-        userId
+    try {
+      const data = await fetchProjectsUtil(
+        teamId, 
+        userId, 
+        sortBy
       );
-
-    if (error) {
+      setProjects(data);
+    } catch (error) {
       console.error(
         "Error fetching projects: ", 
         error
       );
-    } else {
-      setProjects(data);
-    };
+    }
   };
 
   // Fetch project members
