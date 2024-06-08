@@ -98,76 +98,76 @@ export default function Home() {
   ]);
 
   return (
-    <Box
-      id="home-container"
-      className="
-        flex
-        flex-col
-        justify-start
-        items-start
-        w-full
-        gap-4
-        p-6
-      "
-    >
+    projectCards.length > 0 ? (
       <Box
-        id="home-header"
+        id="home-container"
         className="
           flex
-          flex-row
-          justify-between
-          items-center
-          w-full
-        "
-      >
-        <Typography
-          variant="h4"
-          className="
-            text-black
-            font-semibold
-            mb-2
-          "
-        >
-          My home
-        </Typography>
-        <CreateProjectButton />
-      </Box>
-      
-      <Box
-        id="sort-container"
-        className="
-          flex
-          flex-row
+          flex-col
           justify-start
-          items-center
+          items-start
           w-full
-          gap-1
+          gap-4
+          p-6
         "
       >
-        <Typography
-          variant="overline"
+        <Box
+          id="home-header"
           className="
-            text-neutral-500
+            flex
+            flex-row
+            justify-between
+            items-center
+            w-full
           "
         >
-          Sort by
-        </Typography>
-        <Button
-          size="small"
-          color={sortBy === sortByOptions.latest ? "primary" : "secondary"}
-          onClick={() => setSortBy(sortByOptions.latest)}
+          <Typography
+            variant="h4"
+            className="
+              text-black
+              font-semibold
+              mb-2
+            "
+          >
+            My home
+          </Typography>
+          <CreateProjectButton />
+        </Box>
+        
+        <Box
+          id="sort-container"
+          className="
+            flex
+            flex-row
+            justify-start
+            items-center
+            w-full
+            gap-1
+          "
         >
-          Latest
-        </Button>
-        <Button
-          size="small"
-          color={sortBy === sortByOptions.oldest ? "primary" : "secondary"}
-          onClick={() => setSortBy(sortByOptions.oldest)}
-        >
-          Oldest
-        </Button>
-      </Box>
-      {projectCards.length > 0 && (
+          <Typography
+            variant="overline"
+            className="
+              text-neutral-500
+            "
+          >
+            Sort by
+          </Typography>
+          <Button
+            size="small"
+            color={sortBy === sortByOptions.latest ? "primary" : "secondary"}
+            onClick={() => setSortBy(sortByOptions.latest)}
+          >
+            Latest
+          </Button>
+          <Button
+            size="small"
+            color={sortBy === sortByOptions.oldest ? "primary" : "secondary"}
+            onClick={() => setSortBy(sortByOptions.oldest)}
+          >
+            Oldest
+          </Button>
+        </Box>
         <Box
           id="projects-container"
           className="
@@ -215,7 +215,61 @@ export default function Home() {
             </Box>
           ))}
         </Box>
-      )}
-    </Box>
+      </Box>
+    ) : (
+      <Box
+        id="home-container"
+        className="
+          flex
+          flex-col
+          justify-center
+          items-center
+          w-full
+          h-screen
+        "
+      >
+        <Box
+          id="home-content"
+          className="
+            flex
+            flex-col
+            justify-center
+            items-center
+            p-24
+            rounded-xl
+            bg-neutral-50
+            gap-6
+          "
+        >
+          <Box
+            id="home-content-header"
+            className="
+              flex
+              flex-col
+              justify-center
+              items-center
+              gap-4
+            "
+          >
+            <Typography
+              variant="h4"
+              className="
+                text-black
+                font-semibold
+              "
+            >
+              No projects..
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              className="text-neutral-500"
+            >
+              Create a project to get started.
+            </Typography>
+          </Box>
+          <CreateProjectButton />
+        </Box>
+      </Box>
+    )
   );
 };

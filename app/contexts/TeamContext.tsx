@@ -83,6 +83,36 @@ export default function TeamProvider({
     if (user) {
       fetchTeams();
     };
+
+    // Subscribe to changes
+    const channel = supabase
+      .channel("realtime team changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "teams",
+        },
+        (payload) => {
+          // console.log("Team data change: ", payload);
+          if (
+            user && (
+              payload.new as { 
+                user_id: string 
+              }
+            ).user_id === user.id
+          ) {
+            fetchTeams();
+          }
+        }
+      )
+      .subscribe();
+
+      return () => {
+        channel.unsubscribe();
+      };
+
   }, [
     user, 
     supabase

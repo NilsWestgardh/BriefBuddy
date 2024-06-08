@@ -4,10 +4,10 @@
 import React from "react";
 import { useTeam } from "@/app/contexts/TeamContext";
 // Custom components
-import SidebarHeader from "@/app/components/sidebar/SidebarHeader";
+import SidebarHeader from "@/app/components/navigation/sidebar/SidebarHeader";
 import TeamSelect from "@/app/components/team/TeamSelect";
-import NavButton from "@/app/components/sidebar/NavButton";
-import SignOutButton from "@/app/components/auth/SignOutButton";
+import NavButton from "@/app/components/navigation/NavButton";
+import SignOutButton from "@/app/components/navigation/auth/SignOutButton";
 // Components
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -24,7 +24,8 @@ export default function Sidebar() {
     <Box
       id="sidebar-container"
       className="
-        flex
+        hidden
+        md:flex
         flex-col
         justify-between
         items-center

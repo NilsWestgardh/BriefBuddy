@@ -1,7 +1,10 @@
 "use client";
 
 // Hooks
-import React, { useState } from "react";
+import React, { 
+  useState,
+  useEffect, 
+} from "react";
 import { useRouter } from 'next/navigation';
 import { useUser } from "@/app/contexts/UserContext";
 import { useTeam } from "@/app/contexts/TeamContext";
@@ -46,7 +49,7 @@ export default function CreateProjectModal({
   const methods = useForm<ProjectFormType>({
     defaultValues: {
       team_id: 0,
-      user_id: 0,
+      user_id: "0",
       name: "",
       client: "",
       details: "",
@@ -104,7 +107,10 @@ export default function CreateProjectModal({
       } = await supabase
         .from("team_members")
         .select("*")
-        .eq("team_id", selectedTeam.id);
+        .eq(
+          "team_id", 
+          selectedTeam.id
+        );
 
       if (teamMembersError) {
         console.error(
@@ -208,7 +214,7 @@ export default function CreateProjectModal({
                 reset();
                 // Close modal
                 handleClose();
-                // Redirect to project
+                // Redirect to project page
                 router.push(`/project/${projectId}`);
               }, 2000);
             };
@@ -232,6 +238,23 @@ export default function CreateProjectModal({
       }, 3000);
     };
   };
+
+  // Reset form when user or team changes
+  useEffect(() => {
+    if (user && selectedTeam) {
+      reset({
+        team_id: selectedTeam.id,
+        user_id: user.id,
+        name: "",
+        client: "",
+        details: "",
+      });
+    }
+  }, [
+    user, 
+    selectedTeam, 
+    reset
+  ]);
 
   return (
     <Modal
@@ -336,6 +359,7 @@ export default function CreateProjectModal({
                     disabled={projects_limit === 0}
                     type="text"
                     label="Project Name"
+                    placeholder="Project X"
                     variant="outlined"
                     color="primary"
                     fullWidth
@@ -348,12 +372,25 @@ export default function CreateProjectModal({
                     disabled={projects_limit === 0}
                     type="text"
                     label="Client Name"
-                    placeholder=""
+                    placeholder="ACME Inc."
                     variant="outlined"
                     color="primary"
                     fullWidth
                     error={!!errors.client}
                     helperText={"(Client name is optional)"}
+                    inputProps={{ autoComplete: "off" }}
+                  />
+                  <TextField
+                    {...register("details")}
+                    disabled={projects_limit === 0}
+                    type="text"
+                    label="Project details"
+                    placeholder="This project is about..."
+                    variant="outlined"
+                    color="primary"
+                    fullWidth
+                    error={!!errors.details}
+                    helperText={"(Project details is optional)"}
                     inputProps={{ autoComplete: "off" }}
                   />
                   {/* Alert */}

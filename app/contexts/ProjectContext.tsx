@@ -11,6 +11,7 @@ import { useUser } from '@/app/contexts/UserContext';
 import { useTeam } from '@/app/contexts/TeamContext';
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
+import { RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 // Types
 import { ProjectType } from "@/app/utils/types/ProjectType";
 import { ProjectMemberType } from "@/app/utils/types/ProjectMemberType";
@@ -116,6 +117,82 @@ export default function ProjectProvider({
     selectedTeam, 
     user
   ]);
+
+  // Subscribe to project changes
+  useEffect(() => {
+    const channel = supabase
+      .channel("realtime project changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "projects",
+        },
+        (payload: RealtimePostgresChangesPayload<ProjectType>) => {
+          console.log("Project data change: ", payload)
+          if (
+            selectedTeam && 
+            user
+          ) {
+            fetchProjects(
+              selectedTeam.id,
+              user.id
+            )
+          }
+        }
+      )
+      .subscribe();
+
+      return () => {
+        channel.unsubscribe();
+      };
+
+  }, [
+    selectedTeam, 
+    user
+  ]);
+
+  // Subscribe to project changes
+  useEffect(() => {
+    const channel = supabase
+      .channel("realtime project member changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "project_members",
+        },
+        (payload: RealtimePostgresChangesPayload<ProjectMemberType>) => {
+          console.log(
+            "Project members data change: ", 
+            payload
+          ); // Debugging
+          if (
+            selectedTeam && 
+            user
+          ) {
+            fetchProjectMembers((payload.new as ProjectMemberType).project_id)
+          }
+        }
+      )
+      .subscribe();
+
+      return () => {
+        channel.unsubscribe();
+      };
+
+  }, [
+    selectedTeam, 
+    user
+  ]);
+
+  // Debug
+  // useEffect(() => {
+  //   console.log("projects", projects);
+  //   console.log("projectMembers", projectMembers);
+  // }, [projects, projectMembers])
 
   return (
     <ProjectContext.Provider

@@ -19,7 +19,7 @@ import Link from "next/link"
 import Image from "next/image";
 import clsx from "clsx";
 // Custom components
-import OAuthButton from "@/app/components/auth/OAuthButton";
+import OAuthButton from "@/app/components/navigation/auth/OAuthButton";
 import BriefBuddyLogoBlack from "@/public/briefbuddy_logo_black.svg";
 // Components
 import Box from "@mui/material/Box";

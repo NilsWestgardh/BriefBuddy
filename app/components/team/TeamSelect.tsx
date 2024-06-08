@@ -163,6 +163,7 @@ export default function TeamSelect() {
             border-black
             bg-white
             w-full
+            min-w-[180px]
             gap-2
           "
         >

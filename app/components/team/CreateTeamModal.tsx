@@ -36,7 +36,8 @@ type NewTeamModalProps = {
 }
 
 export default function NewTeamModal({ 
-  open, handleClose 
+  open, 
+  handleClose 
 }: NewTeamModalProps) {
   const methods = useForm<TeamFormType>({
     defaultValues: {
@@ -152,13 +153,16 @@ export default function NewTeamModal({
             // Update selected team
             setSelectedTeam(newTeam[0]);
 
-            // Redirect to new team
             setTimeout(() => {
+              // Hide alert
               setShowAlertInfo(false);
+              // Reset form
               reset();
-              console.log("Redirecting to team: ", teamId)
-              router.push(`/team/${teamId}`);
+              // Close modal
               handleClose();
+              // Redirect to team page
+              router.push(`/team/${teamId}`);
+              
             }, 2000);
           };
         };

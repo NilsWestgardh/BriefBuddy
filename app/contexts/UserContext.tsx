@@ -64,10 +64,45 @@ export default function UserProvider({
       };
       setLoading(false);
     };
+
     if (!profile) {
       fetchUserProfile();
     };
-  }, [supabase]);
+
+    // Subscribe to changes
+    const channel = supabase
+      .channel("realtime user changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "users",
+        },
+        (payload) => {
+          console.log("User data change: ", payload); // Debugging
+          if (
+            payload.new && (
+              payload.new as { 
+                id: string 
+              }
+            ).id === user?.id
+          ) {
+            setProfile(payload.new as UserProfileType);
+          }
+        }
+      )
+      .subscribe();
+
+      return () => {
+        channel.unsubscribe();
+      };
+
+  }, [
+    supabase, 
+    profile, 
+    user
+  ]);
 
   return (
     <UserContext.Provider
