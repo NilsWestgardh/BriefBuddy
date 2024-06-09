@@ -373,9 +373,9 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
                   ideas.length > 0 ? ideas.map((idea, index) => (
                     <IdeaContainer
                       key={index}
-                      id={idea.id}
+                      id={idea?.id}
                       title={idea.name}
-                      description={idea.description}
+                      description={idea?.description}
                       problem={idea.problem}
                       insight={idea.insight}
                       idea={idea.solution}
