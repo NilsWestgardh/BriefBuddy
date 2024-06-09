@@ -13,7 +13,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
 type IdeaContainerProps = {
-  id: number;
+  id: number | undefined;
   title: string;
   problem: string;
   insight: string;

@@ -74,6 +74,7 @@ export default function ProjectProvider({
   async function fetchProjectMembers(
     projectId: number
   ) {
+    console.log("Fetching project members for project:", projectId); // Debug log
     const { 
       data, 
       error 
@@ -91,6 +92,7 @@ export default function ProjectProvider({
         error
       );
     } else {
+      console.log("Fetched project members: ", data); // Debug log
       setProjectMembers(data);
     };
   };
@@ -146,7 +148,7 @@ export default function ProjectProvider({
     user
   ]);
 
-  // Subscribe to project changes
+  // Subscribe to project member changes
   useEffect(() => {
     const channel = supabase
       .channel("realtime project member changes")
@@ -180,12 +182,6 @@ export default function ProjectProvider({
     selectedTeam, 
     user
   ]);
-
-  // Debug
-  // useEffect(() => {
-  //   console.log("projects", projects);
-  //   console.log("projectMembers", projectMembers);
-  // }, [projects, projectMembers])
 
   return (
     <ProjectContext.Provider

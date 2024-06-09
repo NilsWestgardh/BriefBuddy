@@ -1,79 +1,55 @@
 "use client";
 
-import React, { 
-  useState, 
-  useEffect,
-  useRef,
-} from "react";
-import { 
-  useForm, 
-  FormProvider 
-} from "react-hook-form";
+import React, { useState, useEffect, useRef } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useProject } from "@/app/contexts/ProjectContext";
 import { useUser } from "@/app/contexts/UserContext";
-
-// Validation
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BriefFormSchema from "@/app/utils/schemas/BriefFormSchema";
-// Types
 import { IdeaType } from "@/app/utils/types/IdeaType";
-// Utils
 import { createClient } from "@/app/utils/supabase/client";
-// import PostHogClient from "@/app/utils/posthog/posthog";
-// Custom Components
 import ProjectHeader from "@/app/components/project/ProjectHeader";
 import BriefForm from "@/app/components/project/BriefForm";
 import SubmitButton from "@/app/components/project/SubmitButton";
 import ProjectTabsMenu from "@/app/components/project/ProjectTabsMenu";
 import ProjectTabContent from "@/app/components/project/ProjectTabContent";
-import IdeaContainer from "@/app/components/project/IdeaContainer";
 import TeamTable from "@/app/components/team/TeamTable";
 import TeamTableHeader from "@/app/components/team/TeamTableHeader";
-import IdeasPlaceholder from "@/app/components/project/IdeasPlaceholder";
-// Components
+import IdeaContainer from "@/app/components/project/idea/IdeaContainer";
+import IdeasPlaceholder from "@/app/components/project/idea/IdeasPlaceholder";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
-// Icons
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
 
-export default function ProjectIdPage({ 
-  params 
-}: { params: { 
-  slug: string 
-}}) {
+export default function ProjectIdPage({ params }: { params: { slug: string } }) {
   const projectId = parseInt(params.slug);
+  const router = useRouter();
+  const initialRender = useRef(true);
+  const supabase = createClient();
+  const { projects, projectMembers, fetchProjectMembers } = useProject();
+  const { user } = useUser();
+
   const methods = useForm<BriefFormType>({
     defaultValues: {
-      // Ids
-      id: 0,
       project_id: projectId,
-      // Basics
-      created_at: "",
-      updated_at: "",
+      project_name: projects.find((project) => project.id === projectId)?.name || "",
       client_name: "",
-      // Background
-      client_details: "",
       project_details: "",
-      // Product
       product_details: "",
       product_usp: "",
-      // Goals
       goals_details: "",
       goals_objectives: [],
-      // Brand
       brand_strategy: "",
       brand_message: "",
       brand_tone: "",
-      // Targets
       target_markets: [],
       target_genders: [],
       target_ages: [],
       target_description: "",
-      // Ideas
       ideas_medium: [],
       ideas_channels: [],
       ideas_quantity: 5,
@@ -82,25 +58,11 @@ export default function ProjectIdPage({
     mode: "onChange",
   });
 
-  const {
-    handleSubmit,
-    // watch,
-    // formState: { 
-    //   isValid,
-    //  },
-  } = methods;
-
-  // Utils
-  // const form = watch();
-  // const posthog = PostHogClient();
-  const router = useRouter();
-  const initialRender = useRef(true);
-  const supabase = createClient();
-  const { projects} = useProject();
-  const { user } = useUser();
+  const { watch, handleSubmit } = methods;
+  const form = watch();
 
   const [isGuest, setIsGuest] = useState<boolean>(false);
-  const [loading, setloading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [tab, setTab] = useState(0);
   const [ideas, setIdeas] = useState<IdeaType[]>([]);
   const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
@@ -110,22 +72,29 @@ export default function ProjectIdPage({
     message: string;
   } | null>(null);
 
+  // Fetch project members on mount
+  useEffect(() => {
+    if (projectId) {
+      fetchProjectMembers(projectId);
+    }
+  }, [projectId]);
+
+  // Log project members
+  useEffect(() => {
+    console.log("Project Members:", projectMembers); // Debug log
+  }, [projectMembers]);
+
   // Tab change handler
-  function handleTabChange(
-    event: React.SyntheticEvent, 
-    newTab: number
-  ) {
+  function handleTabChange(event: React.SyntheticEvent, newTab: number) {
     setTab(newTab);
-  };
+  }
 
   // Construct OpenAI prompt
   async function constructPrompt(
     data: BriefFormType
   ): Promise<string> {
-    const promptParts: { 
-      [key: string]: string 
-    } = {
-      client: data.client_name ? `Client: ${data.client_name}. ${data.client_details ?? ''}` : '',
+    const promptParts: { [key: string]: string } = {
+      client: data.client_name ? `Client: ${data.client_name}.` : '',
       product: data.product_details ? `Product Details: ${data.product_details}` : '',
       targets: data.target_markets?.length ? `Targets: ${data.target_genders?.join(", ") || 'all genders'} aged ${data.target_ages?.join(", ") || 'all ages'} in ${data.target_markets.join(", ")}. ${data.target_description ?? ''}` : '',
       usp: data.product_usp ? `USP: ${data.product_usp}` : '',
@@ -140,76 +109,90 @@ export default function ProjectIdPage({
 
     const prompt = Object.values(promptParts).filter(part => part).join("\n");
     return prompt;
-  };
+  }
 
   // Submit form
-  async function onSubmit(
-    data: BriefFormType
-  ) {
+  async function onSubmit(data: BriefFormType) {
     setAlertInfo({
-      type: "info",
+      type: 'info',
       icon: <InfoIcon />,
-      message: "Submitting brief...",
+      message: 'Submitting brief...',
     });
     setShowAlertInfo(true);
 
-    try {
-      const constructedPrompt = await constructPrompt(data);
+    console.log('Submitting brief:', data);
 
-      if (constructedPrompt) {
-        const response = await fetch("/api/data/generate-ideas", {
-          method: "POST",
+    try {
+      if (!user) return;
+
+      const isProjectMember = projectMembers.some(
+        member => member.project_id === data.project_id && 
+        member.user_id === user.id
+      );
+
+      if (!isProjectMember) {
+        throw new Error('User is not a member of the project');
+      }
+
+      if (
+        isProjectMember && 
+        data.ideas_quantity > 0
+      ) {
+        // Check if the user is part of the project
+        const constructedPrompt = await constructPrompt(data);
+
+        // Insert brief
+        const briefResponse = await fetch('/api/data/insert-brief', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...data,
+          }),
+        });
+
+        const briefData = await briefResponse.json();
+
+        if (!briefResponse.ok) {
+          throw new Error(briefData.error);
+        }
+
+        // Insert ideas
+        const response = await fetch('/api/data/insert-ideas', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             prompt: constructedPrompt,
             ideas_quantity: data.ideas_quantity,
+            project_id: data.project_id,
+            brief_id: briefData.brief.id,
           }),
         });
 
-        const generatedIdeas = await response.json();
+        const responseData = await response.json();
 
-        if (generatedIdeas) {
-          const supabaseResponse = await fetch("/api/data/insert-ideas", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ideas: generatedIdeas.ideas,
-              project_id: data.project_id,
-              brief_id: data.id,
-            }),
+        if (response.ok && responseData.ideas) {
+          setAlertInfo({
+            type: 'success',
+            icon: <CheckIcon />,
+            message: 'Brief form submitted successfully!',
           });
 
-          const responseData = await supabaseResponse.json();
+          // Fetch ideas from Supabase
+          fetchIdeas(data.project_id);
 
-          if (
-            supabaseResponse.ok && 
-            responseData.data
-          ) {
-            setAlertInfo({
-              type: "success",
-              icon: <CheckIcon />,
-              message: "Brief form submitted successfully!",
-            });
-
-            // TODO: Register event in posthog
-
-            // Switch to ideas tab
-            setTab(1);
-
-          } else {
-            throw new Error(responseData.error);
-          }
+          setTab(1);
         } else {
-          throw new Error("Error generating ideas");
+          throw new Error(responseData.error);
         }
       }
     } catch (error) {
+      console.log('Error submitting brief:', error);
       setAlertInfo({
-        type: "error",
+        type: 'error',
         icon: <ErrorIcon />,
         message: `Error submitting brief: ${(error as Error).message}`,
       });
@@ -218,33 +201,22 @@ export default function ProjectIdPage({
     setTimeout(() => {
       setShowAlertInfo(false);
     }, 5000);
-  };
+  }
 
   // Fetch ideas
-  async function fetchIdeas(
-    projectId: number
-  ) {
-    const { 
-      data, 
-      error 
-    } = await supabase
+  async function fetchIdeas(projectId: number) {
+    const { data, error } = await supabase
       .from("ideas")
       .select("*")
-      .eq(
-        "project_id", 
-        projectId
-      );
+      .eq("project_id", projectId);
 
     if (error) {
-      console.error(
-        "Error fetching ideas:", 
-        error
-      );
+      console.error("Error fetching ideas:", error);
       return null;
-    } else (
-      setIdeas(data)
-    );
-  };
+    } else {
+      setIdeas(data);
+    }
+  }
 
   // Fetch user's project role
   useEffect(() => {
@@ -257,90 +229,64 @@ export default function ProjectIdPage({
       }
 
       try {
-        const { 
-          data, 
-          error 
-        } = await supabase
+        const { data, error } = await supabase
           .from("project_members")
           .select("project_role")
-          .eq(
-            "project_id", 
-            projectId
-          )
-          .eq(
-            "user_id", 
-            user.id
-          );
+          .eq("project_id", projectId)
+          .eq("user_id", user.id);
 
         if (error) {
-          console.error(
-            "Error fetching user role:", 
-            error
-          );
+          console.error("Error fetching user role:", error);
           return;
         }
 
-        if (
-          data && 
-          data.length > 0 && 
-          data[0].project_role === "viewer"
-        ) {
+        if (data && data.length > 0 && data[0].project_role === "viewer") {
           console.log("User is a viewer.");
           setIsGuest(true);
         } else {
           setIsGuest(false);
         }
       } catch (error) {
-        console.error(
-          "Unexpected error fetching user role:", 
-          error
-        );
+        console.error("Unexpected error fetching user role:", error);
       }
     }
 
     getUserRole();
-  }, [
-    user, 
-    supabase
-  ]);
+  }, [user, supabase]);
 
   // Fetch project ideas
   useEffect(() => {
     if (ideas === null) {
-      fetchIdeas(parseInt(params.slug))
-    };
+      fetchIdeas(parseInt(params.slug));
+    }
   }, [ideas]);
 
-  // Redirect to home if project 
-  // isn't found in ProjectContext
+  // Redirect to home if project isn't found in ProjectContext
   useEffect(() => {
     if (!projects) return;
 
     if (initialRender.current) {
       initialRender.current = false;
       return;
-    };
+    }
 
     const projectExists = projects.some(
       (project) => project.id.toString() === params.slug
     );
-  
+
     if (!projectExists) {
       router.push("/home");
     } else {
-      setloading(false);
-    };
-  }, [
-    projects,
-    params.slug,
-    router,
-  ]);
+      setLoading(false);
+    }
+  }, [projects, params.slug, router]);
+
+  console.log("Form validity:", methods.formState.isValid);
+  console.log("Form: ", form);
 
   return (
     <>
-      <FormProvider
-        {...methods}
-      >
+      <FormProvider {...methods}>
         <form
           id="brief-form"
           onSubmit={handleSubmit(onSubmit)}
@@ -353,7 +299,7 @@ export default function ProjectIdPage({
           "
         >
           <Box
-            id="new-brief-page-container"
+            id="project-page-container"
             className="
               flex
               flex-col
@@ -387,11 +333,7 @@ export default function ProjectIdPage({
                 handleTabChange={handleTabChange}
               />
             </Box>
-            {/* BRIEF TAB */}
-            <ProjectTabContent
-              value={tab}
-              index={0}
-            >
+            <ProjectTabContent value={tab} index={0}>
               <BriefForm isGuest={isGuest} />
               <Box
                 id="submit-button-container"
@@ -407,14 +349,13 @@ export default function ProjectIdPage({
                   pb-8
                 "
               >
-                <SubmitButton 
-                  cta="Generate ideas" 
+                <SubmitButton
+                  cta="Generate ideas"
                   feedback="Generating ideas..."
                   isGuest={isGuest}
                 />
               </Box>
             </ProjectTabContent>
-            {/* IDEAS TAB */}
             <ProjectTabContent value={tab} index={1}>
               <Box
                 id="ideas-tab-container"
@@ -444,7 +385,6 @@ export default function ProjectIdPage({
                 }
               </Box>
             </ProjectTabContent>
-            {/* TEAM TAB */}
             <ProjectTabContent value={tab} index={2}>
               <Box
                 className="
@@ -461,26 +401,18 @@ export default function ProjectIdPage({
                 <TeamTable />
               </Box>
             </ProjectTabContent>
+
+            {showAlertInfo && (
+              <Alert
+                severity={alertInfo?.type}
+                icon={alertInfo ? alertInfo.icon : undefined}
+              >
+                {alertInfo ? alertInfo.message : "Error"}
+              </Alert>
+            )}
           </Box>
         </form>
       </FormProvider>
-
-      {showAlertInfo && (
-        <Alert
-          severity={alertInfo?.type}
-          icon={
-            alertInfo ? 
-            alertInfo.icon : 
-            undefined
-          }
-          >
-          {
-            alertInfo ? 
-            alertInfo.message : 
-            "Error"
-          }
-        </Alert>
-      )}
     </>
   );
-};
+}

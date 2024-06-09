@@ -2,14 +2,12 @@ import { z } from 'zod';
 
 const BriefFormSchema = z.object({
   // Ids
-  id: z.number(),
+  id: z.number().optional(),
   project_id: z.number(),
   // Basics
-  created_at: z.string(),
-  updated_at: z.string().optional(),
+  project_name: z.string(),
   client_name: z.string().optional(),
   // Background
-  client_details: z.string().optional(),
   project_details: z.string().optional(),
   // Product
   product_details: z.string().optional(),
@@ -30,6 +28,9 @@ const BriefFormSchema = z.object({
   ideas_medium: z.array(z.string()).optional(),
   ideas_channels: z.array(z.string()).optional(),
   ideas_quantity: z.number(),
+  // Optional timestamp fields
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
 });
 
 export default BriefFormSchema;

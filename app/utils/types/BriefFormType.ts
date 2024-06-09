@@ -1,14 +1,11 @@
 export type BriefFormType = {
   // Ids
-  id: number;
+  id?: number;
   project_id: number;
   // Basics
-  created_at: string;
-  updated_at?: string;
   project_name: string;
   client_name?: string;
   // Background
-  client_details?: string;
   project_details?: string;
   // Product
   product_details?: string;
@@ -29,4 +26,7 @@ export type BriefFormType = {
   ideas_medium?: string[];
   ideas_channels?: string[];
   ideas_quantity: number;
+  // Optional timestamp fields
+  created_at?: string;
+  updated_at?: string;
 };

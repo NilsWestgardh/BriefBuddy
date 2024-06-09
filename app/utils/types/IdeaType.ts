@@ -1,7 +1,7 @@
 export type IdeaType = {
-  id: number,
-  created_at: string,
-  updated_at: string,
+  id?: number,
+  created_at?: string,
+  updated_at?: string,
   project_id: number,
   brief_id: number,
   name: string,
