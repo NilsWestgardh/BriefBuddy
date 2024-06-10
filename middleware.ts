@@ -15,8 +15,8 @@ export async function middleware(
   .auth
   .getUser();
   
-  if (!user && !req.nextUrl.pathname.startsWith("/pricing")) {
-    return NextResponse.redirect(new URL("/pricing", req.url));
+  if (!user && !req.nextUrl.pathname.startsWith("/login")) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   if (user) {
@@ -27,7 +27,5 @@ export async function middleware(
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|images|favicon.ico|login).*)"],
 };
