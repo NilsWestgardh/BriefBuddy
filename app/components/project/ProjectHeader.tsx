@@ -36,12 +36,10 @@ const defaultProjectName = "Project name";
 
 type ProjectHeaderProps = {
   project_id: number;
-  loading: boolean;
 };
 
 export default function ProjectHeader({ 
   project_id,
-  loading,
 }: ProjectHeaderProps) {
   const { projects } = useProject();
   const supabase = createClient();

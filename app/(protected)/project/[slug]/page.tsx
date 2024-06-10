@@ -92,7 +92,6 @@ export default function ProjectIdPage({
   } = methods;
 
   const [isGuest, setIsGuest] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
   const [tab, setTab] = useState(0);
   const [ideas, setIdeas] = useState<IdeaType[]>([]);
   const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
@@ -387,10 +386,12 @@ export default function ProjectIdPage({
 
     if (!projectExists) {
       router.push("/home");
-    } else {
-      setLoading(false);
     }
-  }, [projects, params.slug, router]);
+  }, [
+    projects, 
+    params.slug, 
+    router
+  ]);
 
   return (
     <>
@@ -433,7 +434,6 @@ export default function ProjectIdPage({
               "
             >
               <ProjectHeader
-                loading={loading}
                 project_id={projectId}
               />
               <ProjectTabsMenu
