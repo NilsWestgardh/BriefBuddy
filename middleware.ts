@@ -24,21 +24,13 @@ export async function middleware(
   }
 
   // Redirect authenticated users from root or login to protected route
-  if (
-    user && (
-      path === rootRoute || path === loginRoute
-    )
-  ) {
-    return NextResponse.redirect(
-      new URL(protectedRedirectRoute, req.url)
-    );
+  if (user && path === rootRoute) {
+    return NextResponse.redirect(new URL(protectedRedirectRoute, req.url));
   }
 
   // Redirect unauthenticated users from protected routes to login
   if (!user && ![rootRoute, loginRoute].includes(path.toLowerCase())) {
-    return NextResponse.redirect(
-      new URL(loginRoute, req.url)
-    );
+    return NextResponse.redirect(new URL(loginRoute, req.url));
   }
 
   return response;

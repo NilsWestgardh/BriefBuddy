@@ -17,23 +17,22 @@ export async function GET(
     const supabase = createClient(cookieStore);
 
     // Exchange code for session
-    const { error } = await supabase
+    const { 
+      error 
+    } = await supabase
       .auth
       .exchangeCodeForSession(code);
 
     if (error) {
       return Response.redirect(
-        `${url.origin}/login?error=${encodeURIComponent(error.message)}`,
+        `${url.origin}/login?error=${encodeURIComponent(error.message)}`
       );
-    };
+    }
 
-    return Response.redirect(
-      `${url.origin}${protectedRedirectRoute}`
-    );
+    // Ensure the correct redirection to the protected route
+    return Response.redirect(`${url.origin}${protectedRedirectRoute}`);
   } else {
     console.log("No code to exchange for session found.");
-    return Response.redirect(
-      `${url.origin}/login?error=No code provided.`
-    );
-  };
-};
+    return Response.redirect(`${url.origin}/login?error=No code provided.`);
+  }
+}
