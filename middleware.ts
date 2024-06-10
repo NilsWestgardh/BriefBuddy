@@ -15,12 +15,10 @@ export async function middleware(
   .auth
   .getUser();
   
-  if (!user && !req.nextUrl.pathname.startsWith("/login")) {
-    console.log("Redirecting to /login")
+  if (!user) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  console.log("User is authenticated")
   return response;
 }
 
