@@ -3,9 +3,11 @@
 import { createClient } from "@/app/utils/supabase/server";
 import { cookies } from "next/headers";
 
-const protectedRedirectRoute = "/projects";
+const protectedRedirectRoute = "/home";
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request
+) {
   const requestUrl = new URL(request.url).origin;
   const formData = await request.formData();
   const email = String(formData.get("email"));

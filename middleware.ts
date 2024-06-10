@@ -5,9 +5,14 @@ const protectedRedirectRoute = "/home";
 const loginRoute = "/login";
 const rootRoute = "/";
 
-export async function middleware(req: NextRequest) {
+export async function middleware(
+  req: NextRequest
+) {
   const path = new URL(req.url).pathname;
-  const { supabase, response } = await createClient(req);
+  const { 
+    supabase, 
+    response 
+  } = await createClient(req);
 
   const {
     data: { user },
@@ -19,13 +24,21 @@ export async function middleware(req: NextRequest) {
   }
 
   // Redirect authenticated users from root or login to protected route
-  if (user && (path === rootRoute || path === loginRoute)) {
-    return NextResponse.redirect(new URL(protectedRedirectRoute, req.url));
+  if (
+    user && (
+      path === rootRoute || path === loginRoute
+    )
+  ) {
+    return NextResponse.redirect(
+      new URL(protectedRedirectRoute, req.url)
+    );
   }
 
   // Redirect unauthenticated users from protected routes to login
   if (!user && ![rootRoute, loginRoute].includes(path.toLowerCase())) {
-    return NextResponse.redirect(new URL(loginRoute, req.url));
+    return NextResponse.redirect(
+      new URL(loginRoute, req.url)
+    );
   }
 
   return response;

@@ -6,7 +6,9 @@ import { cookies } from "next/headers";
 
 const protectedRedirectRoute = "/home";
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest
+) {
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
 

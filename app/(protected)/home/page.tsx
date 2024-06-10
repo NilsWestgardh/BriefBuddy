@@ -191,7 +191,7 @@ export default function Home() {
                 justify-start
                 items-start
                 max-w-[300px]
-                min-w-[200px]
+                min-w-[240px]
                 w-full
                 gap-4
                 p-4
