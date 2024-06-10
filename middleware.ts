@@ -1,7 +1,4 @@
-import { 
-  NextResponse, 
-  NextRequest 
-} from "next/server";
+import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from "@/app/utils/supabase/middleware";
 
 export async function middleware(
@@ -26,5 +23,7 @@ export async function middleware(
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|images|favicon.ico|login).*)"],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };
