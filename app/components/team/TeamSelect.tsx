@@ -13,6 +13,7 @@ import clsx from "clsx";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
+import { useMediaQuery } from "@mui/material";
 // Icons
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -20,8 +21,6 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import CreateTeamButton from "@/app/components/team/CreateTeamButton";
 
 export default function TeamSelect() {
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
-
   const { 
     teams, 
     selectedTeam, 
@@ -29,6 +28,12 @@ export default function TeamSelect() {
   } = useTeam();
   const router = useRouter();
   const pathname = usePathname();
+
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
+
+  const open = Boolean(anchorEl);
+  const id = open ? "team-popover" : undefined;
+  const isSmallScreen = useMediaQuery("(max-width:600px)");
 
   function handleClick(
     event: React.MouseEvent<HTMLDivElement>
@@ -40,8 +45,6 @@ export default function TeamSelect() {
     setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? "team-popover" : undefined;
 
   function handleTeamSelect(
     team: TeamType
@@ -103,7 +106,7 @@ export default function TeamSelect() {
           {
             teams.length > 0 ? (
               <Typography
-                variant="subtitle2"
+                variant={isSmallScreen ? "caption" : "subtitle2"}
                 className="
                   font-semibold 
                   text-black
@@ -204,7 +207,7 @@ export default function TeamSelect() {
                   className={clsx(
                     "hover:cursor-pointer hover:bg-neutral-100 p-2 rounded-md w-full",
                     { 
-                      "bg-neutral-200 font-semibold": selectedTeam?.id === team.id 
+                      "bg-neutral-200 font-semibold": selectedTeam?.id === team.id,
                     }
                   )}
                   style={{ 

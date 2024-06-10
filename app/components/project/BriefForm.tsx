@@ -44,8 +44,8 @@ export default function BriefForm({
         justify-start
         items-start
         w-full
-        gap-4
-        p-4
+        gap-6
+        p-6
         overflow-y-auto
       "
     >

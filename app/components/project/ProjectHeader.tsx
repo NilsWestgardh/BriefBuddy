@@ -10,12 +10,18 @@ import {
   useForm, 
   Controller 
 } from "react-hook-form";
+import { useProject } from "@/app/contexts/ProjectContext";
 // Validation
 import { zodResolver } from "@hookform/resolvers/zod";
 import ProjectFormSchema from "@/app/utils/schemas/ProjectFormSchema";
+// Types
 import { ProjectFormType } from "@/app/utils/types/ProjectFormType";
+import { ProjectType } from "@/app/utils/types/ProjectType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
+// CustomComponents
+import ProjectDetails from "@/app/components/project/ProjectDetails";
+import CreateProjectButton from "@/app/components/project/CreateProjectButton";
 // Components
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -37,6 +43,10 @@ export default function ProjectHeader({
   project_id,
   loading,
 }: ProjectHeaderProps) {
+  const { projects } = useProject();
+  const supabase = createClient();
+  const textFieldRef = useRef<HTMLInputElement>(null);
+
   const methods = useForm<ProjectFormType>({
     defaultValues: {
       id: 0,
@@ -45,10 +55,12 @@ export default function ProjectHeader({
       updated_at: "",
       name: defaultProjectName,
       client: "",
+      details: "",
     },
     resolver: zodResolver(ProjectFormSchema),
     mode: "onChange",
   });
+
   const {
     watch,
     control,
@@ -60,11 +72,11 @@ export default function ProjectHeader({
      },
   } = methods;
 
-  const supabase = createClient();
   const form = watch();
-  const [nameEditable, setNameEditable] = useState(false);
-  const textFieldRef = useRef<HTMLInputElement>(null);
 
+  const [projectData, setProjectData] = useState<ProjectType | null>(null);
+  const [nameEditable, setNameEditable] = useState(false);
+  
   // Update project name
   async function onSubmit(
     data: ProjectFormType
@@ -102,32 +114,30 @@ export default function ProjectHeader({
 
   // Fetch project data
   useEffect(() => {
-    if (!project_id) return;
-    async function fetchProjectData() {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('id', project_id)
-        .single();
+    if (!project_id) {
+      console.log ("Project ID not found");
+      return;
 
-      if (error) {
-        console.error('Error fetching project data:', error);
-        return;
+    } else {
+      const projectData = projects
+        .find(
+          (project) => project.id === project_id
+        );
+
+      if (projectData) {
+        setValue("id", projectData.id);
+        setValue("team_id", projectData.team_id);
+        setValue("user_id", projectData.user_id);
+        setValue("updated_at", projectData.updated_at);
+        setValue("name", projectData.name);
+        setValue("client", projectData.client);
+        setValue("details", projectData.details);
+
+        setProjectData(projectData);
       };
-
-      if (data) {
-        setValue('id', data.id);
-        setValue('team_id', data.team_id);
-        setValue('user_id', data.user_id);
-        setValue('updated_at', data.updated_at);
-        setValue('name', data.name);
-        setValue('client', data.client);
-      }
     };
-    fetchProjectData();
   }, [
-    setValue, 
-    supabase, 
+    setValue,
     project_id
   ]);
 
@@ -143,7 +153,7 @@ export default function ProjectHeader({
         min-h-20
         px-4
         pt-1
-        pb-2
+        pb-3
         bg-neutral-100
         border-b
         border-neutral-300
@@ -153,120 +163,210 @@ export default function ProjectHeader({
       "
     >
       <Box
-        id="brief-id-header-info-container"
+        id="project-header-content-container"
         className="
           flex
-          flex-col
-          justify-start
-          items-start
+          flex-row
+          justify-between
+          items-stretch
+          w-full
+          h-full
+          gap-6
         "
       >
         <Box
-          id="project-name"
+          id="project-header-info-container"
           className="
             flex
-            flex-row
+            flex-col
             justify-start
-            items-center
-            gap-1
+            items-start
+            w-full
+            gap-2
           "
         >
-          {nameEditable ? (
-            <Controller
-              name="name"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  inputRef={textFieldRef}
-                  id="project-name"
-                  label="Project name"
-                  placeholder="Project name"
-                  size="small"
-                  color="primary"
-                  error={!!errors.name}
-                  helperText={errors.name ? errors.name.message : ""}
-                  inputProps={{
-                    maxLength: 50,
-                    autoComplete: "off",
-                  }}
-                  sx={{
-                    flex: 1,
-                    minWidth: "150px",
-                    "& .MuiOutlinedInput-root": {
-                      fontSize: "1rem",
-                      fontWeight: "bold",
-                      lineHeight: "1.5",
-                      padding: 0,
-                      "& fieldset": {
-                        border: "none",
-                      },
-                      "&:hover fieldset": {
-                        border: "none",
-                      },
-                      "&.Mui-focused fieldset": {
-                        border: "none",
-                      },
-                      "&:after": {
-                        borderBottom: "2px solid",
-                      },
-                    },
-                    "& .MuiInputBase-input": {
-                      padding: 0,
-                      width: "auto",
-                    },
-                    "& .MuiInputLabel-root": {
-                      display: "none",
-                    },
-                  }}
-                />
-              )}
-            />
-          ) : (
-            <Typography
-              variant="subtitle1"
-              className="
-                text-black
-                font-semibold
-              "
-              sx={{ flex: 1 }}
-            >
-              {form.name}
-            </Typography>
-          )}
-          <IconButton
-            onClick={handleEditableName}
-            size="small"
-            disabled={
-              form.name.length < 4 ||
-              !isValid
-            }
-          >
-            {nameEditable ? <CheckIcon /> : <EditIcon />}
-          </IconButton>
-        </Box>
-        
-        {loading ? (
-          <Skeleton
-            variant="rectangular"
-            width="100%"
-            height={20}
-            animation="wave"
-          />
-        ) : (
-          <Typography
-            variant="caption"
+          <Box
+            id="project-header-name-details-container"
             className="
-            text-neutral-700
+              flex
+              flex-col
+              justify-start
+              items-start
+              w-full
             "
           >
-            Created by {" "} Username
-            {" "} <span className="text-neutral-500">•</span> {" "}
-            Created 25/10/1988 {/* TODO: Make Dynamic */}
-            {" "} <span className="text-neutral-500">•</span> {" "}
-            Updated 25/10/1988 {/* TODO: Make Dynamic */}
-          </Typography>
-        )}
+            {form.name ? (
+              <Box
+                id="project-name"
+                className="
+                  flex
+                  flex-row
+                  justify-start
+                  items-center
+                  gap-1
+                "
+              >
+                {nameEditable ? (
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        inputRef={textFieldRef}
+                        id="project-name"
+                        label="Project name"
+                        placeholder="Project name"
+                        size="small"
+                        color="primary"
+                        error={!!errors.name}
+                        helperText={errors.name ? errors.name.message : ""}
+                        inputProps={{
+                          maxLength: 50,
+                          autoComplete: "off",
+                        }}
+                        sx={{
+                          flex: 1,
+                          minWidth: "150px",
+                          "& .MuiOutlinedInput-root": {
+                            fontSize: "1rem",
+                            fontWeight: "bold",
+                            lineHeight: "1.5",
+                            padding: 0,
+                            "& fieldset": {
+                              border: "none",
+                            },
+                            "&:hover fieldset": {
+                              border: "none",
+                            },
+                            "&.Mui-focused fieldset": {
+                              border: "none",
+                            },
+                            "&:after": {
+                              borderBottom: "2px solid",
+                            },
+                          },
+                          "& .MuiInputBase-input": {
+                            padding: 0,
+                            width: "auto",
+                          },
+                          "& .MuiInputLabel-root": {
+                            display: "none",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                ) : (
+                  <Typography
+                    variant="subtitle1"
+                    className="
+                      text-black
+                      font-semibold
+                    "
+                    sx={{ flex: 1 }}
+                  >
+                    {form.name}
+                  </Typography>
+                )}
+                <IconButton
+                  onClick={handleEditableName}
+                  disabled={
+                    form.name.length < 4 ||
+                    !isValid
+                  }
+                  sx={{ 
+                    width: "32px", 
+                    height: "32px"
+                  }}
+                  className="
+                    opacity-80 
+                    hover:opacity-100 
+                    transition-all
+                  "
+                >
+                  {
+                    nameEditable ? (
+                      <CheckIcon 
+                        sx={{ 
+                          width: "24px", 
+                          height: "24px"
+                        }} 
+                      />
+                    ) : (
+                      <EditIcon 
+                        sx={{ 
+                          width: "24px", 
+                          height: "24px"
+                        }} 
+                      />
+                    )
+                  }
+                </IconButton>
+              </Box>
+            ) : (
+              <Skeleton
+                variant="text"
+                width="192px"
+                height="30px"
+                animation="wave"
+                className="rounded-sm"
+              />
+            )}
+            
+            <Typography
+              variant="body2"
+              className="
+                text-neutral-900
+              "
+            >
+              {form.details ? (
+                form.details
+              ) : (
+                <Skeleton
+                  variant="text"
+                  width="192px"
+                  height="24px"
+                  animation="wave"
+                  className="rounded-sm"
+                />
+              )}
+            </Typography>
+          </Box>
+          <Box
+            id="project-header-dates-container"
+            className="
+              flex
+              flex-col
+              justify-start
+              items-start
+              w-full
+            "
+          >
+            <ProjectDetails
+              client={projectData?.client}
+              user_id={projectData?.user_id}
+              created_at={projectData?.created_at}
+              updated_at={projectData?.updated_at}
+            />
+          </Box>
+        </Box>
+        <Box
+          id="project-header-options-container"
+          className="
+            hidden
+            sm:flex
+            flex-col
+            justify-between
+            items-end
+            min-w-32
+            min-h-20
+          "
+        >
+          <div></div>
+          <CreateProjectButton />
+          <div></div>
+        </Box>
       </Box>
     </Box>
   )

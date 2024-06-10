@@ -13,7 +13,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 
 type IdeaContainerProps = {
-  id: number | undefined;
+  index: number;
   title: string;
   problem: string;
   insight: string;
@@ -26,7 +26,7 @@ const ToolTipCopy = "Copy to clipboard";
 const ToolTipCopied = "Copied!";
 
 export default function IdeaContainer({ 
-  id,
+  index,
   title, 
   problem, 
   insight, 
@@ -53,7 +53,11 @@ export default function IdeaContainer({
     }, 2000);
   };
 
-  const sections = { problem, insight, idea };
+  const sections = { 
+    problem, 
+    insight, 
+    idea 
+  };
 
   return (
     <Box
@@ -66,11 +70,11 @@ export default function IdeaContainer({
         w-full
         border
         border-black
-        px-4
-        pt-2
-        pb-4
-        gap-4
-        rounded-md
+        px-6
+        pt-4
+        pb-6
+        gap-6
+        rounded-xl
       "
     >
       <Box
@@ -79,8 +83,9 @@ export default function IdeaContainer({
           flex
           flex-row
           justify-between
-          items-center
+          items-start
           w-full
+          gap-8
         "
       >
         <Box
@@ -89,6 +94,7 @@ export default function IdeaContainer({
             flex-col
             justify-start
             items-start
+            gap-2
           "
         >
           <Box
@@ -97,7 +103,7 @@ export default function IdeaContainer({
               flex-row
               justify-start
               items-baseline
-              gap-2
+              gap-3
             "
           >
             <Typography
@@ -110,28 +116,23 @@ export default function IdeaContainer({
               {title}
             </Typography>
             <Typography
-              variant="body2"
+              variant="caption"
               component="span"
               className="
-                flex
-                flex-row
-                justify-start
-                items-center
                 text-neutral-700
               "
             >
-              {id}
+              {index} / {" "}
               <Typography
-                variant="body2"
+                variant="caption"
                 className="
                 text-neutral-500
               "
               >
-                /{idea_quantity}
+                {idea_quantity}
               </Typography>
             </Typography>
           </Box>
-          {/* TODO: Replace with dynamic data */}
           <Typography
             variant="subtitle2"
           >
@@ -178,6 +179,7 @@ export default function IdeaContainer({
               border-neutral-300
               hover:border-neutral-500
               hover:bg-neutral-50
+              gap-4
             "
           >
             <Box

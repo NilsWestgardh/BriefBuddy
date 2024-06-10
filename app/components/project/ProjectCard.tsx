@@ -22,6 +22,7 @@ export default function ProjectCard({
   ideas_count,
   team_members,
 }: ProjectCardProps) {
+
   return (
     <Link
       href={`/project/${id}`}

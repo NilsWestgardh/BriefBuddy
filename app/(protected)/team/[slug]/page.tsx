@@ -102,7 +102,7 @@ export default function TeamIdPage({
       <Skeleton
         variant="rectangular"
         width="100%"
-        height={70}
+        height={80}
         animation="wave"
       />
       <Box
@@ -112,21 +112,21 @@ export default function TeamIdPage({
           justify-start
           items-start
           w-full
-          gap-2
-          p-4
+          gap-4
+          p-6
         "
       >
         <Skeleton
           variant="rectangular"
           width="100%"
-          height={60}
+          height={72}
           animation="wave"
           className="rounded-md"
         />
         <Skeleton
           variant="rectangular"
           width="100%"
-          height={400}
+          height={240}
           animation="wave"
           className="rounded-md"
         />

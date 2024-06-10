@@ -10,6 +10,7 @@ const ProjectFormSchema = z.object({
   client: z.string().optional(),
   details: z.string().optional(),
   ideas_limit: z.number().optional(),
+  ideas_count: z.number().optional(),
 });
 
 export default ProjectFormSchema;

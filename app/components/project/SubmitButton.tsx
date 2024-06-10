@@ -1,13 +1,36 @@
 "use client";
 
 // Hooks
-import React from "react";
+import React, { 
+  useState, 
+  useEffect 
+} from "react";
 import { useFormContext } from "react-hook-form";
 // Components
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 // Icons
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
+const loadingMessages = [
+  "Sipping whiskey...",
+  "Playing ping pong...",
+  "Taking a long shower...",
+  "Scribbling on a napkin...",
+  "Thinking big...",
+  "Considering my life choices...",
+  "Dreaming of Cannes...",
+  "Opening a fresh Moleskine...",
+  "Listening to jazz...",
+  "Staring out the window...",
+  "Having a eureka moment...",
+  "Crying in the breakroom...",
+  "Making the logo bigger...",
+  "Battling the blank page blues...",
+  "Polishing a diamond in the rough...",
+  "Waiting for the muse to show up...",
+  "Drinking more coffee...",
+];
 
 type SubmitButtonProps = {
   cta: string;
@@ -27,6 +50,21 @@ export default function SubmitButton({
       isValid 
     },
   } = useFormContext();
+
+  const [currentMessage, setCurrentMessage] = useState(loadingMessages[0]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      const interval = setInterval(() => {
+        setCurrentMessage((prevMessage) => {
+          const currentIndex = loadingMessages.indexOf(prevMessage);
+          const nextIndex = (currentIndex + 1) % loadingMessages.length;
+          return loadingMessages[nextIndex];
+        });
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isSubmitting]);
 
   return (
     <Button
@@ -52,7 +90,7 @@ export default function SubmitButton({
         justify-between
       "
     >
-      {isSubmitted ? feedback : cta}
+      {isSubmitting ? currentMessage : isSubmitted ? feedback : cta}
     </Button>
   );
 };

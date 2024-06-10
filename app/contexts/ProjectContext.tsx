@@ -31,8 +31,8 @@ type ProjectContextType = {
 };
 
 const ProjectContext = createContext<ProjectContextType>({
-  projects: [],
-  projectMembers: [],
+  projects: [] as ProjectType[],
+  projectMembers: [] as ProjectMemberType[],
   fetchProjects: () => {},
   fetchProjectMembers: () => {},
 });
@@ -62,6 +62,7 @@ export default function ProjectProvider({
         sortBy
       );
       setProjects(data);
+      
     } catch (error) {
       console.error(
         "Error fetching projects: ", 

@@ -8,7 +8,8 @@ export async function POST(
 ) {
   const { 
     prompt, 
-    ideas_quantity, 
+    ideas_quantity,
+    ideas_count,
     project_id, 
     brief_id 
   } = await req.json();
@@ -23,40 +24,68 @@ export async function POST(
       brief_id
     );
 
-    console.log('Generated ideas:', ideas);
-
     const { 
-      data, 
-      error 
+      data: ideasData, 
+      error: ideasError 
     } = await supabase
       .from('ideas')
       .insert(ideas)
       .select();
 
-    if (error) {
+    if (ideasError) {
       console.error(
         'Error inserting ideas:', 
-        error
+        ideasError
       );
       return new NextResponse(
         JSON.stringify({ 
-          error: error.message 
+          error: ideasError.message 
         }), {
         status: 500,
         headers: { 
           'Content-Type': 'application/json' 
         },
       });
-    }
-
-    return new NextResponse(JSON.stringify({ 
-      ideas: data 
-    }), {
-      status: 200,
-      headers: { 
-        'Content-Type': 'application/json' 
-      },
-    });
+    } else {
+      const { 
+        data: projectData, 
+        error: projectError 
+      } = await supabase
+        .from("projects")
+        .insert(
+          "ideas_count", 
+          ideas_count
+        )
+        .eq(
+          "id", 
+          project_id
+        )
+      
+      if (projectError) {
+        console.error(
+          'Error updating project ideas count:', 
+          projectError
+        );
+        return new NextResponse(
+          JSON.stringify({ 
+            error: projectError.message 
+          }), {
+          status: 500,
+          headers: { 
+            'Content-Type': 'application/json' 
+          },
+        });
+      } else if (ideasData && projectData) {
+        return new NextResponse(JSON.stringify({ 
+          ideas: ideasData 
+        }), {
+          status: 200,
+          headers: { 
+            'Content-Type': 'application/json' 
+          },
+        });
+      };
+    };
 
   } catch (error) {
     console.error(

@@ -14,7 +14,7 @@ export async function fetchProjectsUtil(
   const supabase = createClient(cookieStore);
 
   const { 
-    data, 
+    data: project, 
     error 
   } = await supabase
     .from("projects")
@@ -39,5 +39,5 @@ export async function fetchProjectsUtil(
     );
     throw error;
   }
-  return data as ProjectType[];
+  return project as ProjectType[];
 }

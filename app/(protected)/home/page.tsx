@@ -49,6 +49,7 @@ export default function Home() {
           name,
           client,
           ideas_limit,
+          ideas_count,
           details,
           project_members (
             id,
@@ -197,9 +198,13 @@ export default function Home() {
                 rounded-lg
                 border
                 border-black
-                hover:border-neutral-500
                 hover:bg-neutral-50
               "
+              sx={{
+                "&:hover": {
+                  boxShadow: "0 2px 0 0 #000000"
+                }
+              }}
             >
               <ProjectCard
                 id={projectCard.id}

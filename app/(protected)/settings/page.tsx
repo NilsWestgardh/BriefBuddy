@@ -14,8 +14,8 @@ export default function Settings() {
         justify-start
         items-start
         w-full
-        gap-2
-        p-4
+        gap-6
+        p-6
       "
     >
       <Typography
@@ -23,11 +23,34 @@ export default function Settings() {
         className="
           text-black
           font-semibold
-          mb-2
         "
       >
         Settings
       </Typography>
+      <Box
+        id="settings-content"
+        className="
+          flex
+          flex-col
+          justify-start
+          items-start
+          w-full
+          gap-4
+          rounded-md
+          border
+          border-neutral-300
+          p-6
+        "
+      >
+        <Typography
+          variant="body1"
+          className="
+          text-neutral-700
+          "
+        >
+          Account and team settings coming soon...
+        </Typography>
+      </Box>
     </Box>
   )
 };

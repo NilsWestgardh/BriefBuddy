@@ -1,15 +1,28 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+// Hooks
+import React, { 
+  useState, 
+  useEffect, 
+  useRef 
+} from "react";
+import { 
+  useForm, 
+  FormProvider 
+} from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useProject } from "@/app/contexts/ProjectContext";
 import { useUser } from "@/app/contexts/UserContext";
+// Types
+import { IdeaType } from "@/app/utils/types/IdeaType";
 import { BriefFormType } from "@/app/utils/types/BriefFormType";
+// Validation
 import { zodResolver } from "@hookform/resolvers/zod";
 import BriefFormSchema from "@/app/utils/schemas/BriefFormSchema";
-import { IdeaType } from "@/app/utils/types/IdeaType";
+// Utils
 import { createClient } from "@/app/utils/supabase/client";
+import { fetchBriefUtil } from "@/app/actions/fetchBriefUtil";
+// Custom Components
 import ProjectHeader from "@/app/components/project/ProjectHeader";
 import BriefForm from "@/app/components/project/BriefForm";
 import SubmitButton from "@/app/components/project/SubmitButton";
@@ -19,18 +32,30 @@ import TeamTable from "@/app/components/team/TeamTable";
 import TeamTableHeader from "@/app/components/team/TeamTableHeader";
 import IdeaContainer from "@/app/components/project/idea/IdeaContainer";
 import IdeasPlaceholder from "@/app/components/project/idea/IdeasPlaceholder";
+// Components
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
+// Icons
 import CheckIcon from "@mui/icons-material/Check";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
 
-export default function ProjectIdPage({ params }: { params: { slug: string } }) {
+export default function ProjectIdPage({ 
+  params 
+}: { 
+  params: { 
+    slug: string 
+  } 
+}) {
   const projectId = parseInt(params.slug);
   const router = useRouter();
   const initialRender = useRef(true);
   const supabase = createClient();
-  const { projects, projectMembers, fetchProjectMembers } = useProject();
+  const { 
+    projects, 
+    projectMembers, 
+    fetchProjectMembers 
+  } = useProject();
   const { user } = useUser();
 
   const methods = useForm<BriefFormType>({
@@ -58,8 +83,13 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
     mode: "onChange",
   });
 
-  const { watch, handleSubmit } = methods;
-  const form = watch();
+  const { 
+    setValue, 
+    handleSubmit,
+    formState: { 
+      isDirty,
+    },
+  } = methods;
 
   const [isGuest, setIsGuest] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -79,15 +109,13 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
     }
   }, [projectId]);
 
-  // Log project members
-  useEffect(() => {
-    console.log("Project Members:", projectMembers); // Debug log
-  }, [projectMembers]);
-
   // Tab change handler
-  function handleTabChange(event: React.SyntheticEvent, newTab: number) {
+  function handleTabChange(
+    event: React.SyntheticEvent, 
+    newTab: number
+  ) {
     setTab(newTab);
-  }
+  };
 
   // Construct OpenAI prompt
   async function constructPrompt(
@@ -119,8 +147,6 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
       message: 'Submitting brief...',
     });
     setShowAlertInfo(true);
-
-    console.log('Submitting brief:', data);
 
     try {
       if (!user) return;
@@ -174,7 +200,10 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
 
         const responseData = await response.json();
 
-        if (response.ok && responseData.ideas) {
+        if (
+          response.ok && 
+          responseData.ideas
+        ) {
           setAlertInfo({
             type: 'success',
             icon: <CheckIcon />,
@@ -183,6 +212,7 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
 
           // Fetch ideas from Supabase
           fetchIdeas(data.project_id);
+          fetchBrief(data.project_id);
 
           setTab(1);
         } else {
@@ -190,7 +220,10 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
         }
       }
     } catch (error) {
-      console.log('Error submitting brief:', error);
+      console.log(
+        'Error submitting brief:', 
+        error
+      );
       setAlertInfo({
         type: 'error',
         icon: <ErrorIcon />,
@@ -204,17 +237,65 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
   }
 
   // Fetch ideas
-  async function fetchIdeas(projectId: number) {
-    const { data, error } = await supabase
+  async function fetchIdeas(
+    projectId: number
+  ) {
+    const { 
+      data, 
+      error 
+    } = await supabase
       .from("ideas")
       .select("*")
-      .eq("project_id", projectId);
+      .eq(
+        "project_id", 
+        projectId
+      )
+      .order("created_at", { 
+        ascending: false 
+      });
 
     if (error) {
-      console.error("Error fetching ideas:", error);
+      console.error(
+        "Error fetching ideas:", 
+        error
+      );
       return null;
     } else {
       setIdeas(data);
+    }
+  }
+
+  // Fetch brief
+  async function fetchBrief(
+    projectId: number
+  ) {
+    try {
+      const data = await fetchBriefUtil(projectId);
+      if (data) {
+        setValue("project_id", projectId)
+        setValue("project_name", data.project_name);
+        setValue("client_name", data.client_name);
+        setValue("project_details", data.project_details);
+        setValue("product_details", data.product_details);
+        setValue("product_usp", data.product_usp);
+        setValue("goals_details", data.goals_details);
+        setValue("goals_objectives", data.goals_objectives);
+        setValue("brand_strategy", data.brand_strategy);
+        setValue("brand_message", data.brand_message);
+        setValue("brand_tone", data.brand_tone);
+        setValue("target_markets", data.target_markets);
+        setValue("target_genders", data.target_genders)
+        setValue("target_ages", data.target_ages);
+        setValue("target_description", data.target_description);
+        setValue("ideas_medium", data.ideas_medium);
+        setValue("ideas_channels", data.ideas_channels);
+        setValue("ideas_quantity", data.ideas_quantity);
+      }
+    } catch (error) {
+      console.error(
+        "Error fetching brief:", 
+        error
+      );
     }
   }
 
@@ -229,25 +310,44 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
       }
 
       try {
-        const { data, error } = await supabase
+        const { 
+          data, 
+          error 
+        } = await supabase
           .from("project_members")
           .select("project_role")
-          .eq("project_id", projectId)
-          .eq("user_id", user.id);
+          .eq(
+            "project_id", 
+            projectId
+          )
+          .eq(
+            "user_id", 
+            user.id
+          );
 
         if (error) {
-          console.error("Error fetching user role:", error);
+          console.error(
+            "Error fetching user role:", 
+            error
+          );
           return;
         }
 
-        if (data && data.length > 0 && data[0].project_role === "viewer") {
+        if (
+          data && 
+          data.length > 0 && 
+          data[0].project_role === "viewer"
+        ) {
           console.log("User is a viewer.");
           setIsGuest(true);
         } else {
           setIsGuest(false);
         }
       } catch (error) {
-        console.error("Unexpected error fetching user role:", error);
+        console.error(
+          "Unexpected error fetching user role:", 
+          error
+        );
       }
     }
 
@@ -256,10 +356,21 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
 
   // Fetch project ideas
   useEffect(() => {
-    if (ideas === null) {
-      fetchIdeas(parseInt(params.slug));
-    }
-  }, [ideas]);
+    if (!projectId || !ideas) return;
+    fetchIdeas(projectId);
+  }, [
+    ideas,
+    projectId
+  ]);
+
+  // Fetch brief
+  useEffect(() => {
+    if (!projectId || isDirty) return;
+    fetchBrief(projectId);
+  }, [
+    projectId,
+    isDirty,
+  ])
 
   // Redirect to home if project isn't found in ProjectContext
   useEffect(() => {
@@ -280,9 +391,6 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
       setLoading(false);
     }
   }, [projects, params.slug, router]);
-
-  console.log("Form validity:", methods.formState.isValid);
-  console.log("Form: ", form);
 
   return (
     <>
@@ -332,6 +440,15 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
                 tab={tab}
                 handleTabChange={handleTabChange}
               />
+              {showAlertInfo && (
+                <Alert
+                  severity={alertInfo?.type}
+                  icon={alertInfo ? alertInfo.icon : undefined}
+                  className="w-full transition-all"
+                >
+                  {alertInfo ? alertInfo.message : "Error"}
+                </Alert>
+              )}
             </Box>
             <ProjectTabContent value={tab} index={0}>
               <BriefForm isGuest={isGuest} />
@@ -345,8 +462,7 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
                   bg-white
                   border-t
                   border-neutral-300
-                  p-4
-                  pb-8
+                  p-6
                 "
               >
                 <SubmitButton
@@ -366,14 +482,14 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
                   items-center
                   w-full
                   gap-4
-                  p-4
+                  p-6
                 "
               >
                 {
                   ideas.length > 0 ? ideas.map((idea, index) => (
                     <IdeaContainer
                       key={index}
-                      id={idea?.id}
+                      index={index + 1}
                       title={idea.name}
                       description={idea?.description}
                       problem={idea.problem}
@@ -401,15 +517,6 @@ export default function ProjectIdPage({ params }: { params: { slug: string } }) 
                 <TeamTable />
               </Box>
             </ProjectTabContent>
-
-            {showAlertInfo && (
-              <Alert
-                severity={alertInfo?.type}
-                icon={alertInfo ? alertInfo.icon : undefined}
-              >
-                {alertInfo ? alertInfo.message : "Error"}
-              </Alert>
-            )}
           </Box>
         </form>
       </FormProvider>

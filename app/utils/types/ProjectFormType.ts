@@ -6,4 +6,6 @@ export type ProjectFormType = {
   name: string;
   client?: string;
   details?: string;
+  ideas_limit?: number;
+  ideas_count?: number;
 };
