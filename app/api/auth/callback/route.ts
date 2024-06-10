@@ -1,10 +1,8 @@
 "use server";
 
 import { createClient } from "@/app/utils/supabase/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-
-const protectedRedirectRoute = "/home";
 
 export async function GET(
   req: NextRequest
@@ -24,15 +22,15 @@ export async function GET(
       .exchangeCodeForSession(code);
 
     if (error) {
-      return Response.redirect(
+      return NextResponse.redirect(
         `${url.origin}/login?error=${encodeURIComponent(error.message)}`
       );
     }
-
     // Ensure the correct redirection to the protected route
-    return Response.redirect(`${url.origin}${protectedRedirectRoute}`);
+    return NextResponse.redirect(url.origin);
+
   } else {
     console.log("No code to exchange for session found.");
-    return Response.redirect(`${url.origin}/login?error=No code provided.`);
+    return NextResponse.redirect(`${url.origin}/login?error=No code provided.`);
   }
 }
