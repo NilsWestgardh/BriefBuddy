@@ -16,9 +16,11 @@ export async function middleware(
   .getUser();
   
   if (!user && !req.nextUrl.pathname.startsWith("/login")) {
+    console.log("Redirecting to /login")
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
+  console.log("User is authenticated")
   return response;
 }
 
