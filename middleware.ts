@@ -2,30 +2,27 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from "@/app/utils/supabase/middleware";
 
 export async function middleware(
-  req: NextRequest
+  request: NextRequest
 ) {
-  const { 
-    supabase, 
-    response 
-  } = await createClient(req);
+  const { supabase, response } = createClient(request);
 
   const {
-    data: { user }
-  } = await supabase
-  .auth
-  .getUser();
+    data: { user },
+  } = await supabase.auth.getUser();
   
-  if (!user && !req.nextUrl.pathname.startsWith("/login")) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (!user && !request.nextUrl.pathname.startsWith("/login")) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (user) {
-    return NextResponse.redirect(new URL("/home", req.url));
-  }
+  // if (user) {
+  //   return NextResponse.redirect(new URL("/home", request.url));
+  // }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|images|favicon.ico|login).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|images|favicon.ico|login).*)"
+  ],
 };
