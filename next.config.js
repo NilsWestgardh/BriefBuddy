@@ -1,15 +1,5 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/home',
-        permanent: false,
-      },
-    ];
-  },
-};
+const nextConfig = {};
 
 // eslint-disable-next-line no-undef
 module.exports = nextConfig;
