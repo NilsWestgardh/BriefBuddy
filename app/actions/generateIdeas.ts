@@ -15,8 +15,6 @@ const intro = {
   parts: "Title, Description, Problem, Insight, and Solution. "
 };
 
-export const maxDuration = 15;
-
 export async function generateIdeas(
   prompt: string, 
   quantity: number, 
