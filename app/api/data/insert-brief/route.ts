@@ -46,7 +46,10 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const { data, error } = await supabase
+      const { 
+        data, 
+        error 
+      } = await supabase
         .from("briefs")
         .insert([briefData])
         .select()
