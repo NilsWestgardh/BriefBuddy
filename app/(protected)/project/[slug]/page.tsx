@@ -215,6 +215,7 @@ export default function ProjectIdPage({
 
           setTab(1);
         } else {
+          console.log(JSON.stringify(responseData))
           throw new Error(responseData.error);
         }
       }
