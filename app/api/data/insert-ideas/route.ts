@@ -17,6 +17,7 @@ export async function POST(
   const supabase = createClient(cookieStore);
 
   try {
+    // Generate ideas
     const ideas = await generateIdeas(
       prompt, 
       ideas_quantity, 
@@ -24,6 +25,7 @@ export async function POST(
       brief_id
     );
 
+    // Insert ideas
     const { 
       data: ideasData, 
       error: ideasError 
@@ -47,15 +49,16 @@ export async function POST(
         },
       });
     } else {
+      // Update project ideas count
+      const newIdeasCount = ideas_count + ideas_quantity;
       const { 
         data: projectData, 
         error: projectError 
       } = await supabase
         .from("projects")
-        .insert(
-          "ideas_count", 
-          ideas_count
-        )
+        .update({ 
+          ideas_count: newIdeasCount 
+        })
         .eq(
           "id", 
           project_id
@@ -75,7 +78,10 @@ export async function POST(
             'Content-Type': 'application/json' 
           },
         });
-      } else if (ideasData && projectData) {
+      } else if (
+        ideasData && 
+        projectData
+      ) {
         return new NextResponse(JSON.stringify({ 
           ideas: ideasData 
         }), {
