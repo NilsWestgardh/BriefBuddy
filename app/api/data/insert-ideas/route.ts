@@ -66,6 +66,7 @@ export async function POST(
           "id", 
           project_id
         )
+        .select()
       
       if (projectError) {
         console.error(
