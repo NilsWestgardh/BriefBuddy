@@ -34,7 +34,7 @@ export async function POST(
 
     if (ideasError) {
       console.error(
-        'Error inserting ideas:', 
+        `Error inserting ideas: ${JSON.stringify(ideas)}`, 
         ideasError
       );
       return new NextResponse(
@@ -88,12 +88,8 @@ export async function POST(
     };
 
   } catch (error) {
-    console.error(
-      'Error inserting ideas:', 
-      error
-    );
     return new NextResponse(JSON.stringify({ 
-      error: 'Error inserting ideas' 
+      error: 'Error inserting ideas: ${ideas}' 
     }), {
       status: 500,
       headers: { 
