@@ -442,11 +442,11 @@ export default function LoginPage({
                     provider="google"
                     disabled={false}
                   />
-                  <OAuthButton
+                  {/* <OAuthButton
                     cta={showSignUp ? "Sign up with Microsoft" : "Log in with Microsoft"}
                     provider="azure"
                     disabled={true}
-                  />
+                  /> */}
                   <OAuthButton
                     cta={showSignUp ? "Sign up with Slack" : "Log in with Slack"}
                     provider="slack"

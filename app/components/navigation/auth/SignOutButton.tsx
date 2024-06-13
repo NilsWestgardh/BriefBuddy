@@ -52,6 +52,7 @@ export default function SignOutButton() {
             hover:cursor-pointer
             hover:opacity-90
             transition-all
+            lg:w-full
           "
         >
           <LogoutIcon />
