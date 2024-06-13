@@ -440,7 +440,7 @@ export default function LoginPage({
                   <OAuthButton
                     cta={showSignUp ? "Sign up with Google" : "Log in with Google"}
                     provider="google"
-                    disabled={true}
+                    disabled={false}
                   />
                   <OAuthButton
                     cta={showSignUp ? "Sign up with Microsoft" : "Log in with Microsoft"}
