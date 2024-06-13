@@ -355,12 +355,9 @@ export default function ProjectIdPage({
 
   // Fetch project ideas
   useEffect(() => {
-    if (!projectId || !ideas) return;
+    if (!projectId) return;
     fetchIdeas(projectId);
-  }, [
-    ideas,
-    projectId
-  ]);
+  }, [projectId]);
 
   // Fetch brief
   useEffect(() => {
