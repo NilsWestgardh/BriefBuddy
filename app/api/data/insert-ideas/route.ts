@@ -3,6 +3,8 @@ import { createClient } from '@/app/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { generateIdeas } from '@/app/actions/generateIdeas';
 
+export const maxDuration = 15;
+
 export async function POST(
   req: NextRequest
 ) {
@@ -49,8 +51,9 @@ export async function POST(
         },
       });
     } else {
+      const currentIdeasCount = ideas_count ?? 0;
       // Update project ideas count
-      const newIdeasCount = ideas_count + ideas_quantity;
+      const newIdeasCount: number = currentIdeasCount + ideas_quantity;
       const { 
         data: projectData, 
         error: projectError 

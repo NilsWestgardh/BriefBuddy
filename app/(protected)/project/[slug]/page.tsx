@@ -192,6 +192,7 @@ export default function ProjectIdPage({
           body: JSON.stringify({
             prompt: constructedPrompt,
             ideas_quantity: data.ideas_quantity,
+            ideas_count: ideas.length,
             project_id: data.project_id,
             brief_id: briefData.brief.id,
           }),
