@@ -172,7 +172,9 @@ export default function ProjectIdPage({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(data), // Was spreading data before
+          body: JSON.stringify({
+            ...data,
+          }),
         });
 
         const briefData = await briefResponse.json();
