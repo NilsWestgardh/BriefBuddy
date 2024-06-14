@@ -1,7 +1,10 @@
 "use client";
 
 // Hooks
-import React, { useEffect, useState } from "react";
+import React, { 
+  useEffect, 
+  useState 
+} from "react";
 import { useTeam } from "@/app/contexts/TeamContext";
 import { useUser } from "@/app/contexts/UserContext";
 // Types
@@ -9,6 +12,7 @@ import { TeamMemberType } from "@/app/utils/types/TeamMemberType";
 import { UserProfileType } from "@/app/utils/types/UserProfileType";
 // Utils
 import { createClient } from "@/app/utils/supabase/client";
+import clsx from "clsx";
 // Components
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -36,11 +40,6 @@ const roles: { [key: string]: string } = {
 const status: { [key: string]: string } = {
   active: "Active",
   pending: "Pending",
-};
-
-const statusColors: { [key: string]: string } = {
-  active: "text-green-700",
-  pending: "text-red-700",
 };
 
 const tableRowColumns = [
@@ -304,7 +303,11 @@ export default function TeamTable() {
               <TableCell className="truncate">
                 <Typography
                   variant="body2"
-                  className={statusColors[member.status]}
+                  // className={statusColors[member.status]}
+                  className={clsx("flex px-2 py-1 rounded-md", {
+                    "text-green-700 bg-green-50": member.status.toLowerCase() === "active",
+                    "text-red-700 bg-red-50": member.status.toLowerCase() === "pending",
+                  })}
                 >
                   {member.status !== 'Active' ? 'Pending' : status[member.status]}
                 </Typography>

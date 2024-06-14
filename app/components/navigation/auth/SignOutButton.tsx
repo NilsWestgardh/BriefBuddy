@@ -52,7 +52,6 @@ export default function SignOutButton() {
             hover:cursor-pointer
             hover:opacity-90
             transition-all
-            lg:w-full
           "
         >
           <LogoutIcon />
@@ -67,7 +66,7 @@ export default function SignOutButton() {
         size={!isPhone ? "large" : "small"}
         color={buttonDisabled ? "error" : "secondary"}
         disabled={buttonDisabled}
-        className={clsx("flex flex-row items-center hover:bg-red-100 hover:text-red-500 hover:cursor-pointer hover:opacity-90 transition-all min-w-[96px]", {
+        className={clsx("flex flex-row items-center md:justify-start md:w-full hover:bg-red-100 hover:text-red-500 hover:cursor-pointer hover:opacity-90 transition-all min-w-[96px]", {
           "justify-start w-full": !isTablet,
         })}
       >

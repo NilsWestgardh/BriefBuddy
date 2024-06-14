@@ -3,7 +3,7 @@
 // Hooks
 import React, { 
   useState,
-  useEffect,
+  useEffect
 } from "react";
 import { useTeam } from "@/app/contexts/TeamContext";
 // Utils
@@ -13,6 +13,7 @@ import { ProjectCardType } from "@/app/utils/types/ProjectCardType";
 // Custom Components
 import ProjectCard from "@/app/components/project/ProjectCard";
 import CreateProjectButton from "@/app/components/project/CreateProjectButton";
+import CreateTeamButton from "@/app/components/team/CreateTeamButton";
 // Components
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -25,7 +26,7 @@ const sortByOptions = {
 
 export default function Home() {
   const supabase = createClient();
-  const { selectedTeam } = useTeam();
+  const { teams, selectedTeam } = useTeam();
 
   const [projectCards, setProjectCards] = useState<ProjectCardType[]>([]);
   const [sortBy, setSortBy] = useState<string>(sortByOptions.latest);
@@ -265,16 +266,20 @@ export default function Home() {
                 font-semibold
               "
             >
-              No projects..
+              {teams.length === 0 ? "No team.." : "No projects.."}
             </Typography>
             <Typography
               variant="subtitle2"
               className="text-neutral-500"
             >
-              Create a project to get started.
+              {teams.length > 0 ? "Create a project to get started." : "Create a team to get started."}
             </Typography>
           </Box>
-          <CreateProjectButton />
+          {teams.length > 0 ? (
+            <CreateProjectButton />
+          ) : (
+            <CreateTeamButton />
+          )}
         </Box>
       </Box>
     )

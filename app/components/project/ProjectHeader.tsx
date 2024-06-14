@@ -312,24 +312,28 @@ export default function ProjectHeader({
               />
             )}
             
-            <Typography
-              variant="body2"
-              className="
-                text-neutral-900
-              "
-            >
-              {form.details ? (
-                form.details
-              ) : (
-                <Skeleton
-                  variant="text"
-                  width="192px"
-                  height="24px"
-                  animation="wave"
-                  className="rounded-sm"
-                />
-              )}
-            </Typography>
+            {form.details ? (
+              <Typography
+                variant="body2"
+                className="
+                  text-neutral-900
+                "
+              >
+                {form.details !== "" ? (
+                  form.details
+                ) : (
+                  "No details provided."
+                )}
+              </Typography>
+            ) : (
+              <Skeleton
+                variant="text"
+                width="192px"
+                height="24px"
+                animation="wave"
+                className="rounded-sm"
+              />
+            )}
           </Box>
           <Box
             id="project-header-dates-container"

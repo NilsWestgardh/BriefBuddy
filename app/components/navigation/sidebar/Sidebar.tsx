@@ -18,7 +18,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 
 export default function Sidebar() {
-  const { selectedTeam } = useTeam();
+  const { teams, selectedTeam } = useTeam();
 
   return (
     <Box
@@ -75,11 +75,13 @@ export default function Sidebar() {
             flexItem
             className="opacity-20"
           />
-          <NavButton
-            route={`team/${selectedTeam?.id ?? ''}`}
-            title="Team"
-            icon={<GroupIcon />}
-          />
+          {teams.length > 0 && (
+            <NavButton
+              route={`team/${selectedTeam?.id ?? ''}`}
+              title="Team"
+              icon={<GroupIcon />}
+            />
+          )}
           <NavButton
             route="contact"
             title="Contact"

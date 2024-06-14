@@ -126,6 +126,7 @@ export default function NewTeamModal({
                 team_id: teamId,
                 user_id: user.id,
                 role: "owner",
+                status: "active",
               }
             ]);
           

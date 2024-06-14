@@ -58,6 +58,17 @@ export default function ProjectIdPage({
   } = useProject();
   const { user } = useUser();
 
+  const [ideasAvailable, setIdeasAvailable] = useState<number>(0);
+  const [isGuest, setIsGuest] = useState<boolean>(false);
+  const [tab, setTab] = useState(0);
+  const [ideas, setIdeas] = useState<IdeaType[]>([]);
+  const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
+  const [alertInfo, setAlertInfo] = useState<{
+    type: "success" | "error" | "info" | "warning";
+    icon: React.ReactNode;
+    message: string;
+  } | null>(null);
+
   const methods = useForm<BriefFormType>({
     defaultValues: {
       project_id: projectId,
@@ -91,22 +102,28 @@ export default function ProjectIdPage({
     },
   } = methods;
 
-  const [isGuest, setIsGuest] = useState<boolean>(false);
-  const [tab, setTab] = useState(0);
-  const [ideas, setIdeas] = useState<IdeaType[]>([]);
-  const [showAlertInfo, setShowAlertInfo] = useState<boolean>(false);
-  const [alertInfo, setAlertInfo] = useState<{
-    type: "success" | "error" | "info" | "warning";
-    icon: React.ReactNode;
-    message: string;
-  } | null>(null);
-
   // Fetch project members on mount
   useEffect(() => {
     if (projectId) {
       fetchProjectMembers(projectId);
     }
   }, [projectId]);
+
+
+  // Set available ideas
+  useEffect(() => {
+    if (projectId && projects) {
+      const project = projects.find(project => project.id === projectId);
+
+      if (project?.ideas_limit !== undefined) {
+        const availableIdeas = project?.ideas_limit - ideas.length;
+
+        if (project) {
+          setIdeasAvailable(availableIdeas);
+        }
+      }
+    }
+  }, [projectId, projects])
 
   // Tab change handler
   function handleTabChange(
@@ -450,7 +467,7 @@ export default function ProjectIdPage({
               )}
             </Box>
             <ProjectTabContent value={tab} index={0}>
-              <BriefForm isGuest={isGuest} />
+              <BriefForm isGuest={isGuest} ideasAvailable={ideasAvailable} />
               <Box
                 id="submit-button-container"
                 className="
@@ -512,7 +529,9 @@ export default function ProjectIdPage({
                   gap-4
                 "
               >
-                <TeamTableHeader />
+                {/* TODO: Replace with ProjectTeamTableHeader */}
+                <TeamTableHeader /> 
+                {/* TODO: Replace with ProjectTeamTable */}
                 <TeamTable />
               </Box>
             </ProjectTabContent>

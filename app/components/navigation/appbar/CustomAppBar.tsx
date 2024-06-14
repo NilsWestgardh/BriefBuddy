@@ -21,7 +21,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 
 export default function CustomAppBar() {
-  const { selectedTeam } = useTeam();
+  const { teams, selectedTeam } = useTeam();
 
   return (
     <AppBar
@@ -96,11 +96,13 @@ export default function CustomAppBar() {
               title="Home"
               icon={<HomeIcon />}
             />
-            <NavButton
-              route={`team/${selectedTeam?.id ?? ''}`}
-              title="Team"
-              icon={<GroupIcon />}
-            />
+            {teams.length > 0 && (
+              <NavButton
+                route={`team/${selectedTeam?.id ?? ''}`}
+                title="Team"
+                icon={<GroupIcon />}
+              />
+            )}
             <NavButton
               route="contact"
               title="Contact"
